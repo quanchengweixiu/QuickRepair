@@ -44,7 +44,7 @@
     <string name="demo_name_cloud">LBS.云检索功能</string>
     <string name="demo_title_cloud">LBS.云检索功能--CloudSearchDemo</string>
     <string name="demo_desc_cloud">介绍如何使用LBS.云检索用户自有数据</string>
-    <string name="key_error">"请在  DemoApplication.java文件输入正确的授权Key！\r\n申请地址：http://dev.baidu.com/wiki/static/imap/key/"</string>
+    <string name="key_error">"请在  DApplication.java文件输入正确的授权Key！\r\n申请地址：http://dev.baidu.com/wiki/static/imap/key/"</string>
     <string name="navi_tip">本功能为调起百度地图Android客户端（V5.0及以上版本）的导航功能，用户必须已安装百度地图客户端，如果没有安装则提示用户下载安装百度地图客户端。</string>
     <string name="title_activity_cloud_search_demo">云检索使用介绍</string>
     <string name="cloud_search_tips">
