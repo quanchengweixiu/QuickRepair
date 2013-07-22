@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
 
-    <string name="app_name">百度地图SDK DEMO</string>
+    <string name="app_name">全城维修</string>
     <string name="demo_name_basemap">基本地图功能</string>
     <string name="demo_title_basemap">基本地图功能--BaseMapDemo</string>
     <string name="demo_desc_basemap">创建一张百度地图并管理地图的生命周期</string>
@@ -52,4 +52,25 @@
           \t\t该服务对开发者免费开放。测试demo里写入了测试的ak。开发者可以使用测试ak查看 LBS.云检索的效果。如果开发者要使用自己的数据，请在申请ak后替换demo中的ak。\n\n
           \t\t如有任何关于LBS.云服务的问题,诸如如何申请ak、如何存储和检索数据等，请访问百度地图官方“LBS开放平台”。地址：http://lbsyun.baidu.com/  \n
     </string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+
+    <string name="menu_map_demo">Map Demo</string>
+    <string name="menu_user_signup">Sign</string>
+    <string name="menu_user_login">Login</string>
+    <string name="menu_user_logout">Logout</string>
+    <string name="feedback">Feed back</string>
 </resources>
