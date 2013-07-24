@@ -210,16 +210,18 @@ public class MainActivity extends Activity {
     boolean mDefaultView = true;
     private void toggleView() {
         if (mDefaultView) {
-            // goto default view with category list
-            Intent intent = new Intent(this, LocationOverlayDemo.class);
-            // catch event that there's no activity to handle intent
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-            }
-        } else {
             // goto map view
+            gotoLocationFragment();
+        } else {
+            // goto default view with category list
+            gotoDefaultView();
+//            Intent intent = new Intent(this, LocationOverlayDemo.class);
+//            // catch event that there's no activity to handle intent
+//            if (intent.resolveActivity(getPackageManager()) != null) {
+//                startActivity(intent);
+//            } else {
+//                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+//            }
         }
     }
 
@@ -231,15 +233,51 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void selectItem(int position) {
-        // update the main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
+    LocationOverlayFragment locationFragment;
+    PlanetFragment fragmentPlanet;
+    private void gotoLocationFragment() {
+        if (null == locationFragment) {
+            locationFragment = new LocationOverlayFragment();
+        }
 
+        if (!mDefaultView) {
+            return;
+        }
+
+        mDefaultView = false;
+        gotoFragmentView(locationFragment);
+    }
+    private void gotoDefaultView() {
+        if (null == fragmentPlanet) {
+            fragmentPlanet = new PlanetFragment();
+            Bundle args = new Bundle();
+            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
+            fragmentPlanet.setArguments(args);
+            gotoFragmentView(fragmentPlanet);
+            mDefaultView = true;
+        }
+
+        if (mDefaultView) {
+            return;
+        }
+        mDefaultView = true;
+        gotoFragmentView(fragmentPlanet);
+    }
+
+    private void gotoFragmentView(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+    private int mDefaultPosition;
+    private void selectItem(int position) {
+        mDefaultPosition = position;
+        boolean existing = null != fragmentPlanet;
+        gotoDefaultView();
+        // update the main content by replacing fragments
+        if (existing) {
+            fragmentPlanet.update(position);
+        }
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
@@ -290,6 +328,8 @@ public class MainActivity extends Activity {
     public static class PlanetFragment extends Fragment {
         public static final String ARG_PLANET_NUMBER = "planet_number";
 
+        private View rootView;
+
         public PlanetFragment() {
             // Empty constructor required for fragment subclasses
         }
@@ -297,15 +337,19 @@ public class MainActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
+            rootView = inflater.inflate(R.layout.fragment_planet, container, false);
             int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
+            update(i);
+            return rootView;
+        }
+
+        public void update(int position) {
+            String planet = getResources().getStringArray(R.array.planets_array)[position];
 
             int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                            "drawable", getActivity().getPackageName());
+                    "drawable", getActivity().getPackageName());
             ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
             getActivity().setTitle(planet);
-            return rootView;
         }
     }
 }
