@@ -15,4 +15,8 @@
           android:icon="@drawable/action_search"
           android:title="@string/action_websearch"
           android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_toggle"
+          android:icon="@drawable/ic_action_category"
+          android:title="@string/action_toggle"
+          android:showAsAction="ifRoom|withText" />
 </menu>

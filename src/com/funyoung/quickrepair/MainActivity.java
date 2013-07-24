@@ -31,6 +31,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
 import baidumapsdk.demo.BMapApiDemoMain;
+import baidumapsdk.demo.LocationOverlayDemo;
 import baidumapsdk.demo.R;
 
 import java.util.Locale;
@@ -88,6 +89,7 @@ public class MainActivity extends Activity {
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mPlanetTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        setupDrawerFooter();
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -119,6 +121,36 @@ public class MainActivity extends Activity {
         }
     }
 
+    private View mFooter;
+    private void setupDrawerFooter() {
+        if (null != mDrawerList) {
+            final boolean isLogin = isLogin();
+
+            if (null == mFooter) {
+//                LayoutInflater inflater = getLayoutInflater();
+//                mFooter = inflater.inflate(R.layout.drawer_list_item, null);
+
+                mFooter = new TextView(this);
+                mDrawerList.addFooterView(mFooter);
+            }
+
+            if (mFooter instanceof TextView) {
+                ((TextView)mFooter).setText(isLogin ? R.string.menu_user_logout :
+                        R.string.action_login_user);
+            }
+            mFooter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isLogin) {
+                        doLogout();
+                    } else {
+                        doLogin();
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -132,6 +164,9 @@ public class MainActivity extends Activity {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_toggle).setIcon(mDefaultView ?
+                R.drawable.ic_action_category : R.drawable.ic_action_map);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -144,6 +179,9 @@ public class MainActivity extends Activity {
         }
         // Handle action buttons
         switch(item.getItemId()) {
+            case R.id.action_toggle:
+                toggleView();
+                return true;
         case R.id.action_websearch:
             // create intent to perform web search for this planet
             Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -166,6 +204,22 @@ public class MainActivity extends Activity {
                 return true;
         default:
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    boolean mDefaultView = true;
+    private void toggleView() {
+        if (mDefaultView) {
+            // goto default view with category list
+            Intent intent = new Intent(this, LocationOverlayDemo.class);
+            // catch event that there's no activity to handle intent
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            // goto map view
         }
     }
 
@@ -217,6 +271,18 @@ public class MainActivity extends Activity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+    // todo: login/logout user begin
+    private void doLogin() {
+
+    }
+    private void doLogout() {
+    }
+
+    private boolean isLogin() {
+        return false;
+    }
+    // todo: login/logout user end
 
     /**
      * Fragment that appears in the "content_frame", shows a planet

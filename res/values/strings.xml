@@ -66,6 +66,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
+    <string name="action_toggle">Switch</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
 
     <string name="menu_map_demo">Map Demo</string>
@@ -73,4 +74,5 @@
     <string name="menu_user_login">Login</string>
     <string name="menu_user_logout">Logout</string>
     <string name="feedback">Feed back</string>
+    <string name="action_login_user">Sign Up or Login</string>
 </resources>
