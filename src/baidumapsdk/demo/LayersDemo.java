@@ -34,13 +34,8 @@ public class LayersDemo extends Activity {
          * 并在地图地图模块销毁后销毁，只要还有地图模块在使用，BMapManager就不应该销毁
          */
         DemoApplication app = (DemoApplication)this.getApplication();
-        if (app.mBMapManager == null) {
-            app.mBMapManager = new BMapManager(this);
-            /**
-             * 如果BMapManager没有初始化则初始化BMapManager
-             */
-            app.mBMapManager.init(DemoApplication.strKey,new DemoApplication.MyGeneralListener());
-        }
+        app.checkToInit();
+
         /**
           * 由于MapView在setContentView()中初始化,所以它需要在BMapManager初始化之后
           */

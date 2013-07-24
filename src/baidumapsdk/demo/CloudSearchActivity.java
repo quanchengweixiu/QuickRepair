@@ -32,10 +32,8 @@ public class CloudSearchActivity extends Activity implements GeoSearchListener {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         DemoApplication app = (DemoApplication)this.getApplication();
-        if (app.mBMapManager == null) {
-            app.mBMapManager = new BMapManager(this);
-            app.mBMapManager.init(DemoApplication.strKey,new DemoApplication.MyGeneralListener());
-        }
+        app.checkToInit();
+
         setContentView(R.layout.lbssearch);
         GeoSearchManager.getInstance().init(CloudSearchActivity.this);
         

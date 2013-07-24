@@ -42,10 +42,8 @@ public class PoiSearchDemo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	 super.onCreate(savedInstanceState);
          DemoApplication app = (DemoApplication)this.getApplication();
-         if (app.mBMapManager == null) {
-             app.mBMapManager = new BMapManager(this);
-             app.mBMapManager.init(DemoApplication.strKey,new DemoApplication.MyGeneralListener());
-         }
+        app.checkToInit();
+
          setContentView(R.layout.activity_poisearch);
         mMapView = (MapView)findViewById(R.id.bmapView);
 		mMapView.getController().enableClick(true);

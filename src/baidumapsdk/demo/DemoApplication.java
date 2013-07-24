@@ -41,6 +41,16 @@ public class DemoApplication extends Application {
         return mInstance;
     }
 
+    public void checkToInit() {
+        if (mBMapManager == null) {
+            mBMapManager = new BMapManager(this);
+            /**
+             * 如果BMapManager没有初始化则初始化BMapManager
+             */
+            mBMapManager.init(strKey,new MyGeneralListener());
+        }
+    }
+
 
     // 常用事件监听，用来处理通常的网络错误，授权验证错误等
     static class MyGeneralListener implements MKGeneralListener {
