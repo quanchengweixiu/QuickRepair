@@ -2,6 +2,7 @@ package com.funyoung.quickrepair;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import baidumapsdk.demo.BMapUtil;
+import baidumapsdk.demo.DemoApplication;
 import baidumapsdk.demo.R;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -19,6 +21,8 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.*;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+
+import java.util.ArrayList;
 
 /**
  * Created by yangfeng on 13-7-24.
@@ -52,6 +56,16 @@ public class LocationOverlayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        /**
+         * 使用地图sdk前需先初始化BMapManager.
+         * BMapManager是全局的，可为多个MapView共用，它需要地图模块创建前创建，
+         * 并在地图地图模块销毁后销毁，只要还有地图模块在使用，BMapManager就不应该销毁
+         */
+        DemoApplication app = (DemoApplication)getActivity().getApplication();
+        app.checkToInit();
+        /**
+         * 由于MapView在inflate()中初始化,所以它需要在BMapManager初始化之后
+         */
         View rootView = inflater.inflate(R.layout.fragment_locationoverlay,
                 container, false);
 //        setContentView(R.layout.activity_locationoverlay);
@@ -179,6 +193,7 @@ public class LocationOverlayFragment extends Fragment {
             }
             //首次定位完成
             isFirstLoc = false;
+            initOverlay();
         }
 
         public void onReceivePoi(BDLocation poiLocation) {
@@ -254,6 +269,178 @@ public class LocationOverlayFragment extends Fragment {
 //        return true;
 //    }
     // todo: end
+
+
+    // merge from overlap demo
+    private ArrayList<OverlayItem>  mItems = null;
+    private MyOverlay mOverlay = null;
+    private View popupInfo = null;
+    private View popupLeft = null;
+    private View popupRight = null;
+    private Button button = null;
+    private MapView.LayoutParams layoutParam = null;
+    private OverlayItem mCurItem = null;
+    /**
+     * overlay 位置坐标
+     */
+    double mLon1 = 116.400244 ;
+    double mLat1 = 39.963175 ;
+    double mLon2 = 116.369199;
+    double mLat2 = 39.942821;
+    double mLon3 = 116.425541;
+    double mLat3 = 39.939723;
+    double mLon4 = 116.401394;
+    double mLat4 = 39.906965;
+    double mLon5 = 116.402096;
+    double mLat5 = 39.942057;
+
+    public void initOverlay(){
+        /**
+         * 创建自定义overlay
+         */
+        mOverlay = new MyOverlay(getResources().getDrawable(R.drawable.icon_marka),mMapView);
+        /**
+         * 准备overlay 数据
+         */
+        GeoPoint p1 = new GeoPoint ((int)(mLat1*1E6),(int)(mLon1*1E6));
+        OverlayItem item1 = new OverlayItem(p1,"覆盖物1","");
+        /**
+         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+         */
+        item1.setMarker(getResources().getDrawable(R.drawable.icon_marka));
+
+        GeoPoint p2 = new GeoPoint ((int)(mLat2*1E6),(int)(mLon2*1E6));
+        OverlayItem item2 = new OverlayItem(p2,"覆盖物2","");
+        item2.setMarker(getResources().getDrawable(R.drawable.icon_markb));
+
+        GeoPoint p3 = new GeoPoint ((int)(mLat3*1E6),(int)(mLon3*1E6));
+        OverlayItem item3 = new OverlayItem(p3,"覆盖物3","");
+        item3.setMarker(getResources().getDrawable(R.drawable.icon_markc));
+
+        GeoPoint p4 = new GeoPoint ((int)(mLat4*1E6),(int)(mLon4*1E6));
+        OverlayItem item4 = new OverlayItem(p4,"覆盖物4","");
+        item4.setMarker(getResources().getDrawable(R.drawable.icon_markd));
+
+        GeoPoint p5 = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
+        OverlayItem item5 = new OverlayItem(p5,"覆盖物5","");
+        item5.setMarker(getResources().getDrawable(R.drawable.icon_gcoding));
+        /**
+         * 将item 添加到overlay中
+         * 注意： 同一个itme只能add一次
+         */
+        mOverlay.addItem(item1);
+        mOverlay.addItem(item2);
+        mOverlay.addItem(item3);
+        mOverlay.addItem(item4);
+        mOverlay.addItem(item5);
+        /**
+         * 保存所有item，以便overlay在reset后重新添加
+         */
+        mItems = new ArrayList<OverlayItem>();
+        mItems.addAll(mOverlay.getAllItem());
+        /**
+         * 将overlay 添加至MapView中
+         */
+        mMapView.getOverlays().add(mOverlay);
+        /**
+         * 刷新地图
+         */
+        mMapView.refresh();
+
+        /**
+         * 向地图添加自定义View.
+         */
+
+
+        viewCache = getActivity().getLayoutInflater().inflate(R.layout.custom_text_view, null);
+        popupInfo = (View) viewCache.findViewById(R.id.popinfo);
+        popupLeft = (View) viewCache.findViewById(R.id.popleft);
+        popupRight = (View) viewCache.findViewById(R.id.popright);
+        popupText =(TextView) viewCache.findViewById(R.id.textcache);
+
+        button = new Button(getActivity());
+        button.setBackgroundResource(R.drawable.popup);
+
+        /**
+         * 创建一个popupoverlay
+         */
+        PopupClickListener popListener = new PopupClickListener(){
+            @Override
+            public void onClickedPopup(int index) {
+                if ( index == 0){
+                    //更新item位置
+                    pop.hidePop();
+                    GeoPoint p = new GeoPoint(mCurItem.getPoint().getLatitudeE6()+5000,
+                            mCurItem.getPoint().getLongitudeE6()+5000);
+                    mCurItem.setGeoPoint(p);
+                    mOverlay.updateItem(mCurItem);
+                    mMapView.refresh();
+                }
+                else if(index == 2){
+                    //更新图标
+                    mCurItem.setMarker(getResources().getDrawable(R.drawable.nav_turn_via_1));
+                    mOverlay.updateItem(mCurItem);
+                    mMapView.refresh();
+                }
+            }
+        };
+        pop = new PopupOverlay(mMapView,popListener);
+
+
+    }
+
+    public class MyOverlay extends ItemizedOverlay{
+
+        public MyOverlay(Drawable defaultMarker, MapView mapView) {
+            super(defaultMarker, mapView);
+        }
+
+
+        @Override
+        public boolean onTap(int index){
+            OverlayItem item = getItem(index);
+            mCurItem = item ;
+            if (index == 4){
+                button.setText("这是一个系统控件");
+                GeoPoint pt = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
+                //创建布局参数
+                layoutParam  = new MapView.LayoutParams(
+                        //控件宽,继承自ViewGroup.LayoutParams
+                        MapView.LayoutParams.WRAP_CONTENT,
+                        //控件高,继承自ViewGroup.LayoutParams
+                        MapView.LayoutParams.WRAP_CONTENT,
+                        //使控件固定在某个地理位置
+                        pt,
+                        0,
+                        -32,
+                        //控件对齐方式
+                        MapView.LayoutParams.BOTTOM_CENTER);
+                //添加View到MapView中
+                mMapView.addView(button,layoutParam);
+            }
+            else{
+                popupText.setText(getItem(index).getTitle());
+                Bitmap[] bitMaps={
+                        BMapUtil.getBitmapFromView(popupLeft),
+                        BMapUtil.getBitmapFromView(popupInfo),
+                        BMapUtil.getBitmapFromView(popupRight)
+                };
+                pop.showPopup(bitMaps,item.getPoint(),32);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onTap(GeoPoint pt , MapView mMapView){
+            if (pop != null){
+                pop.hidePop();
+                mMapView.removeView(button);
+            }
+            return false;
+        }
+
+    }
+
 }
 /**
  * 继承MapView重写onTouchEvent实现泡泡处理操作
@@ -267,7 +454,7 @@ class MyLocationMapView extends MapView {
         // TODO Auto-generated constructor stub
     }
     public MyLocationMapView(Context context, AttributeSet attrs){
-        this(context,attrs, 0);
+        this(context, attrs, 0);
     }
     public MyLocationMapView(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
