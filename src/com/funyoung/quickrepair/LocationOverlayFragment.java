@@ -27,10 +27,10 @@ public class LocationOverlayFragment extends Fragment {
     // 定位相关
     LocationClient mLocClient;
     LocationData locData = null;
-    public MyLocationListenner myListener = new MyLocationListenner();
+    public MyLocationListener myListener = new MyLocationListener();
 
     //定位图层
-    locationOverlay myLocationOverlay = null;
+    LocationOverlay myLocationOverlay = null;
     //弹出泡泡图层
     private PopupOverlay pop  = null;//弹出泡泡图层，浏览节点时使用
     private TextView popupText = null;//泡泡view
@@ -55,8 +55,8 @@ public class LocationOverlayFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_locationoverlay,
                 container, false);
 //        setContentView(R.layout.activity_locationoverlay);
-        CharSequence titleLable="定位功能";
-        getActivity().setTitle(titleLable);
+        CharSequence titleLabel="定位功能";
+        getActivity().setTitle(titleLabel);
         requestLocButton = (Button)rootView.findViewById(R.id.button1);
         View.OnClickListener btnClickListener = new View.OnClickListener() {
 
@@ -109,7 +109,7 @@ public class LocationOverlayFragment extends Fragment {
         mLocClient.start();
 
         //定位图层初始化
-        myLocationOverlay = new locationOverlay(mMapView);
+        myLocationOverlay = new LocationOverlay(mMapView);
         //设置定位数据
         myLocationOverlay.setData(locData);
         //添加定位图层
@@ -157,7 +157,7 @@ public class LocationOverlayFragment extends Fragment {
     /**
      * 定位SDK监听函数
      */
-    public class MyLocationListenner implements BDLocationListener {
+    public class MyLocationListener implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -190,9 +190,9 @@ public class LocationOverlayFragment extends Fragment {
     }
 
     //继承MyLocationOverlay重写dispatchTap实现点击处理
-    public class locationOverlay extends MyLocationOverlay {
+    public class LocationOverlay extends MyLocationOverlay {
 
-        public locationOverlay(MapView mapView) {
+        public LocationOverlay(MapView mapView) {
             super(mapView);
             // TODO Auto-generated constructor stub
         }
@@ -261,14 +261,14 @@ public class LocationOverlayFragment extends Fragment {
  * @author hejin
  *
  */
-class MyLocationMapView extends MapView{
+class MyLocationMapView extends MapView {
     static PopupOverlay   pop  = null;//弹出泡泡图层，点击图标使用
     public MyLocationMapView(Context context) {
-        super(context);
+        this(context, null);
         // TODO Auto-generated constructor stub
     }
     public MyLocationMapView(Context context, AttributeSet attrs){
-        super(context,attrs);
+        this(context,attrs, 0);
     }
     public MyLocationMapView(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);

@@ -31,6 +31,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginRight="25dp"
             android:layout_marginTop="10dip"
-            android:background="@drawable/custom_loc"  />
+            android:background="@drawable/qp_custom_loc"  />
 
 </RelativeLayout>
