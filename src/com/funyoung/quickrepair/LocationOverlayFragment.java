@@ -55,8 +55,7 @@ public class LocationOverlayFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_locationoverlay,
                 container, false);
 //        setContentView(R.layout.activity_locationoverlay);
-        CharSequence titleLabel="定位功能";
-        getActivity().setTitle(titleLabel);
+        getActivity().setTitle(R.string.title_main_mapview);
 //        requestLocButton = (Button)rootView.findViewById(R.id.button1);
 //        View.OnClickListener btnClickListener = new View.OnClickListener() {
 //
@@ -201,7 +200,7 @@ public class LocationOverlayFragment extends Fragment {
             // TODO Auto-generated method stub
             //处理点击事件,弹出泡泡
             popupText.setBackgroundResource(R.drawable.popup);
-            popupText.setText("我的位置");
+            popupText.setText(R.string.popup_text_my_location);
             pop.showPopup(BMapUtil.getBitmapFromView(popupText),
                     new GeoPoint((int)(locData.latitude*1e6),
                             (int)(locData.longitude*1e6)),

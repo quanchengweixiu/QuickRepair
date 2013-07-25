@@ -24,4 +24,7 @@
     <string name="menu_user_logout">Logout</string>
     <string name="feedback">Feed back</string>
     <string name="action_login_user">Sign Up or Login</string>
+
+    <string name="popup_text_my_location">"我的位置"</string>
+    <string name="title_main_mapview">查看地图</string>
 </resources>
