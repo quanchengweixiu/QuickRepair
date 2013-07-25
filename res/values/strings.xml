@@ -27,4 +27,5 @@
 
     <string name="popup_text_my_location">"我的位置"</string>
     <string name="title_main_mapview">查看地图</string>
+    <string name="search_hint">Search Listings</string>
 </resources>
