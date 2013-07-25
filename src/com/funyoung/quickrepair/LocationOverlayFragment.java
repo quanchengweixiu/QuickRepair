@@ -43,7 +43,7 @@ public class LocationOverlayFragment extends Fragment {
 
     //UI相关
 //    RadioGroup.OnCheckedChangeListener radioButtonListener = null;
-    Button requestLocButton = null;
+//    Button requestLocButton = null;
     boolean isRequest = false;//是否手动触发请求定位
     boolean isFirstLoc = true;//是否首次定位
     boolean isLocationClientStop = false;
@@ -57,17 +57,17 @@ public class LocationOverlayFragment extends Fragment {
 //        setContentView(R.layout.activity_locationoverlay);
         CharSequence titleLabel="定位功能";
         getActivity().setTitle(titleLabel);
-        requestLocButton = (Button)rootView.findViewById(R.id.button1);
-        View.OnClickListener btnClickListener = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                //手动定位请求
-                requestLocClick();
-            }
-        };
-        requestLocButton.setOnClickListener(btnClickListener);
+//        requestLocButton = (Button)rootView.findViewById(R.id.button1);
+//        View.OnClickListener btnClickListener = new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                //手动定位请求
+//                requestLocClick();
+//            }
+//        };
+//        requestLocButton.setOnClickListener(btnClickListener);
 
 //        RadioGroup group = (RadioGroup)rootView.findViewById(R.id.radioGroup);
 //        radioButtonListener = new RadioGroup.OnCheckedChangeListener() {
