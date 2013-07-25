@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import baidumapsdk.demo.BMapUtil;
@@ -30,7 +28,7 @@ import java.util.ArrayList;
 public class LocationOverlayFragment extends Fragment {
     // 定位相关
     LocationClient mLocClient;
-    LocationData locData = null;
+    LocationData myLocData = null;
     public MyLocationListener myListener = new MyLocationListener();
 
     //定位图层
@@ -112,7 +110,7 @@ public class LocationOverlayFragment extends Fragment {
 
         //定位初始化
         mLocClient = new LocationClient(getActivity());
-        locData = new LocationData();
+        myLocData = new LocationData();
         mLocClient.registerLocationListener( myListener );
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true);//打开gps
@@ -124,7 +122,7 @@ public class LocationOverlayFragment extends Fragment {
         //定位图层初始化
         myLocationOverlay = new LocationOverlay(mMapView);
         //设置定位数据
-        myLocationOverlay.setData(locData);
+        myLocationOverlay.setData(myLocData);
         //添加定位图层
         mMapView.getOverlays().add(myLocationOverlay);
         myLocationOverlay.enableCompass();
@@ -176,19 +174,19 @@ public class LocationOverlayFragment extends Fragment {
         public void onReceiveLocation(BDLocation location) {
             if (location == null || isLocationClientStop)
                 return ;
-            locData.latitude = location.getLatitude();
-            locData.longitude = location.getLongitude();
+            myLocData.latitude = location.getLatitude();
+            myLocData.longitude = location.getLongitude();
             //如果不显示定位精度圈，将accuracy赋值为0即可
-            locData.accuracy = location.getRadius();
-            locData.direction = location.getDerect();
+            myLocData.accuracy = location.getRadius();
+            myLocData.direction = location.getDerect();
             //更新定位数据
-            myLocationOverlay.setData(locData);
+            myLocationOverlay.setData(myLocData);
             //更新图层数据执行刷新后生效
             mMapView.refresh();
             //是手动触发请求或首次定位时，移动到定位点
             if (isRequest || isFirstLoc){
                 //移动地图到定位点
-                mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)));
+                mMapController.animateTo(new GeoPoint((int)(myLocData.latitude* 1e6), (int)(myLocData.longitude *  1e6)));
                 isRequest = false;
             }
             //首次定位完成
@@ -217,8 +215,8 @@ public class LocationOverlayFragment extends Fragment {
             popupText.setBackgroundResource(R.drawable.popup);
             popupText.setText(R.string.popup_text_my_location);
             pop.showPopup(BMapUtil.getBitmapFromView(popupText),
-                    new GeoPoint((int)(locData.latitude*1e6),
-                            (int)(locData.longitude*1e6)),
+                    new GeoPoint((int)(myLocData.latitude*1e6),
+                            (int)(myLocData.longitude*1e6)),
                     8);
             return true;
         }
@@ -277,7 +275,7 @@ public class LocationOverlayFragment extends Fragment {
     private View popupInfo = null;
     private View popupLeft = null;
     private View popupRight = null;
-    private Button button = null;
+//    private Button button = null;
     private MapView.LayoutParams layoutParam = null;
     private OverlayItem mCurItem = null;
     /**
@@ -331,7 +329,7 @@ public class LocationOverlayFragment extends Fragment {
         mOverlay.addItem(item1);
         mOverlay.addItem(item2);
         mOverlay.addItem(item3);
-        mOverlay.addItem(item4);
+//        mOverlay.addItem(item4);
         mOverlay.addItem(item5);
         /**
          * 保存所有item，以便overlay在reset后重新添加
@@ -358,8 +356,8 @@ public class LocationOverlayFragment extends Fragment {
         popupRight = (View) viewCache.findViewById(R.id.popright);
         popupText =(TextView) viewCache.findViewById(R.id.textcache);
 
-        button = new Button(getActivity());
-        button.setBackgroundResource(R.drawable.popup);
+//        button = new Button(getActivity());
+//        button.setBackgroundResource(R.drawable.popup);
 
         /**
          * 创建一个popupoverlay
@@ -401,22 +399,22 @@ public class LocationOverlayFragment extends Fragment {
             OverlayItem item = getItem(index);
             mCurItem = item ;
             if (index == 4){
-                button.setText("这是一个系统控件");
-                GeoPoint pt = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
-                //创建布局参数
-                layoutParam  = new MapView.LayoutParams(
-                        //控件宽,继承自ViewGroup.LayoutParams
-                        MapView.LayoutParams.WRAP_CONTENT,
-                        //控件高,继承自ViewGroup.LayoutParams
-                        MapView.LayoutParams.WRAP_CONTENT,
-                        //使控件固定在某个地理位置
-                        pt,
-                        0,
-                        -32,
-                        //控件对齐方式
-                        MapView.LayoutParams.BOTTOM_CENTER);
-                //添加View到MapView中
-                mMapView.addView(button,layoutParam);
+//                button.setText("这是一个系统控件");
+//                GeoPoint pt = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
+//                //创建布局参数
+//                layoutParam  = new MapView.LayoutParams(
+//                        //控件宽,继承自ViewGroup.LayoutParams
+//                        MapView.LayoutParams.WRAP_CONTENT,
+//                        //控件高,继承自ViewGroup.LayoutParams
+//                        MapView.LayoutParams.WRAP_CONTENT,
+//                        //使控件固定在某个地理位置
+//                        pt,
+//                        0,
+//                        -32,
+//                        //控件对齐方式
+//                        MapView.LayoutParams.BOTTOM_CENTER);
+//                //添加View到MapView中
+//                mMapView.addView(button,layoutParam);
             }
             else{
                 popupText.setText(getItem(index).getTitle());
@@ -434,7 +432,7 @@ public class LocationOverlayFragment extends Fragment {
         public boolean onTap(GeoPoint pt , MapView mMapView){
             if (pop != null){
                 pop.hidePop();
-                mMapView.removeView(button);
+//                mMapView.removeView(button);
             }
             return false;
         }
