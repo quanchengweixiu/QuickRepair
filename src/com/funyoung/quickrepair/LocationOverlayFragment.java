@@ -42,7 +42,7 @@ public class LocationOverlayFragment extends Fragment {
     private MapController mMapController = null;
 
     //UI相关
-    RadioGroup.OnCheckedChangeListener radioButtonListener = null;
+//    RadioGroup.OnCheckedChangeListener radioButtonListener = null;
     Button requestLocButton = null;
     boolean isRequest = false;//是否手动触发请求定位
     boolean isFirstLoc = true;//是否首次定位
@@ -69,24 +69,24 @@ public class LocationOverlayFragment extends Fragment {
         };
         requestLocButton.setOnClickListener(btnClickListener);
 
-        RadioGroup group = (RadioGroup)rootView.findViewById(R.id.radioGroup);
-        radioButtonListener = new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // TODO Auto-generated method stub
-                //
-                if (checkedId == R.id.defaulticon){
-                    //传入null则，恢复默认图标
-                    modifyLocationOverlayIcon(null);
-                }
-                if (checkedId == R.id.customicon){
-                    //修改为自定义marker
-                    modifyLocationOverlayIcon(getResources().getDrawable(R.drawable.icon_geo));
-                }
-            }
-        };
-        group.setOnCheckedChangeListener(radioButtonListener);
+//        RadioGroup group = (RadioGroup)rootView.findViewById(R.id.radioGroup);
+//        radioButtonListener = new RadioGroup.OnCheckedChangeListener() {
+//
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                // TODO Auto-generated method stub
+//                //
+//                if (checkedId == R.id.defaulticon){
+//                    //传入null则，恢复默认图标
+//                    modifyLocationOverlayIcon(null);
+//                }
+//                if (checkedId == R.id.customicon){
+//                    //修改为自定义marker
+//                    modifyLocationOverlayIcon(getResources().getDrawable(R.drawable.icon_geo));
+//                }
+//            }
+//        };
+//        group.setOnCheckedChangeListener(radioButtonListener);
 
         //地图初始化
         mMapView = (MyLocationMapView)rootView.findViewById(R.id.bmapView);

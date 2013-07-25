@@ -16,10 +16,10 @@
             android:padding="2dp"
             android:layout_marginTop="80dip">
 
-        <RadioGroup android:id="@+id/radioGroup" android:contentDescription="定位icon" android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/defaulticon" android:text="默认图标" android:checked="true"></RadioButton>
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/customicon" android:text="自定义图标"></RadioButton>
-        </RadioGroup>
+        <!--<RadioGroup android:id="@+id/radioGroup" android:contentDescription="定位icon" android:layout_width="wrap_content" android:layout_height="wrap_content">-->
+            <!--<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/defaulticon" android:text="默认图标" android:checked="true"></RadioButton>-->
+            <!--<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/customicon" android:text="自定义图标"></RadioButton>-->
+        <!--</RadioGroup>-->
 
     </LinearLayout>
 
