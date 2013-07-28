@@ -32,11 +32,10 @@ public class MockServer {
         return ((int)index) % max;
     }
     private static final int[] resIcons = {
-            R.drawable.icon_marka,
-            R.drawable.icon_markb,
-            R.drawable.icon_markc,
-            R.drawable.icon_markd,
-            R.drawable.nav_turn_via_1
+            R.drawable.qp_map_overlay_blue,
+            R.drawable.qp_map_overlay_red,
+            R.drawable.qp_map_overlay_gray,
+            R.drawable.qp_map_overlay_green,
     };
     private static int randomIconId(double seed) {
         final int index = (int)(seed * 100) % (resIcons.length);
