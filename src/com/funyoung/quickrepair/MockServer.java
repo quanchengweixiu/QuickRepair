@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class MockServer {
     private static final int MIN_NUM = 0;
-    private static final int MAX_NUM = 80;
+    private static final int MAX_NUM = 100;
 
     private static int randomNum(int min, int max) {
-        double num = 10 * Math.random();
+        double num = (MAX_NUM * Math.random()) % MAX_NUM;
         if (num < min) {
             return min;
         } else if (num > max) {
