@@ -21,6 +21,7 @@ import com.baidu.mapapi.map.*;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yangfeng on 13-7-24.
@@ -281,56 +282,33 @@ public class LocationOverlayFragment extends Fragment {
     /**
      * overlay 位置坐标
      */
-    double mLon1 = 116.400244 ;
-    double mLat1 = 39.963175 ;
-    double mLon2 = 116.369199;
-    double mLat2 = 39.942821;
-    double mLon3 = 116.425541;
-    double mLat3 = 39.939723;
-    double mLon4 = 116.401394;
-    double mLat4 = 39.906965;
-    double mLon5 = 116.402096;
-    double mLat5 = 39.942057;
+//    double mLon1 = 116.400244 ;
+//    double mLat1 = 39.963175 ;
+//    double mLon2 = 116.369199;
+//    double mLat2 = 39.942821;
+//    double mLon3 = 116.425541;
+//    double mLat3 = 39.939723;
+//    double mLon4 = 116.401394;
+//    double mLat4 = 39.906965;
+//    double mLon5 = 116.402096;
+//    double mLat5 = 39.942057;
 
     public void initOverlay(){
         /**
          * 创建自定义overlay
          */
         mOverlay = new MyOverlay(getResources().getDrawable(R.drawable.icon_marka),mMapView);
-        /**
-         * 准备overlay 数据
-         */
-        GeoPoint p1 = new GeoPoint ((int)(mLat1*1E6),(int)(mLon1*1E6));
-        OverlayItem item1 = new OverlayItem(p1,"覆盖物1","");
-        /**
-         * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
-         */
-        item1.setMarker(getResources().getDrawable(R.drawable.icon_marka));
 
-        GeoPoint p2 = new GeoPoint ((int)(mLat2*1E6),(int)(mLon2*1E6));
-        OverlayItem item2 = new OverlayItem(p2,"覆盖物2","");
-        item2.setMarker(getResources().getDrawable(R.drawable.icon_markb));
-
-        GeoPoint p3 = new GeoPoint ((int)(mLat3*1E6),(int)(mLon3*1E6));
-        OverlayItem item3 = new OverlayItem(p3,"覆盖物3","");
-        item3.setMarker(getResources().getDrawable(R.drawable.icon_markc));
-
-        GeoPoint p4 = new GeoPoint ((int)(mLat4*1E6),(int)(mLon4*1E6));
-        OverlayItem item4 = new OverlayItem(p4,"覆盖物4","");
-        item4.setMarker(getResources().getDrawable(R.drawable.icon_markd));
-
-        GeoPoint p5 = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
-        OverlayItem item5 = new OverlayItem(p5,"覆盖物5","");
-        item5.setMarker(getResources().getDrawable(R.drawable.icon_gcoding));
         /**
          * 将item 添加到overlay中
          * 注意： 同一个itme只能add一次
          */
-        mOverlay.addItem(item1);
-        mOverlay.addItem(item2);
-        mOverlay.addItem(item3);
+//        mOverlay.addItem(item1);
+//        mOverlay.addItem(item2);
+//        mOverlay.addItem(item3);
 //        mOverlay.addItem(item4);
-        mOverlay.addItem(item5);
+        mOverlay.addItem(MockServer.queryItemList(getActivity(), myLocData));
+//        mOverlay.addItem(item5);
         /**
          * 保存所有item，以便overlay在reset后重新添加
          */
@@ -398,7 +376,7 @@ public class LocationOverlayFragment extends Fragment {
         public boolean onTap(int index){
             OverlayItem item = getItem(index);
             mCurItem = item ;
-            if (index == 4){
+//            if (index == 4){
 //                button.setText("这是一个系统控件");
 //                GeoPoint pt = new GeoPoint ((int)(mLat5*1E6),(int)(mLon5*1E6));
 //                //创建布局参数
@@ -415,8 +393,7 @@ public class LocationOverlayFragment extends Fragment {
 //                        MapView.LayoutParams.BOTTOM_CENTER);
 //                //添加View到MapView中
 //                mMapView.addView(button,layoutParam);
-            }
-            else{
+//            } else {
                 popupText.setText(getItem(index).getTitle());
                 Bitmap[] bitMaps={
                         BMapUtil.getBitmapFromView(popupLeft),
@@ -424,7 +401,7 @@ public class LocationOverlayFragment extends Fragment {
                         BMapUtil.getBitmapFromView(popupRight)
                 };
                 pop.showPopup(bitMaps,item.getPoint(),32);
-            }
+//            }
             return true;
         }
 
