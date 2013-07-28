@@ -27,39 +27,37 @@ public class MockServer {
             return (int)num;
         }
     }
-    private static int randomIndex(int max) {
-        double index = 100 * Math.random();
-        return ((int)index) % max;
-    }
     private static final int[] resIcons = {
             R.drawable.qp_map_overlay_blue,
             R.drawable.qp_map_overlay_red,
             R.drawable.qp_map_overlay_gray,
             R.drawable.qp_map_overlay_green,
     };
-    private static int randomIconId(double seed) {
-        final int index = (int)(seed * 100) % (resIcons.length);
+    private static final String[] labelPref = {
+            "认证公司",
+            "认证个人",
+            "公司",
+            "个人"
+    };
+    private static int randomTypeIndex(double seed) {
+        return (int)(seed * 100) % (resIcons.length);
+    }
+
+    private static int randomIconId(int index) {
         return resIcons[index];
     }
-    private static final String[] labelPref = {
-            "Super star",
-            "Man",
-            "Hero"
-    };
     private static final String[] extra = {
             "空调",
             "家电",
             "Wall"
     };
-    private static OverlayItem generateItem(GeoPoint center, Drawable marker,
-                                            Double latSeed, Double lonSeed) {
-//        double lat = (center.latitude + latSeed - 0.5);
-//        double lon = (center.longitude + lonSeed - 0.5);
-        double lat = center.getLatitudeE6() + (latSeed - 0.5) * 1E5;
-        double lon = center.getLongitudeE6() + (lonSeed - 0.5) * 1E5;
+    private static String randomExtraLabel(double seed) {
+        double index = 100 * seed;
+        return extra[((int)index) % extra.length];
+    }
+    private static OverlayItem generateItem(Drawable marker, double lat, double lon,
+                                            String s, String ss) {
         GeoPoint point = new GeoPoint ((int)lat, (int)lon);
-        String s = labelPref[randomIndex(labelPref.length)];
-        String ss = extra[randomIndex(extra.length)];
         OverlayItem item = new OverlayItem(point, s, ss);
         item.setMarker(marker);
         return item;
@@ -69,11 +67,19 @@ public class MockServer {
         final int num = randomNum(MIN_NUM, MAX_NUM);
         List<OverlayItem> items = new ArrayList<OverlayItem>(num);
         Drawable marker;
+        int index;
         double seed;
         for (int i = 0; i < num; ++i) {
             seed = Math.random();
-            marker = context.getResources().getDrawable(randomIconId(seed));
-            items.add(generateItem(center, marker, seed, Math.random()));
+            index = randomTypeIndex(seed);
+            marker = context.getResources().getDrawable(randomIconId(index));
+            String s = labelPref[index];
+
+            double lat = center.getLatitudeE6() + (seed - 0.5) * 1E5;
+            double lon = center.getLongitudeE6() + (Math.random() - 0.5) * 1E5;
+            String ss = randomExtraLabel(seed);
+
+            items.add(generateItem(marker, lat, lon, s, ss));
         }
         return items;
     }
