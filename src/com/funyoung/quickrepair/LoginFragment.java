@@ -17,7 +17,9 @@
 package com.funyoung.quickrepair;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 import baidumapsdk.demo.R;
 
 public class LoginFragment extends UserFragment {
@@ -65,6 +67,57 @@ public class LoginFragment extends UserFragment {
     @Override
     protected void onCreateViewFinish(final View rootView) {
         if (null != rootView) {
+            View verify = rootView.findViewById(R.id.get_verify_code);
+            if (null != verify) {
+                verify.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final String text = validateUserName();
+                        if (!isMobileNumber(text)) {
+                            Log.e(TAG, "Should not be here!");
+                            mNameView.selectAll();
+                            mNameView.requestFocus();
+                        }
+
+                        mLoginButton.setEnabled(false);
+
+                        MockServer.requestSendingVerifyCode(text, CODE_COUNT,
+                                new MockServer.ServerCallback() {
+                                    @Override
+                                    public void done(String code, String result, Exception e) {
+                                        final String toastMsg;
+                                        if (null == e) {
+                                            verifyCode = result;
+                                            toastMsg = getString(R.string.succeed_message_send_verify_code, verifyCode);
+                                        } else {
+                                            verifyCode = "";
+                                            toastMsg = getString(R.string.error_message_send_verify_code);
+                                            Log.e(TAG, toastMsg);
+                                        }
+                                        Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+//
+//                    new AsyncTask<Void, Void, String>() {
+//                        @Override
+//                        protected String doInBackground(Void... voids) {
+//                            try {
+//                                MmsGateway.sendWebchineseMsg(text, verifyCode);
+//                                return "Verify code in mms was sent to " + text;
+//                            } catch (Exception e) {
+//                                return "request mms code exception " + e.getMessage();
+//                            }
+//                        }
+//
+//                        protected void onPostExecute(String result) {
+//                            Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+//                        }
+//                    }.execute();
+
+                        mLoginButton.setEnabled(true);
+                    }
+                });
+            }
         }
     }
 

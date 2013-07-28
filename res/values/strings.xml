@@ -35,4 +35,28 @@
     <string name="popup_text_my_location">"我的位置"</string>
     <string name="title_main_mapview">查看地图</string>
     <string name="search_hint">Search Listings</string>
+
+
+    <!-- signup/login ui -->
+    <string name="signup_hint_login_name">用户名或者手机号码</string>
+    <string name="signup_hint_mobile">手机号码</string>
+    <string name="signup_hint_password">登录密码</string>
+    <string name="signup_hint_verifycode">验证码</string>
+    <string name="signup_hint_email">电子邮箱地址</string>
+    <string name="signup_hint_new_user">创建我的帐号</string>
+    <string name="signup_hint_by_verify_code">手机/验证码录</string>
+    <string name="signup_hint_by_password">用户名/密码登录</string>
+    <string name="loginview_log_out_button">登出</string>
+    <string name="loginview_log_in_button">登录</string>
+    <string name="loginview_get_code_button">获取验证码</string>
+    <string name="loginview_pass_verified">"验证完成! GO >>>"</string>
+    <string name="loginview_error_verified">"验证码不匹配! ..."</string>
+
+    <string name="succeed_message_send_verify_code">"验证码已经发送到手机号码%1$s，请查收。"</string>
+    <string name="error_message_send_verify_code">"发送验证码短信到手机%1$s时, 遇到异常%2$s"</string>
+    <string name="succeed_message_mobile_verified">"手机号码%1$s通过验证【%2$s】"</string>
+    <string name="error_message_mobile_verified">"验证失败，手机号 %1$s, 验证码【%2$s】"</string>
+
+    <string name="error_message_exception">异常: %1$s</string>
+
 </resources>

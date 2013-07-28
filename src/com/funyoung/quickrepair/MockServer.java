@@ -2,6 +2,9 @@ package com.funyoung.quickrepair;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.util.Log;
 import baidumapsdk.demo.R;
 import com.baidu.mapapi.map.LocationData;
 import com.baidu.mapapi.map.OverlayItem;
@@ -14,6 +17,8 @@ import java.util.List;
  * Created by yangfeng on 13-7-26.
  */
 public class MockServer {
+    private static final String TAG = "MockServer";
+
     private static final int MIN_NUM = 0;
     private static final int MAX_NUM = 100;
 
@@ -82,5 +87,50 @@ public class MockServer {
             items.add(generateItem(marker, lat, lon, s, ss));
         }
         return items;
+    }
+
+
+    public static interface ServerCallback {
+        public void done(String code, String result, Exception e);
+    }
+
+    private MockServer() {
+        // no instance
+    }
+
+    public static void requestSendingVerifyCode(final String mobile,
+                                                final int codeLength,
+                                                final ServerCallback callback) {
+        // detect connection or other situations
+        // todo : on server side generate verify code and dispatch via
+        // mms gate way, invoke callback withing ui thread
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    final String verifyCode = VerifyCodeGenerator.getDigitalSeries(codeLength);
+                    final String ret = MmsGateway.sendWebchineseMsg(mobile, verifyCode);
+                    Log.i(TAG, "Mms gateway result " + ret);
+                    return verifyCode;
+//                    return "Verify code in mms was sent to " + text;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Mms exception " + e.getMessage());
+                    return null;
+//                    return "request mms code exception " + e.getMessage();
+                }
+            }
+
+            protected void onPostExecute(String result) {
+                if (null != callback) {
+                    if (TextUtils.isEmpty(result)) {
+                        callback.done("-1", null, new Exception("sending mms error" + result));
+                    } else {
+                        callback.done("200", result, null);
+                    }
+                }
+            }
+        }.execute();
     }
 }
