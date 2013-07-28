@@ -58,5 +58,6 @@
     <string name="error_message_mobile_verified">"验证失败，手机号 %1$s, 验证码【%2$s】"</string>
 
     <string name="error_message_exception">异常: %1$s</string>
+    <string name="qp_login_get_verify_code">验证</string>
 
 </resources>

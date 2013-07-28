@@ -299,7 +299,8 @@ public class LocationOverlayFragment extends Fragment {
      * 清除所有Overlay
      * @param view
      */
-    private void clearOverlay(View view){
+    private void clearOverlay(View view) {
+        if (null == mOverlay) return;
         mOverlay.removeAll();
         if (pop != null){
             pop.hidePop();

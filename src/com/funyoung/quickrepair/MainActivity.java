@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         menu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setIcon(mDefaultView ?
+        menu.findItem(R.id.action_toggle).setIcon(mDefaultView == fragmentPlanet ?
                 R.drawable.ic_action_category : R.drawable.ic_action_map);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -210,9 +210,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    boolean mDefaultView = true;
+    Fragment mDefaultView;
     private void toggleView() {
-        if (mDefaultView) {
+        if (mDefaultView == fragmentPlanet) {
             // goto map view
             gotoLocationFragment();
         } else {
@@ -237,19 +237,30 @@ public class MainActivity extends Activity {
         }
     }
 
+    LoginFragment loginFragment;
     LocationOverlayFragment locationFragment;
     PlanetFragment fragmentPlanet;
+    private void gotoLoinFragment() {
+        if (null == loginFragment) {
+            loginFragment = new LoginFragment();
+        }
+
+        if (mDefaultView != loginFragment) {
+            mDefaultView = loginFragment;
+            gotoFragmentView(mDefaultView);
+        }
+
+    }
+
     private void gotoLocationFragment() {
         if (null == locationFragment) {
             locationFragment = new LocationOverlayFragment();
         }
 
-        if (!mDefaultView) {
-            return;
+        if (mDefaultView != locationFragment) {
+            mDefaultView = locationFragment;
+            gotoFragmentView(mDefaultView);
         }
-
-        mDefaultView = false;
-        gotoFragmentView(locationFragment);
     }
     private void gotoDefaultView() {
         if (null == fragmentPlanet) {
@@ -258,14 +269,13 @@ public class MainActivity extends Activity {
             args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
             fragmentPlanet.setArguments(args);
             gotoFragmentView(fragmentPlanet);
-            mDefaultView = true;
+            mDefaultView = fragmentPlanet;
         }
 
-        if (mDefaultView) {
-            return;
+        if (mDefaultView != fragmentPlanet) {
+            mDefaultView = fragmentPlanet;
+            gotoFragmentView(mDefaultView);
         }
-        mDefaultView = true;
-        gotoFragmentView(fragmentPlanet);
     }
 
     private void gotoFragmentView(Fragment fragment) {
@@ -276,6 +286,7 @@ public class MainActivity extends Activity {
     private void selectNavigateItem(int position) {
         switch (position) {
             case 0: // register or login
+                gotoLoinFragment();
                 break;
             case 1: // category
                 gotoDefaultView();
@@ -373,7 +384,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static void invoke(Context context, BaseFragment.FragmentSession session, Object o, Exception exception) {
+    public static void invoke(Context context, BaseFragment.FragmentSession session,
+                              Object o, Exception exception) {
+        // todo: callback from login fragment after login close
+
     }
 
 }
