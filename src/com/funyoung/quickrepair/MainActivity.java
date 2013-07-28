@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -371,4 +372,8 @@ public class MainActivity extends Activity {
             getActivity().setTitle(planet);
         }
     }
+
+    public static void invoke(Context context, BaseFragment.FragmentSession session, Object o, Exception exception) {
+    }
+
 }
