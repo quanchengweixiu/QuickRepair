@@ -79,7 +79,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main_home);
 
         mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+//        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+        mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -117,7 +118,8 @@ public class MainActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+//            selectItem(0);
+            selectNavigateItem(1);
         }
     }
 
@@ -229,7 +231,8 @@ public class MainActivity extends Activity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+//            selectItem(position);
+            selectNavigateItem(position);
         }
     }
 
@@ -267,6 +270,22 @@ public class MainActivity extends Activity {
     private void gotoFragmentView(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+    private void selectNavigateItem(int position) {
+        switch (position) {
+            case 0: // register or login
+                break;
+            case 1: // category
+                gotoDefaultView();
+                break;
+            case 2: // search
+                break;
+            case 3: // book
+                break;
+            case 4: // inbox
+                break;
+        }
     }
 
     private int mDefaultPosition;

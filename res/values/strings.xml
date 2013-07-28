@@ -12,6 +12,13 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+    <string-array name="qp_navigation_title_array">
+        <item>注册或登录</item>
+        <item>分类</item>
+        <item>搜索</item>
+        <item>预订</item>
+        <item>收件箱</item>
+    </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
