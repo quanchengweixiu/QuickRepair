@@ -184,6 +184,9 @@ public class LocationOverlayFragment extends Fragment {
             myLocationOverlay.setData(myLocData);
             //更新图层数据执行刷新后生效
             mMapView.refresh();
+
+            initOverlay();
+
             //是手动触发请求或首次定位时，移动到定位点
             if (isRequest || isFirstLoc){
                 //移动地图到定位点
@@ -192,7 +195,6 @@ public class LocationOverlayFragment extends Fragment {
             }
             //首次定位完成
             isFirstLoc = false;
-            initOverlay();
         }
 
         public void onReceivePoi(BDLocation poiLocation) {
@@ -271,7 +273,7 @@ public class LocationOverlayFragment extends Fragment {
 
 
     // merge from overlap demo
-    private ArrayList<OverlayItem>  mItems = null;
+//    private ArrayList<OverlayItem>  mItems = null;
     private MyOverlay mOverlay = null;
     private View popupInfo = null;
     private View popupLeft = null;
@@ -293,7 +295,30 @@ public class LocationOverlayFragment extends Fragment {
 //    double mLon5 = 116.402096;
 //    double mLat5 = 39.942057;
 
+    /**
+     * 清除所有Overlay
+     * @param view
+     */
+    private void clearOverlay(View view){
+        mOverlay.removeAll();
+        if (pop != null){
+            pop.hidePop();
+        }
+        mMapView.refresh();
+    }
+
     public void initOverlay(){
+        if (null != mOverlay) {
+            if (!isFirstLoc) {
+                clearOverlay(null);
+            }
+            List<OverlayItem> items = MockServer.queryItemList(getActivity(), mMapView.getMapCenter());
+            if (null != items && !items.isEmpty()) {
+                mOverlay.addItem(items);
+                mMapView.refresh();
+            }
+            return;
+        }
         /**
          * 创建自定义overlay
          */
@@ -307,13 +332,13 @@ public class LocationOverlayFragment extends Fragment {
 //        mOverlay.addItem(item2);
 //        mOverlay.addItem(item3);
 //        mOverlay.addItem(item4);
-        mOverlay.addItem(MockServer.queryItemList(getActivity(), myLocData));
+        mOverlay.addItem(MockServer.queryItemList(getActivity(), mMapView.getMapCenter()));
 //        mOverlay.addItem(item5);
         /**
          * 保存所有item，以便overlay在reset后重新添加
          */
-        mItems = new ArrayList<OverlayItem>();
-        mItems.addAll(mOverlay.getAllItem());
+//        mItems = new ArrayList<OverlayItem>();
+//        mItems.addAll(mOverlay.getAllItem());
         /**
          * 将overlay 添加至MapView中
          */
@@ -361,8 +386,6 @@ public class LocationOverlayFragment extends Fragment {
             }
         };
         pop = new PopupOverlay(mMapView,popListener);
-
-
     }
 
     public class MyOverlay extends ItemizedOverlay{

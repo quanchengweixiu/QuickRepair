@@ -14,8 +14,8 @@ import java.util.List;
  * Created by yangfeng on 13-7-26.
  */
 public class MockServer {
-    private static final int MIN_NUM = 4;
-    private static final int MAX_NUM = 20;
+    private static final int MIN_NUM = 0;
+    private static final int MAX_NUM = 80;
 
     private static int randomNum(int min, int max) {
         double num = 10 * Math.random();
@@ -52,11 +52,13 @@ public class MockServer {
             "家电",
             "Wall"
     };
-    private static OverlayItem generateItem(LocationData center, Drawable marker,
+    private static OverlayItem generateItem(GeoPoint center, Drawable marker,
                                             Double latSeed, Double lonSeed) {
-        double lat = (center.latitude + latSeed - 0.5);
-        double lon = (center.longitude + lonSeed - 0.5);
-        GeoPoint point = new GeoPoint ((int)(lat*1E6),(int)(lon*1E6));
+//        double lat = (center.latitude + latSeed - 0.5);
+//        double lon = (center.longitude + lonSeed - 0.5);
+        double lat = center.getLatitudeE6() + (latSeed - 0.5) * 1E5;
+        double lon = center.getLongitudeE6() + (lonSeed - 0.5) * 1E5;
+        GeoPoint point = new GeoPoint ((int)lat, (int)lon);
         String s = labelPref[randomIndex(labelPref.length)];
         String ss = extra[randomIndex(extra.length)];
         OverlayItem item = new OverlayItem(point, s, ss);
@@ -64,7 +66,7 @@ public class MockServer {
         return item;
     }
 
-    public static List queryItemList(Context context, LocationData center) {
+    public static List queryItemList(Context context, GeoPoint center) {
         final int num = randomNum(MIN_NUM, MAX_NUM);
         List<OverlayItem> items = new ArrayList<OverlayItem>(num);
         Drawable marker;
