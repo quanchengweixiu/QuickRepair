@@ -29,8 +29,23 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
+
 import baidumapsdk.demo.BMapApiDemoMain;
 import baidumapsdk.demo.LocationOverlayDemo;
 import baidumapsdk.demo.R;
@@ -64,10 +79,101 @@ import java.util.Locale;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockFragmentActivity {
+
     private DrawerLayout mDrawerLayout;
+//    private ListView listView;
+//    private TextView mContent;
+
+    private ActionBarHelper mActionBar;
+
+    private SherlockActionBarDrawerToggle mDrawerToggle;
+
+    /**
+     * Create a compatible helper that will manipulate the action bar if
+     * available.
+     */
+    private ActionBarHelper createActionBarHelper() {
+        return new ActionBarHelper();
+    }
+
+
+
+    /**
+     * A drawer listener can be used to respond to drawer events such as
+     * becoming fully opened or closed. You should always prefer to perform
+     * expensive operations such as drastic relayout when no animation is
+     * currently in progress, either before or after the drawer animates.
+     *
+     * When using ActionBarDrawerToggle, all DrawerLayout listener methods
+     * should be forwarded if the ActionBarDrawerToggle is not used as the
+     * DrawerLayout listener directly.
+     */
+    private class DemoDrawerListener implements DrawerLayout.DrawerListener {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            mDrawerToggle.onDrawerOpened(drawerView);
+            mActionBar.onDrawerOpened();
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            mDrawerToggle.onDrawerClosed(drawerView);
+            mActionBar.onDrawerClosed();
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            mDrawerToggle.onDrawerStateChanged(newState);
+        }
+    }
+
+    private class ActionBarHelper {
+        private final ActionBar mActionBar;
+        private CharSequence mDrawerTitle;
+        private CharSequence mTitle;
+
+        private ActionBarHelper() {
+            mActionBar = getSupportActionBar();
+        }
+
+        public void init() {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeButtonEnabled(true);
+            mTitle = mDrawerTitle = getTitle();
+        }
+
+        /**
+         * When the drawer is closed we restore the action bar state reflecting
+         * the specific contents in view.
+         */
+        public void onDrawerClosed() {
+            mActionBar.setTitle(mTitle);
+        }
+
+        /**
+         * When the drawer is open we set the action bar to a generic title. The
+         * action bar should only contain data relevant at the top level of the
+         * nav hierarchy represented by the drawer, as the rest of your content
+         * will be dimmed down and non-interactive.
+         */
+        public void onDrawerOpened() {
+            mActionBar.setTitle(mDrawerTitle);
+        }
+
+        public void setTitle(CharSequence title) {
+            mTitle = title;
+        }
+    }
+
+//    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+//    private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -85,12 +191,26 @@ public class MainActivity extends Activity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+        mDrawerLayout.setDrawerListener(new DemoDrawerListener());
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.drawer_list_item, mPlanetTitles));
+//        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mPlanetTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setCacheColorHint(0);
+        mDrawerList.setScrollingCacheEnabled(false);
+        mDrawerList.setScrollContainer(false);
+        mDrawerList.setFastScrollEnabled(true);
+        mDrawerList.setSmoothScrollbarEnabled(true);
+
+        mActionBar = createActionBarHelper();
+        mActionBar.init();
+
         setupDrawerFooter();
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -99,24 +219,28 @@ public class MainActivity extends Activity {
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+//        mDrawerToggle = new ActionBarDrawerToggle(
+//                this,                  /* host Activity */
+//                mDrawerLayout,         /* DrawerLayout object */
+//                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+//                R.string.drawer_open,  /* "open drawer" description for accessibility */
+//                R.string.drawer_close  /* "close drawer" description for accessibility */
+//                ) {
+//            public void onDrawerClosed(View view) {
+//                getActionBar().setTitle(mTitle);
+//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//
+//            public void onDrawerOpened(View drawerView) {
+//                getActionBar().setTitle(mDrawerTitle);
+//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//        };
+//        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle = new SherlockActionBarDrawerToggle(this,
+                mDrawerLayout, R.drawable.ic_drawer_light,
+                R.string.drawer_open, R.string.drawer_close);
+        mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
 //            selectItem(0);
@@ -156,7 +280,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -284,6 +408,9 @@ public class MainActivity extends Activity {
     }
 
     private void selectNavigateItem(int position) {
+        mActionBar.setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+
         switch (position) {
             case 0: // register or login
                 gotoLoinFragment();
@@ -337,7 +464,7 @@ public class MainActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
+        // Pass any configuration change to the drawer toggle
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
@@ -389,5 +516,6 @@ public class MainActivity extends Activity {
         // todo: callback from login fragment after login close
 
     }
+
 
 }
