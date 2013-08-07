@@ -81,4 +81,12 @@ abstract class UserFragment extends BaseFragment {
         }
         return passwd;
     }
+
+    protected void setNameViewLabel(String name) {
+        if (null != mNameView) {
+            mNameView.setText(name);
+            mNameView.selectAll();
+            mNameView.requestFocus();
+        }
+    }
 }

@@ -361,12 +361,12 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    LoginFragment loginFragment;
+    SignUpFragment loginFragment;
     LocationOverlayFragment locationFragment;
     PlanetFragment fragmentPlanet;
     private void gotoLoinFragment() {
         if (null == loginFragment) {
-            loginFragment = new LoginFragment();
+            loginFragment = new SignUpFragment();
         }
 
         if (mDefaultView != loginFragment) {
