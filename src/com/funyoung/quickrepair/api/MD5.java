@@ -4,18 +4,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
+    private static final String ALGORITHM_MD5 = "MD5";
+
 	public static String toMd5Upper(byte[] bytes) {
 		return toMd5(bytes).toUpperCase();
 	} 
-	
+
 	public static String toMd5(byte[] bytes) {
 		try {
-			MessageDigest algorithm = MessageDigest.getInstance("MD5");
-			algorithm.reset();
-			algorithm.update(bytes);
+            MessageDigest algorithm = getAlgorithm(bytes);
 			return toHexString(algorithm.digest(), "");
 		} catch (NoSuchAlgorithmException e) {
-			//Log.v("he--------------------------------ji", "toMd5(): " + e);
 			throw new RuntimeException(e);
 		}
 	} 
@@ -29,15 +28,19 @@ public class MD5 {
 		}
 		return hexString.toString();
 	}
-	
+
+    private static MessageDigest getAlgorithm(byte[] bytes) throws NoSuchAlgorithmException {
+        MessageDigest algorithm = MessageDigest.getInstance(ALGORITHM_MD5);
+        algorithm.reset();
+        algorithm.update(bytes);
+        return algorithm;
+    }
+
 	public static String md5Base64(byte[] bytes) {
 		try {
-			MessageDigest algorithm = MessageDigest.getInstance("MD5");
-			algorithm.reset();
-			algorithm.update(bytes);
+            MessageDigest algorithm = getAlgorithm(bytes);
 			return new String(Base64.encode(algorithm.digest(), Base64.NO_WRAP));
 		} catch (NoSuchAlgorithmException e) {
-			//Log.v("he--------------------------------ji", "toMd5(): " + e);
 			throw new RuntimeException(e);
 		}
 	}

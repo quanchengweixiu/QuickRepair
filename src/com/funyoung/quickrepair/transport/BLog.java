@@ -5,7 +5,7 @@
 package com.funyoung.quickrepair.transport;
 
 public class BLog {
-	private static String TAG = "BorqsContactsService";
+	private static String TAG = "NetworkTransport";
 	private static boolean ACCOUNT_LOG_EABLED = true;
 	
 	public static void d(String msg){

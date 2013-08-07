@@ -10,7 +10,7 @@ package com.funyoung.quickrepair.transport;
  * Borqs project
  */
 public class HttpLog {
-    private static String TAG = "BorqsContactsService";
+    private static String TAG = "NetworkTransport";
     private static boolean ACCOUNT_LOG_EABLED = true;
 
     public static void d(String msg){

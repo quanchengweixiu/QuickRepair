@@ -36,6 +36,10 @@ public class CommonUtils {
     }
 
     private static String md5Sign(byte[] rawData) {
+        return MD5.toMd5(rawData);
+    }
+
+    private static String md5SignBase64(byte[] rawData) {
         return MD5.md5Base64(rawData);
     }
 
