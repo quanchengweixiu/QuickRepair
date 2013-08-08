@@ -121,7 +121,7 @@ public final class UsersClient extends HttpRequestExecutor {
 
     private final static class Method {
         private static final String SEND_CODE = "sendCode";
-        private static final String LOGIN = "circle/show";
+        private static final String LOGIN = "login";
         private static final String ACCOUNT_SHOW = "user/show";
         private static final String ACCOUNT_UPDATE = "account/update";
         private static final String REQUEST_EXCHANGE_CARD = "request/profile_access_approve";
