@@ -44,6 +44,7 @@ public abstract class HttpRequestExecutor {
     protected static final String API_PARAM_SIGN = "sign";
     protected static final String API_PARAM_PHONE = "mobile";
     protected static final String API_PARAM_USER_TYPE = "user_type";
+    protected static final String API_PARAM_CODE = "password";
 
     protected final String API_VALUE_USER_TYPE_B = "0";
     protected final String API_VALUE_USER_TYPE_A = "1";

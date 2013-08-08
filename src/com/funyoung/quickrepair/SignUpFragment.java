@@ -84,9 +84,17 @@ public class SignUpFragment extends UserFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSendCodeTask.cancel(true);
-        mLoginTask.cancel(true);
-        handler.removeCallbacks(task);
+        if (null != mSendCodeView) {
+            mSendCodeTask.cancel(true);
+        }
+
+        if (null != mLoginTask) {
+            mLoginTask.cancel(true);
+        }
+
+        if (null != handler) {
+            handler.removeCallbacks(task);
+        }
     }
 
     private void setupVerifyButton() {
@@ -213,8 +221,12 @@ public class SignUpFragment extends UserFragment {
                         result + ", ret = " + mResult + ", time = " + diff,
                         Toast.LENGTH_LONG).show();
 
-                mLoginButton.setEnabled(true);
-                mSendCodeView.setEnabled(true);
+                if (mResult) {
+                    ((MainActivity)getActivity()).finishLogin();
+                } else {
+                    mLoginButton.setEnabled(true);
+                    mSendCodeView.setEnabled(true);
+                }
             }
         };
         mLoginTask.execute();

@@ -17,18 +17,17 @@
 package com.funyoung.quickrepair;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
-import baidumapsdk.demo.LocationOverlayDemo;
 import baidumapsdk.demo.R;
 
 import java.util.Locale;
@@ -89,6 +87,10 @@ public class MainActivity extends SherlockFragmentActivity {
 
     private SherlockActionBarDrawerToggle mDrawerToggle;
 
+    public static final String FRAGMENT_DEFAULT = "FRAGMENT_DEFAULT";
+    public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
+    public static final String FRAGMENT_MAP = "FRAGMENT_MAP";
+
     /**
      * Create a compatible helper that will manipulate the action bar if
      * available.
@@ -97,6 +99,9 @@ public class MainActivity extends SherlockFragmentActivity {
         return new ActionBarHelper();
     }
 
+    public void finishLogin() {
+        gotoDefaultView();
+    }
 
 
     /**
@@ -292,7 +297,7 @@ public class MainActivity extends SherlockFragmentActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         menu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setIcon(mDefaultView == fragmentPlanet ?
+        menu.findItem(R.id.action_toggle).setIcon(mCurrentFragment == fragmentPlanet ?
                 R.drawable.ic_action_category : R.drawable.ic_action_map);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -334,9 +339,9 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    Fragment mDefaultView;
+    Fragment mCurrentFragment;
     private void toggleView() {
-        if (mDefaultView == fragmentPlanet) {
+        if (mCurrentFragment == fragmentPlanet) {
             // goto map view
             gotoLocationFragment();
         } else {
@@ -369,9 +374,9 @@ public class MainActivity extends SherlockFragmentActivity {
             loginFragment = new SignUpFragment();
         }
 
-        if (mDefaultView != loginFragment) {
-            mDefaultView = loginFragment;
-            gotoFragmentView(mDefaultView);
+        if (mCurrentFragment != loginFragment) {
+            mCurrentFragment = loginFragment;
+            gotoFragmentView(mCurrentFragment, FRAGMENT_LOGIN, FRAGMENT_DEFAULT);
         }
 
     }
@@ -381,9 +386,9 @@ public class MainActivity extends SherlockFragmentActivity {
             locationFragment = new LocationOverlayFragment();
         }
 
-        if (mDefaultView != locationFragment) {
-            mDefaultView = locationFragment;
-            gotoFragmentView(mDefaultView);
+        if (mCurrentFragment != locationFragment) {
+            mCurrentFragment = locationFragment;
+            gotoFragmentView(mCurrentFragment, FRAGMENT_MAP, FRAGMENT_DEFAULT);
         }
     }
     private void gotoDefaultView() {
@@ -392,19 +397,27 @@ public class MainActivity extends SherlockFragmentActivity {
             Bundle args = new Bundle();
             args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
             fragmentPlanet.setArguments(args);
-            gotoFragmentView(fragmentPlanet);
-            mDefaultView = fragmentPlanet;
+            gotoFragmentView(fragmentPlanet, FRAGMENT_DEFAULT, null);
+            mCurrentFragment = fragmentPlanet;
         }
 
-        if (mDefaultView != fragmentPlanet) {
-            mDefaultView = fragmentPlanet;
-            gotoFragmentView(mDefaultView);
+        if (mCurrentFragment != fragmentPlanet) {
+            mCurrentFragment = fragmentPlanet;
+            gotoFragmentView(mCurrentFragment,FRAGMENT_DEFAULT, null);
         }
     }
 
-    private void gotoFragmentView(Fragment fragment) {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    private void gotoFragmentView(Fragment fragment, String name, String stackName) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (TextUtils.isEmpty(name)) {
+            ft.replace(R.id.content_frame, fragment);
+        } else {
+            ft.replace(R.id.content_frame, fragment, name);
+        }
+        if (!TextUtils.isEmpty(stackName)) {
+            ft.addToBackStack(stackName);
+        }
+        ft.commit();
     }
 
     private void selectNavigateItem(int position) {

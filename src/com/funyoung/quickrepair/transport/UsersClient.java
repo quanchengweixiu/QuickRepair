@@ -121,7 +121,7 @@ public final class UsersClient extends HttpRequestExecutor {
 
     private final static class Method {
         private static final String SEND_CODE = "sendCode";
-        private static final String COMMAND_CIRCLE_SHOW = "circle/show";
+        private static final String LOGIN = "circle/show";
         private static final String ACCOUNT_SHOW = "user/show";
         private static final String ACCOUNT_UPDATE = "account/update";
         private static final String REQUEST_EXCHANGE_CARD = "request/profile_access_approve";
@@ -144,6 +144,20 @@ public final class UsersClient extends HttpRequestExecutor {
         return asString(doRequest(request));
     }
 
+    public  String login(String mobile, String code) throws IOException, ApiException {
+
+        HttpRequestBase request = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.LOGIN)
+//                .parameter("sign_method", "md5")
+//                .parameter("sign", sign)
+//                .parameter("appid", AppConstant.BORQS_SYNC_APP_ID)
+//                .parameter(paramMap)
+                .parameter(API_PARAM_PHONE, mobile)
+                .parameter(API_PARAM_CODE, code)
+                .create();
+        return asString(doRequest(request));
+    }
+
     public static boolean sendVerifyCode(Context context, String mobile) {
         UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
         try {
@@ -160,6 +174,17 @@ public final class UsersClient extends HttpRequestExecutor {
     }
 
     public static boolean login(Context context, String mobile, String code) {
+        UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        try {
+            String result = ac.login(mobile, code);
+            return CommonUtils.parseBooleanResult(result);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }
