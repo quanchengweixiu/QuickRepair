@@ -45,6 +45,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.funyoung.quickrepair.fragment.BaseFragment;
 import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
+import com.funyoung.quickrepair.fragment.PlanetFragment;
 import com.funyoung.quickrepair.fragment.SignUpFragment;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
@@ -495,43 +496,9 @@ public class MainActivity extends SherlockFragmentActivity {
         return false;
     }
     // todo: login/logout user end
-
-    /**
-     * Fragment that appears in the "content_frame", shows a planet
-     */
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
-
-        private View rootView;
-
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            update(i);
-            return rootView;
-        }
-
-        public void update(int position) {
-            String planet = getResources().getStringArray(R.array.planets_array)[position];
-
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
-        }
-    }
-
     public static void invoke(Context context, BaseFragment.FragmentSession session,
                               Object o, Exception exception) {
         // todo: callback from login fragment after login close
 
     }
-
-
 }
