@@ -19,8 +19,8 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.*;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.quickrepair.utils.MockServer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

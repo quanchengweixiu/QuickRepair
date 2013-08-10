@@ -366,7 +366,7 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    SignUpFragment loginFragment;
+    UserFragment loginFragment;
     LocationOverlayFragment locationFragment;
     PlanetFragment fragmentPlanet;
     private void gotoLoinFragment() {

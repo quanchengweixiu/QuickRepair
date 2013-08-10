@@ -1,4 +1,4 @@
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.utils;
 
 /**
  * Created by yangfeng on 13-7-13.

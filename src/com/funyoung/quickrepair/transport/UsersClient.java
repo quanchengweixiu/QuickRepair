@@ -1,6 +1,5 @@
 package com.funyoung.quickrepair.transport;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.funyoung.quickrepair.api.ApiException;

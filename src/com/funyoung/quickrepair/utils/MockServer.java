@@ -1,4 +1,4 @@
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import baidumapsdk.demo.R;
-import com.baidu.mapapi.map.LocationData;
+
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 

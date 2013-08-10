@@ -1,4 +1,4 @@
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.utils;
 
 //import org.apache.http.client.HttpClient;
 
