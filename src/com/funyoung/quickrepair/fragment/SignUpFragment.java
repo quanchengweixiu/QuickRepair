@@ -87,10 +87,12 @@ public class SignUpFragment extends UserFragment {
         super.onDestroy();
         if (null != mSendCodeView) {
             mSendCodeTask.cancel(true);
+            mSendCodeTask = null;
         }
 
         if (null != mLoginTask) {
             mLoginTask.cancel(true);
+            mLoginTask = null;
         }
 
         if (null != handler) {
