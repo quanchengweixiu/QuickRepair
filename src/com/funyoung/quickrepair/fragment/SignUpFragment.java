@@ -85,7 +85,7 @@ public class SignUpFragment extends UserFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mSendCodeView) {
+        if (null != mSendCodeTask) {
             mSendCodeTask.cancel(true);
             mSendCodeTask = null;
         }
