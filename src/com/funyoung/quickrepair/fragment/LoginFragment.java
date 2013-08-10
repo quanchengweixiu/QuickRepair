@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.fragment;
 
 import android.text.TextUtils;
 import android.util.Log;

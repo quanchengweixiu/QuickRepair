@@ -43,6 +43,9 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.funyoung.quickrepair.fragment.BaseFragment;
+import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
+import com.funyoung.quickrepair.fragment.SignUpFragment;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
@@ -366,9 +369,9 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    UserFragment loginFragment;
-    LocationOverlayFragment locationFragment;
-    PlanetFragment fragmentPlanet;
+    Fragment loginFragment;
+    Fragment locationFragment;
+    Fragment fragmentPlanet;
     private void gotoLoinFragment() {
         if (null == loginFragment) {
             loginFragment = new SignUpFragment();
@@ -395,7 +398,7 @@ public class MainActivity extends SherlockFragmentActivity {
         if (null == fragmentPlanet) {
             fragmentPlanet = new PlanetFragment();
             Bundle args = new Bundle();
-            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
+//            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
             fragmentPlanet.setArguments(args);
             gotoFragmentView(fragmentPlanet, FRAGMENT_DEFAULT, null);
             mCurrentFragment = fragmentPlanet;
@@ -440,21 +443,21 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    private int mDefaultPosition;
-    private void selectItem(int position) {
-        mDefaultPosition = position;
-        boolean existing = null != fragmentPlanet;
-        gotoDefaultView();
-        // update the main content by replacing fragments
-        if (existing) {
-            fragmentPlanet.update(position);
-        }
-
-        // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
-    }
+//    private int mDefaultPosition;
+//    private void selectItem(int position) {
+//        mDefaultPosition = position;
+//        boolean existing = null != fragmentPlanet;
+//        gotoDefaultView();
+//        // update the main content by replacing fragments
+//        if (existing) {
+//            fragmentPlanet.update(position);
+//        }
+//
+//        // update selected item and title, then close the drawer
+//        mDrawerList.setItemChecked(position, true);
+//        setTitle(mPlanetTitles[position]);
+//        mDrawerLayout.closeDrawer(mDrawerList);
+//    }
 
     @Override
     public void setTitle(CharSequence title) {

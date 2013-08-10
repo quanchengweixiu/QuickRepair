@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.fragment;
 
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.TelephonyUtils;

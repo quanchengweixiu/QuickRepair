@@ -1,4 +1,4 @@
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.fragment;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.funyoung.quickrepair.MainActivity;
+
 import baidumapsdk.demo.R;
 
 /**

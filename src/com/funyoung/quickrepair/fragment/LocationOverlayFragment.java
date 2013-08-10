@@ -1,4 +1,4 @@
-package com.funyoung.quickrepair;
+package com.funyoung.quickrepair.fragment;
 
 import android.app.Fragment;
 import android.content.Context;
