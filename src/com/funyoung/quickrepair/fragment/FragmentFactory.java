@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -22,7 +21,7 @@ public class FragmentFactory {
     private Fragment mCurrentFragment;
     private Fragment loginFragment;
     private Fragment locationFragment;
-    private Fragment fragmentPlanet;
+    private Fragment defaultFragment;
 
     public void gotoLoinFragment() {
         if (null == loginFragment) {
@@ -47,17 +46,15 @@ public class FragmentFactory {
         }
     }
     public  void gotoDefaultView() {
-        if (null == fragmentPlanet) {
-            fragmentPlanet = new PlanetFragment();
+        if (null == defaultFragment) {
+            defaultFragment = new CategoryGridFragment();
             Bundle args = new Bundle();
 //            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
-            fragmentPlanet.setArguments(args);
-            gotoFragmentView(fragmentPlanet, FRAGMENT_DEFAULT, null);
-            mCurrentFragment = fragmentPlanet;
+            defaultFragment.setArguments(args);
         }
 
-        if (mCurrentFragment != fragmentPlanet) {
-            mCurrentFragment = fragmentPlanet;
+        if (mCurrentFragment != defaultFragment) {
+            mCurrentFragment = defaultFragment;
             gotoFragmentView(mCurrentFragment,FRAGMENT_DEFAULT, null);
         }
     }
@@ -90,6 +87,6 @@ public class FragmentFactory {
     }
 
     public boolean isDefaultFragment() {
-        return mCurrentFragment == fragmentPlanet;
+        return mCurrentFragment == defaultFragment;
     }
 }
