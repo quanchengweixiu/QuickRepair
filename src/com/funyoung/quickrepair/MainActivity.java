@@ -44,6 +44,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.funyoung.quickrepair.fragment.BaseFragment;
+import com.funyoung.quickrepair.fragment.FragmentFactory;
 import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
 import com.funyoung.quickrepair.fragment.PlanetFragment;
 import com.funyoung.quickrepair.fragment.SignUpFragment;
@@ -91,10 +92,6 @@ public class MainActivity extends SherlockFragmentActivity {
 
     private SherlockActionBarDrawerToggle mDrawerToggle;
 
-    public static final String FRAGMENT_DEFAULT = "FRAGMENT_DEFAULT";
-    public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
-    public static final String FRAGMENT_MAP = "FRAGMENT_MAP";
-
     /**
      * Create a compatible helper that will manipulate the action bar if
      * available.
@@ -106,7 +103,6 @@ public class MainActivity extends SherlockFragmentActivity {
     public void finishLogin() {
         gotoDefaultView();
     }
-
 
     /**
      * A drawer listener can be used to respond to drawer events such as
@@ -163,6 +159,7 @@ public class MainActivity extends SherlockFragmentActivity {
          */
         public void onDrawerClosed() {
             mActionBar.setTitle(mTitle);
+            refreshOptionsMenu();
         }
 
         /**
@@ -173,6 +170,7 @@ public class MainActivity extends SherlockFragmentActivity {
          */
         public void onDrawerOpened() {
             mActionBar.setTitle(mDrawerTitle);
+            refreshOptionsMenu();
         }
 
         public void setTitle(CharSequence title) {
@@ -220,90 +218,42 @@ public class MainActivity extends SherlockFragmentActivity {
         mActionBar = createActionBarHelper();
         mActionBar.init();
 
-        setupDrawerFooter();
-
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-//        mDrawerToggle = new ActionBarDrawerToggle(
-//                this,                  /* host Activity */
-//                mDrawerLayout,         /* DrawerLayout object */
-//                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-//                R.string.drawer_open,  /* "open drawer" description for accessibility */
-//                R.string.drawer_close  /* "close drawer" description for accessibility */
-//                ) {
-//            public void onDrawerClosed(View view) {
-//                getActionBar().setTitle(mTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//
-//            public void onDrawerOpened(View drawerView) {
-//                getActionBar().setTitle(mDrawerTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//        };
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle = new SherlockActionBarDrawerToggle(this,
                 mDrawerLayout, R.drawable.ic_drawer_light,
                 R.string.drawer_open, R.string.drawer_close);
         mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
-//            selectItem(0);
             selectNavigateItem(1);
         }
     }
 
-    private View mFooter;
-    private void setupDrawerFooter() {
-        if (null != mDrawerList) {
-            final boolean isLogin = isLogin();
-
-            if (null == mFooter) {
-//                LayoutInflater inflater = getLayoutInflater();
-//                mFooter = inflater.inflate(R.layout.drawer_list_item, null);
-
-                mFooter = new TextView(this);
-                mDrawerList.addFooterView(mFooter);
-            }
-
-            if (mFooter instanceof TextView) {
-                ((TextView)mFooter).setText(isLogin ? R.string.menu_user_logout :
-                        R.string.action_login_user);
-            }
-            mFooter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isLogin) {
-                        doLogout();
-                    } else {
-                        doLogin();
-                    }
-                }
-            });
-        }
-    }
-
+    private Menu mOptionMenu;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.main, menu);
+        mOptionMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
-    /* Called whenever we call invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setIcon(mCurrentFragment == fragmentPlanet ?
-                R.drawable.ic_action_category : R.drawable.ic_action_map);
-        return super.onPrepareOptionsMenu(menu);
+    // If the nav drawer is open, hide action items related to the content view
+    private void refreshOptionsMenu() {
+        if (null != mOptionMenu) {
+            boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+            mOptionMenu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+            mOptionMenu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
+        }
+    }
+    private void updateToggleMenuItem() {
+        if (null != mOptionMenu) {
+            mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
+                R.drawable.ic_action_map : R.drawable.ic_action_category);
+        }
     }
 
     @Override
@@ -343,21 +293,11 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-    Fragment mCurrentFragment;
     private void toggleView() {
-        if (mCurrentFragment == fragmentPlanet) {
-            // goto map view
+        if (isDefaultFragment()) {
             gotoLocationFragment();
         } else {
-            // goto default view with category list
             gotoDefaultView();
-//            Intent intent = new Intent(this, LocationOverlayDemo.class);
-//            // catch event that there's no activity to handle intent
-//            if (intent.resolveActivity(getPackageManager()) != null) {
-//                startActivity(intent);
-//            } else {
-//                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-//            }
         }
     }
 
@@ -365,63 +305,8 @@ public class MainActivity extends SherlockFragmentActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            selectItem(position);
             selectNavigateItem(position);
         }
-    }
-
-    Fragment loginFragment;
-    Fragment locationFragment;
-    Fragment fragmentPlanet;
-    private void gotoLoinFragment() {
-        if (null == loginFragment) {
-            loginFragment = new SignUpFragment();
-        }
-
-        if (mCurrentFragment != loginFragment) {
-            mCurrentFragment = loginFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_LOGIN, FRAGMENT_DEFAULT);
-        }
-
-    }
-
-    private void gotoLocationFragment() {
-        if (null == locationFragment) {
-            locationFragment = new LocationOverlayFragment();
-        }
-
-        if (mCurrentFragment != locationFragment) {
-            mCurrentFragment = locationFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_MAP, FRAGMENT_DEFAULT);
-        }
-    }
-    private void gotoDefaultView() {
-        if (null == fragmentPlanet) {
-            fragmentPlanet = new PlanetFragment();
-            Bundle args = new Bundle();
-//            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
-            fragmentPlanet.setArguments(args);
-            gotoFragmentView(fragmentPlanet, FRAGMENT_DEFAULT, null);
-            mCurrentFragment = fragmentPlanet;
-        }
-
-        if (mCurrentFragment != fragmentPlanet) {
-            mCurrentFragment = fragmentPlanet;
-            gotoFragmentView(mCurrentFragment,FRAGMENT_DEFAULT, null);
-        }
-    }
-
-    private void gotoFragmentView(Fragment fragment, String name, String stackName) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (TextUtils.isEmpty(name)) {
-            ft.replace(R.id.content_frame, fragment);
-        } else {
-            ft.replace(R.id.content_frame, fragment, name);
-        }
-        if (!TextUtils.isEmpty(stackName)) {
-            ft.addToBackStack(stackName);
-        }
-        ft.commit();
     }
 
     private void selectNavigateItem(int position) {
@@ -444,21 +329,30 @@ public class MainActivity extends SherlockFragmentActivity {
         }
     }
 
-//    private int mDefaultPosition;
-//    private void selectItem(int position) {
-//        mDefaultPosition = position;
-//        boolean existing = null != fragmentPlanet;
-//        gotoDefaultView();
-//        // update the main content by replacing fragments
-//        if (existing) {
-//            fragmentPlanet.update(position);
-//        }
-//
-//        // update selected item and title, then close the drawer
-//        mDrawerList.setItemChecked(position, true);
-//        setTitle(mPlanetTitles[position]);
-//        mDrawerLayout.closeDrawer(mDrawerList);
-//    }
+    private FragmentFactory mFactory;
+    private FragmentFactory getFragmentFactory() {
+        if (null == mFactory) {
+            mFactory = FragmentFactory.getInstance(this);
+        }
+        return mFactory;
+    }
+    private boolean isDefaultFragment() {
+        return getFragmentFactory().isDefaultFragment();
+    }
+
+    private void gotoLoinFragment() {
+        getFragmentFactory().gotoLoinFragment();
+    }
+
+    private void gotoDefaultView() {
+        getFragmentFactory().gotoDefaultView();
+        updateToggleMenuItem();
+    }
+
+    private void gotoLocationFragment() {
+        getFragmentFactory().gotoLocationFragment();
+        updateToggleMenuItem();
+    }
 
     @Override
     public void setTitle(CharSequence title) {
@@ -485,16 +379,6 @@ public class MainActivity extends SherlockFragmentActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    // todo: login/logout user begin
-    private void doLogin() {
-
-    }
-    private void doLogout() {
-    }
-
-    private boolean isLogin() {
-        return false;
-    }
     // todo: login/logout user end
     public static void invoke(Context context, BaseFragment.FragmentSession session,
                               Object o, Exception exception) {
