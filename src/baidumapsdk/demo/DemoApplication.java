@@ -73,7 +73,7 @@ public class DemoApplication extends Application {
             if (iError ==  MKEvent.ERROR_PERMISSION_DENIED) {
                 //授权Key错误：
                 Toast.makeText(DemoApplication.getInstance().getApplicationContext(),
-                        "请在 DApplication.java文件输入正确的授权Key！", Toast.LENGTH_LONG).show();
+                        "请在 DemoApplication.java文件输入正确的授权Key！", Toast.LENGTH_LONG).show();
                 DemoApplication.getInstance().m_bKeyRight = false;
             }
         }
