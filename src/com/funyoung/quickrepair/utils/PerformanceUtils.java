@@ -8,7 +8,7 @@ import android.util.Log;
  */
 public class PerformanceUtils {
     private static final String TAG = "PerformanceUtils";
-    private static final boolean LOW_PERFORMANCE = true;
+    private static final boolean LOW_PERFORMANCE = false;
 
     public static long showTimeDiff(long start, long end) {
         return showTimeDiff(start, end, null);

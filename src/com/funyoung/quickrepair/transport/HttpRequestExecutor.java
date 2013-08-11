@@ -4,6 +4,7 @@
  */
 package com.funyoung.quickrepair.transport;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.TrafficStats;
 import android.os.Build;
@@ -61,7 +62,10 @@ public abstract class HttpRequestExecutor {
     private static final String API_KEY_RES_CODE = "ResponceCode";
     private static final String API_KEY_RES_MESSAGE = "ResponceCodeMsg";
 
-    private static final int API_ERROR_UNKNOWN_CODE = 0;
+    private static final int API_ERROR_UI_CODE_MIN = -1000;
+    private static final int API_ERROR_UI_CODE_MAX = 0;
+    private static final int API_ERROR_INVALID_JSON = 9100;
+    private static final int API_ERROR_GENERIC_EXCEPTION = 9101;
     private static final String API_ERROR_UNKNOWN_MESSAGE = "Unknown response without code.";
 
     private HttpClient mHttpClient;
@@ -88,7 +92,7 @@ public abstract class HttpRequestExecutor {
     }
     
     protected String doRequest(HttpRequestBase request) throws
-            ClientProtocolException, IOException{
+            ApiException, IOException{
         if(mWorkThread != null && mWorkThread.isAlive()){
             throw new IllegalStateException("Running task: " + mWorkThread.getName());
         }
@@ -106,14 +110,18 @@ public abstract class HttpRequestExecutor {
                     }
                 }
             }
-            return EntityUtils.toString(entity);
+            final String result = EntityUtils.toString(entity);
+            ApiException exception = preCheckApiResponse(result);
+            if (null != exception) {
+                throw exception;
+            }
+            return result;
         } else {
             final String str = asString(httpResponse);
-            throwError(str);
+            throw throwError(str);
         }
-        return null;
     }
-    
+
     protected void doRequestAsync(HttpRequestBase request, OnResultCallback<HttpResponse> callback){
         if(mWorkThread != null && mWorkThread.isAlive()){
             throw new IllegalStateException("Running task: " + mWorkThread.getName());
@@ -268,21 +276,7 @@ public abstract class HttpRequestExecutor {
             throw throwError(result);
         }
     }
-    
-    protected ApiException throwError(String jError) {
-        int errorCode = API_ERROR_UNKNOWN_CODE;
-        String errorMsg = API_ERROR_UNKNOWN_MESSAGE;
-        try {
-            JSONObject err = new JSONObject(jError);            
-            errorCode = err.getInt(API_KEY_RES_CODE);
-            errorMsg = err.getString(API_KEY_RES_MESSAGE);
-        } catch (JSONException ie) {
-            return new ApiException(ie);
-        }
-        return new ApiException(errorCode, errorMsg);
-    }
-    
-    
+
     /**
      * Builder class for http request
      * @author Borqs
@@ -464,9 +458,74 @@ public abstract class HttpRequestExecutor {
         return false;
     }
 
-    protected static void postCheckApiException(Context context, Exception exception) {
-        if (null != exception && API_DEBUG) {
-            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+    protected ApiException throwError(String jError) {
+        int errorCode = API_ERROR_UI_CODE_MAX;
+        String errorMsg = API_ERROR_UNKNOWN_MESSAGE;
+        try {
+            JSONObject err = new JSONObject(jError);
+            errorCode = err.getInt(API_KEY_RES_CODE);
+            errorMsg = err.getString(API_KEY_RES_MESSAGE);
+        } catch (JSONException ie) {
+            return new ApiException(ie);
+        }
+        return new ApiException(errorCode, errorMsg);
+    }
+
+    protected ApiException preCheckApiResponse(String response) {
+        int errorCode = API_ERROR_UI_CODE_MAX;
+        String errorMsg = API_ERROR_UNKNOWN_MESSAGE;
+        try {
+            JSONObject err = new JSONObject(response);
+            errorCode = err.getInt(API_KEY_RES_CODE);
+            errorMsg = err.getString(API_KEY_RES_MESSAGE);
+            if (errorCode > API_ERROR_UI_CODE_MIN && errorCode < API_ERROR_UI_CODE_MAX) {
+                ApiException exception = new ApiException(errorCode, errorMsg);
+                postCheckApiException(mContext, exception);
+                return exception;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new ApiException(API_ERROR_INVALID_JSON, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ApiException(API_ERROR_GENERIC_EXCEPTION, e.getMessage());
+        } finally {
+        }
+        return null;
+    }
+
+    protected static boolean postCheckApiException(final Context context, final ApiException exception) {
+        if (context instanceof Activity) {
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != exception && API_DEBUG) {
+                        Toast.makeText(context, "Error code " + exception.getErrorCode() +
+                                ", " + exception.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected static boolean postCheckApiException(final Context context, final Exception exception) {
+        if (context instanceof Activity) {
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != exception && API_DEBUG) {
+                        Toast.makeText(context, exception.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            return true;
+        } else {
+            return false;
         }
     }
 }

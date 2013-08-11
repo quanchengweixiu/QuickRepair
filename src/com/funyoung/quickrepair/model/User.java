@@ -1,5 +1,6 @@
 package com.funyoung.quickrepair.model;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import org.json.JSONException;
@@ -48,14 +49,26 @@ public class User {
                 throw new Exception("Invalid json to convert as User " + jstr);
             }
             long uid = jsonObject.optLong(KEY_UID);
-            String nickName= jsonObject.optString(KEY_NAME);
-            String avatarUrl = jsonObject.optString(KEY_AVATAR);
-            return new User(uid, nickName, avatarUrl);
+            if (uid > 0) {
+                String nickName= jsonObject.optString(KEY_NAME);
+                String avatarUrl = jsonObject.optString(KEY_AVATAR);
+                return new User(uid, nickName, avatarUrl);
+            } else {
+                throw new Exception("Invalid uid in " + jstr);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             throw e;
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putLong(KEY_UID, mUid);
+        bundle.putString(KEY_NAME, mNickName);
+        bundle.putString(KEY_AVATAR, mAvatarUrl);
+        return bundle;
     }
 }

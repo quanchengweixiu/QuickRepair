@@ -19,12 +19,13 @@ public class FragmentFactory {
     private static final String FRAGMENT_DEFAULT = "FRAGMENT_DEFAULT";
     private static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     private static final String FRAGMENT_MAP = "FRAGMENT_MAP";
+    private static final String FRAGMENT_PROFILE = "FRAGMENT_PROFILE";
 
     private Fragment mCurrentFragment;
     private Fragment loginFragment;
     private Fragment locationFragment;
     private Fragment defaultFragment;
-
+    private Fragment profileFragment;
     public void gotoLoinFragment() {
         if (null == loginFragment) {
             loginFragment = new SignUpFragment();
@@ -63,7 +64,18 @@ public class FragmentFactory {
 
     // todo: goto user profile
     public void gotoProfileFragment(User user) {
+        if (null == profileFragment) {
+            profileFragment = new ProfileFragment();
+        }
 
+        if (mCurrentFragment != profileFragment) {
+            Bundle args = user.toBundle();
+            profileFragment.setArguments(args);
+            mCurrentFragment = profileFragment;
+            gotoFragmentView(mCurrentFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
+        } else {
+            ((ProfileFragment)mCurrentFragment).updateProfile(user);
+        }
     }
 
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {

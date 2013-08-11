@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,10 +100,6 @@ public class MainActivity extends SherlockFragmentActivity {
      */
     private ActionBarHelper createActionBarHelper() {
         return new ActionBarHelper();
-    }
-
-    public void finishLogin() {
-        gotoDefaultView();
     }
 
     /**
@@ -182,6 +179,7 @@ public class MainActivity extends SherlockFragmentActivity {
 //    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 //    private ActionBarDrawerToggle mDrawerToggle;
+    private ArrayAdapter mDrawerAdapter;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -215,9 +213,9 @@ public class MainActivity extends SherlockFragmentActivity {
 //                R.layout.drawer_list_item, mPlanetTitles));
 //        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, mPlanetTitles));
+        mDrawerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, mPlanetTitles);
+        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setCacheColorHint(0);
         mDrawerList.setScrollingCacheEnabled(false);
@@ -404,4 +402,15 @@ public class MainActivity extends SherlockFragmentActivity {
     private User getLoginUser() {
         return SettingsActivity.getLoginUser(getApplicationContext());
     }
+
+    public void finishLogin() {
+        User user = getLoginUser();
+        if (null != user) {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_login_array);
+            mPlanetTitles[0] = user.getNickName();
+            mDrawerAdapter.notifyDataSetChanged();
+        }
+        gotoDefaultView();
+    }
+
 }
