@@ -16,7 +16,7 @@
           android:title="@string/action_websearch"
           android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_toggle"
-          android:icon="@drawable/ic_map_location_nomal"
+          android:icon="@drawable/ic_actionbar_map"
           android:title="@string/action_toggle"
           android:showAsAction="ifRoom|withText" />
 </menu>
