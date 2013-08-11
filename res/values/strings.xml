@@ -16,8 +16,25 @@
         <item>注册或登录</item>
         <item>分类</item>
         <item>搜索</item>
+    </string-array>
+    <string-array name="qp_navigation_title_login_array">
+        <item>注册或登录</item>
+        <item>分类</item>
+        <item>搜索</item>
         <item>预订</item>
         <item>收件箱</item>
+    </string-array>
+
+    <string-array name="qp_category_label_array">
+        <item>空调</item>
+        <item>热水器</item>
+        <item>马桶</item>
+        <item>电路</item>
+        <item>水管阀门</item>
+        <item>家电</item>
+        <item>房屋</item>
+        <item>家具</item>
+        <item>更多</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -39,7 +56,6 @@
 
     <!-- signup/login ui -->
     <string name="signup_hint_login_name">用户名或者手机号码</string>
-    <string name="signup_hint_mobile">手机号码</string>
     <string name="signup_hint_password">登录密码</string>
     <string name="signup_hint_verifycode">验证码</string>
     <string name="signup_hint_email">电子邮箱地址</string>
@@ -58,6 +74,13 @@
     <string name="error_message_mobile_verified">"验证失败，手机号 %1$s, 验证码【%2$s】"</string>
 
     <string name="error_message_exception">异常: %1$s</string>
-    <string name="qp_login_get_verify_code">验证</string>
+    <string name="qp_login_get_verify_code">获取验证码</string>
+    <string name="qp_login_get_verify_code_again">重新获取</string>
+    <string name="signup_button_get_start">开始</string>
+    <string name="signup_hint_code">请输入验证码</string>
+    <string name="signup_hint_mobile">请输入手机号码，用于接收验证码短信。</string>
+    <string name="preferences_debug_option">调试选项</string>
+    <string name="preferences_local_mms_code">从客户端发送验证码</string>
+    <string name="preferences_local_mms_code_summary">从客户端生成，发送验证码，并发送短信到给定手机号。</string>
 
 </resources>

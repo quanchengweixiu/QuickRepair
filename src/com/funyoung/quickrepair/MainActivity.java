@@ -17,22 +17,42 @@
 package com.funyoung.quickrepair;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.*;
-import android.widget.*;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.funyoung.quickrepair.fragment.BaseFragment;
+import com.funyoung.quickrepair.fragment.FragmentFactory;
+import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
+import com.funyoung.quickrepair.fragment.PlanetFragment;
+import com.funyoung.quickrepair.fragment.SignUpFragment;
+import com.funyoung.quickrepair.model.User;
+import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
+
 import baidumapsdk.demo.BMapApiDemoMain;
-import baidumapsdk.demo.LocationOverlayDemo;
 import baidumapsdk.demo.R;
 
 import java.util.Locale;
@@ -64,10 +84,102 @@ import java.util.Locale;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockFragmentActivity {
+
     private DrawerLayout mDrawerLayout;
+//    private ListView listView;
+//    private TextView mContent;
+
+    private ActionBarHelper mActionBar;
+
+    private SherlockActionBarDrawerToggle mDrawerToggle;
+
+    /**
+     * Create a compatible helper that will manipulate the action bar if
+     * available.
+     */
+    private ActionBarHelper createActionBarHelper() {
+        return new ActionBarHelper();
+    }
+
+    /**
+     * A drawer listener can be used to respond to drawer events such as
+     * becoming fully opened or closed. You should always prefer to perform
+     * expensive operations such as drastic relayout when no animation is
+     * currently in progress, either before or after the drawer animates.
+     *
+     * When using ActionBarDrawerToggle, all DrawerLayout listener methods
+     * should be forwarded if the ActionBarDrawerToggle is not used as the
+     * DrawerLayout listener directly.
+     */
+    private class DemoDrawerListener implements DrawerLayout.DrawerListener {
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            mDrawerToggle.onDrawerOpened(drawerView);
+            mActionBar.onDrawerOpened();
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            mDrawerToggle.onDrawerClosed(drawerView);
+            mActionBar.onDrawerClosed();
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            mDrawerToggle.onDrawerStateChanged(newState);
+        }
+    }
+
+    private class ActionBarHelper {
+        private final ActionBar mActionBar;
+        private CharSequence mDrawerTitle;
+        private CharSequence mTitle;
+
+        private ActionBarHelper() {
+            mActionBar = getSupportActionBar();
+        }
+
+        public void init() {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeButtonEnabled(true);
+            mTitle = mDrawerTitle = getTitle();
+        }
+
+        /**
+         * When the drawer is closed we restore the action bar state reflecting
+         * the specific contents in view.
+         */
+        public void onDrawerClosed() {
+            mActionBar.setTitle(mTitle);
+            refreshOptionsMenu();
+        }
+
+        /**
+         * When the drawer is open we set the action bar to a generic title. The
+         * action bar should only contain data relevant at the top level of the
+         * nav hierarchy represented by the drawer, as the rest of your content
+         * will be dimmed down and non-interactive.
+         */
+        public void onDrawerOpened() {
+            mActionBar.setTitle(mDrawerTitle);
+            refreshOptionsMenu();
+        }
+
+        public void setTitle(CharSequence title) {
+            mTitle = title;
+        }
+    }
+
+//    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+//    private ActionBarDrawerToggle mDrawerToggle;
+    private ArrayAdapter mDrawerAdapter;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -81,96 +193,75 @@ public class MainActivity extends Activity {
 
         mTitle = mDrawerTitle = getTitle();
 //        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_array);
+
+        User user = getLoginUser();
+        if (null == user) {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_array);
+        } else {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_login_array);
+            mPlanetTitles[0] = user.getNickName();
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+        mDrawerLayout.setDrawerListener(new DemoDrawerListener());
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.drawer_list_item, mPlanetTitles));
+//        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, mPlanetTitles);
+        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        setupDrawerFooter();
+        mDrawerList.setCacheColorHint(0);
+        mDrawerList.setScrollingCacheEnabled(false);
+        mDrawerList.setScrollContainer(false);
+        mDrawerList.setFastScrollEnabled(true);
+        mDrawerList.setSmoothScrollbarEnabled(true);
+
+        mActionBar = createActionBarHelper();
+        mActionBar.init();
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle = new SherlockActionBarDrawerToggle(this,
+                mDrawerLayout, R.drawable.ic_drawer_light,
+                R.string.drawer_open, R.string.drawer_close);
+        mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
-//            selectItem(0);
             selectNavigateItem(1);
         }
     }
 
-    private View mFooter;
-    private void setupDrawerFooter() {
-        if (null != mDrawerList) {
-            final boolean isLogin = isLogin();
-
-            if (null == mFooter) {
-//                LayoutInflater inflater = getLayoutInflater();
-//                mFooter = inflater.inflate(R.layout.drawer_list_item, null);
-
-                mFooter = new TextView(this);
-                mDrawerList.addFooterView(mFooter);
-            }
-
-            if (mFooter instanceof TextView) {
-                ((TextView)mFooter).setText(isLogin ? R.string.menu_user_logout :
-                        R.string.action_login_user);
-            }
-            mFooter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isLogin) {
-                        doLogout();
-                    } else {
-                        doLogin();
-                    }
-                }
-            });
-        }
-    }
-
+    private Menu mOptionMenu;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.main, menu);
+        mOptionMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
-    /* Called whenever we call invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_toggle).setIcon(mDefaultView == fragmentPlanet ?
-                R.drawable.ic_action_category : R.drawable.ic_action_map);
-        return super.onPrepareOptionsMenu(menu);
+    // If the nav drawer is open, hide action items related to the content view
+    private void refreshOptionsMenu() {
+        if (null != mOptionMenu) {
+            boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+            mOptionMenu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+            mOptionMenu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
+        }
+    }
+    private void updateToggleMenuItem() {
+        if (null != mOptionMenu) {
+            mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
+                R.drawable.ic_actionbar_map : R.drawable.ic_actionbar_list);
+        }
     }
 
     @Override
@@ -210,21 +301,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    Fragment mDefaultView;
     private void toggleView() {
-        if (mDefaultView == fragmentPlanet) {
-            // goto map view
+        if (isDefaultFragment()) {
             gotoLocationFragment();
         } else {
-            // goto default view with category list
             gotoDefaultView();
-//            Intent intent = new Intent(this, LocationOverlayDemo.class);
-//            // catch event that there's no activity to handle intent
-//            if (intent.resolveActivity(getPackageManager()) != null) {
-//                startActivity(intent);
-//            } else {
-//                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-//            }
         }
     }
 
@@ -232,58 +313,14 @@ public class MainActivity extends Activity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            selectItem(position);
             selectNavigateItem(position);
         }
     }
 
-    LoginFragment loginFragment;
-    LocationOverlayFragment locationFragment;
-    PlanetFragment fragmentPlanet;
-    private void gotoLoinFragment() {
-        if (null == loginFragment) {
-            loginFragment = new LoginFragment();
-        }
-
-        if (mDefaultView != loginFragment) {
-            mDefaultView = loginFragment;
-            gotoFragmentView(mDefaultView);
-        }
-
-    }
-
-    private void gotoLocationFragment() {
-        if (null == locationFragment) {
-            locationFragment = new LocationOverlayFragment();
-        }
-
-        if (mDefaultView != locationFragment) {
-            mDefaultView = locationFragment;
-            gotoFragmentView(mDefaultView);
-        }
-    }
-    private void gotoDefaultView() {
-        if (null == fragmentPlanet) {
-            fragmentPlanet = new PlanetFragment();
-            Bundle args = new Bundle();
-            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
-            fragmentPlanet.setArguments(args);
-            gotoFragmentView(fragmentPlanet);
-            mDefaultView = fragmentPlanet;
-        }
-
-        if (mDefaultView != fragmentPlanet) {
-            mDefaultView = fragmentPlanet;
-            gotoFragmentView(mDefaultView);
-        }
-    }
-
-    private void gotoFragmentView(Fragment fragment) {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-    }
-
     private void selectNavigateItem(int position) {
+        mActionBar.setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+
         switch (position) {
             case 0: // register or login
                 gotoLoinFragment();
@@ -300,20 +337,34 @@ public class MainActivity extends Activity {
         }
     }
 
-    private int mDefaultPosition;
-    private void selectItem(int position) {
-        mDefaultPosition = position;
-        boolean existing = null != fragmentPlanet;
-        gotoDefaultView();
-        // update the main content by replacing fragments
-        if (existing) {
-            fragmentPlanet.update(position);
+    private FragmentFactory mFactory;
+    private FragmentFactory getFragmentFactory() {
+        if (null == mFactory) {
+            mFactory = FragmentFactory.getInstance(this);
         }
+        return mFactory;
+    }
+    private boolean isDefaultFragment() {
+        return getFragmentFactory().isDefaultFragment();
+    }
 
-        // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+    private void gotoLoinFragment() {
+        User user = SettingsActivity.getLoginUser(getApplicationContext());
+        if (null == user) {
+            getFragmentFactory().gotoLoinFragment();
+        } else {
+            getFragmentFactory().gotoProfileFragment(user);
+        }
+    }
+
+    private void gotoDefaultView() {
+        getFragmentFactory().gotoDefaultView();
+        updateToggleMenuItem();
+    }
+
+    private void gotoLocationFragment() {
+        getFragmentFactory().gotoLocationFragment();
+        updateToggleMenuItem();
     }
 
     @Override
@@ -337,57 +388,29 @@ public class MainActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
+        // Pass any configuration change to the drawer toggle
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    // todo: login/logout user begin
-    private void doLogin() {
-
-    }
-    private void doLogout() {
-    }
-
-    private boolean isLogin() {
-        return false;
-    }
     // todo: login/logout user end
-
-    /**
-     * Fragment that appears in the "content_frame", shows a planet
-     */
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
-
-        private View rootView;
-
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            update(i);
-            return rootView;
-        }
-
-        public void update(int position) {
-            String planet = getResources().getStringArray(R.array.planets_array)[position];
-
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
-        }
-    }
-
     public static void invoke(Context context, BaseFragment.FragmentSession session,
                               Object o, Exception exception) {
         // todo: callback from login fragment after login close
 
+    }
+
+    private User getLoginUser() {
+        return SettingsActivity.getLoginUser(getApplicationContext());
+    }
+
+    public void finishLogin() {
+        User user = getLoginUser();
+        if (null != user) {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_login_array);
+            mPlanetTitles[0] = user.getNickName();
+            mDrawerAdapter.notifyDataSetChanged();
+        }
+        gotoDefaultView();
     }
 
 }

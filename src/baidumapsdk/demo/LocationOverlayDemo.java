@@ -1,14 +1,11 @@
 package baidumapsdk.demo;
 
 import android.app.Activity;
-import android.content.Context;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,6 +25,9 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+
+import baidumapsdk.demo.common.MyLocationMapView;
+
 /**
  * 此demo用来展示如何结合定位SDK实现定位，并使用MyLocationOverlay绘制定位位置
  * 同时展示如何使用自定义图标绘制并点击时弹出泡泡
@@ -104,6 +104,7 @@ public class LocationOverlayDemo extends Activity {
         mMapView.setBuiltInZoomControls(true);
       //创建 弹出泡泡图层
         createPaopao();
+        mMapView.PopupOverlay(pop);
         
         //定位初始化
         mLocClient = new LocationClient( this );
@@ -158,8 +159,8 @@ public class LocationOverlayDemo extends Activity {
 				Log.v("click", "clickapoapo");
 			}
         };
-        pop = new PopupOverlay(mMapView,popListener);
-        MyLocationMapView.pop = pop;
+        pop = new PopupOverlay(mMapView, popListener);
+//        MyLocationMapView.pop = pop;
 	}
 	/**
      * 定位SDK监听函数
@@ -260,32 +261,5 @@ public class LocationOverlayDemo extends Activity {
         return true;
     }
 
-}
-/**
- * 继承MapView重写onTouchEvent实现泡泡处理操作
- * @author hejin
- *
- */
-class MyLocationMapView extends MapView{
-	static PopupOverlay   pop  = null;//弹出泡泡图层，点击图标使用
-	public MyLocationMapView(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
-	}
-	public MyLocationMapView(Context context, AttributeSet attrs){
-		super(context,attrs);
-	}
-	public MyLocationMapView(Context context, AttributeSet attrs, int defStyle){
-		super(context, attrs, defStyle);
-	}
-	@Override
-    public boolean onTouchEvent(MotionEvent event){
-		if (!super.onTouchEvent(event)){
-			//消隐泡泡
-			if (pop != null && event.getAction() == MotionEvent.ACTION_UP)
-				pop.hidePop();
-		}
-		return true;
-	}
 }
 

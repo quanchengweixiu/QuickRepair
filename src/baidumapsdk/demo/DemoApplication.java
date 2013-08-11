@@ -6,6 +6,8 @@ import android.widget.Toast;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
+import com.funyoung.quickrepair.SettingsActivity;
+import com.funyoung.quickrepair.model.User;
 
 /**
  * Created by yangfeng on 13-7-22.
@@ -24,6 +26,13 @@ public class DemoApplication extends Application {
         super.onCreate();
         mInstance = this;
         initEngineManager(this);
+        mUser = SettingsActivity.getLoginUser(this);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        mUser = null;
     }
 
     public void initEngineManager(Context context) {
@@ -77,5 +86,17 @@ public class DemoApplication extends Application {
                 DemoApplication.getInstance().m_bKeyRight = false;
             }
         }
+    }
+
+    private static User mUser;
+    public void setLoginUser(User user) {
+        SettingsActivity.setLoginUser(this, user);
+        mUser = user;
+    }
+    public boolean hasLoginUser() {
+        if (null == mUser) {
+            mUser = SettingsActivity.getLoginUser(this);
+        }
+        return null != mUser;
     }
 }
