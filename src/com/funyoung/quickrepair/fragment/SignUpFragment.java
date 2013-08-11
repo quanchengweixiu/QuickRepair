@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.model.User;
@@ -136,19 +135,17 @@ public class SignUpFragment extends UserFragment {
             protected String doInBackground(Void... voids) {
                 try {
                     mResult = UsersClient.sendVerifyCode(getActivity(), mobile);
-                    return "Verify code in mms was sent to " + mobile;
+                    return "Code MMS was sent to " + mobile;
                 } catch (Exception e) {
-                    return "request mms code exception " + e.getMessage();
+                    return "Code request exception " + e.getMessage();
                 }
             }
 
             @Override
             protected void onPostExecute(String result) {
                 final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                PerformanceUtils.showToast(getActivity(), result, diff);
 
-                Toast.makeText(getActivity(),
-                        result + ", ret = " + mResult + ", time = " + diff,
-                        Toast.LENGTH_LONG).show();
                 if (mResult) {
                     mLoginButton.setEnabled(true);
                     mPasswordView.setEnabled(true);
@@ -223,7 +220,7 @@ public class SignUpFragment extends UserFragment {
                         DemoApplication application = (DemoApplication)getActivity().getApplication();
                         application.setLoginUser(user);
                     }
-                    return "Login with phone " + mobile + ", code " + code;
+                    return "Login with " + mobile + ", code " + code;
                 } catch (Exception e) {
                     return "Login exception " + e.getMessage();
                 }
@@ -232,10 +229,7 @@ public class SignUpFragment extends UserFragment {
             @Override
             protected void onPostExecute(String result) {
                 final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
-
-                Toast.makeText(getActivity(),
-                        result + ", ret = " + mResult + ", time = " + diff,
-                        Toast.LENGTH_LONG).show();
+                PerformanceUtils.showToast(getActivity(), result, diff);
 
                 if (mResult) {
                     ((MainActivity)getActivity()).finishLogin();

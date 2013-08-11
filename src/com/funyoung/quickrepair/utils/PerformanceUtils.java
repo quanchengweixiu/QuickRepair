@@ -1,7 +1,10 @@
 package com.funyoung.quickrepair.utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by yangfeng on 13-8-7.
@@ -28,5 +31,12 @@ public class PerformanceUtils {
             Log.i(TAG, builder.toString());
         }
         return end - start;
+    }
+
+    public static void showToast(Context context, String msg, long diff) {
+        if (LOW_PERFORMANCE) {
+            Toast.makeText(context, "" + msg + ", time = " + diff,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }
