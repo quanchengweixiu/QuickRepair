@@ -252,7 +252,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private void updateToggleMenuItem() {
         if (null != mOptionMenu) {
             mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
-                R.drawable.ic_action_map : R.drawable.ic_action_category);
+                R.drawable.ic_map_location_nomal : R.drawable.ic_actionbar_list);
         }
     }
 

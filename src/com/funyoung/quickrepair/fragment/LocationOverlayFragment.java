@@ -131,10 +131,12 @@ public class LocationOverlayFragment extends Fragment {
         mMapView.getOverlays().add(myLocationOverlay);
         myLocationOverlay.enableCompass();
         //修改定位数据后刷新图层生效
+        modifyLocationOverlayIcon(getResources().getDrawable(R.drawable.ic_map_my_location));
         mMapView.refresh();
 
         return rootView;
     }
+
     /**
      * 手动触发一次定位请求
      */

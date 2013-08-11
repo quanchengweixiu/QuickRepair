@@ -12,11 +12,11 @@
           android:title="@string/feedback"
           android:orderInCategory="100" />
     <item android:id="@+id/action_websearch"
-          android:icon="@drawable/action_search"
+          android:icon="@drawable/ic_actionbar_search"
           android:title="@string/action_websearch"
           android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_toggle"
-          android:icon="@drawable/ic_action_category"
+          android:icon="@drawable/ic_map_location_nomal"
           android:title="@string/action_toggle"
           android:showAsAction="ifRoom|withText" />
 </menu>
