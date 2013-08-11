@@ -48,6 +48,7 @@ import com.funyoung.quickrepair.fragment.FragmentFactory;
 import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
 import com.funyoung.quickrepair.fragment.PlanetFragment;
 import com.funyoung.quickrepair.fragment.SignUpFragment;
+import com.funyoung.quickrepair.model.User;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
@@ -194,7 +195,15 @@ public class MainActivity extends SherlockFragmentActivity {
 
         mTitle = mDrawerTitle = getTitle();
 //        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_array);
+
+        User user = getLoginUser();
+        if (null == user) {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_array);
+        } else {
+            mPlanetTitles = getResources().getStringArray(R.array.qp_navigation_title_login_array);
+            mPlanetTitles[0] = user.getNickName();
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -207,7 +216,8 @@ public class MainActivity extends SherlockFragmentActivity {
 //        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mPlanetTitles));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, mPlanetTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerList.setCacheColorHint(0);
         mDrawerList.setScrollingCacheEnabled(false);
@@ -341,7 +351,12 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void gotoLoinFragment() {
-        getFragmentFactory().gotoLoinFragment();
+        User user = SettingsActivity.getLoginUser(getApplicationContext());
+        if (null == user) {
+            getFragmentFactory().gotoLoinFragment();
+        } else {
+            getFragmentFactory().gotoProfileFragment(user);
+        }
     }
 
     private void gotoDefaultView() {
@@ -384,5 +399,9 @@ public class MainActivity extends SherlockFragmentActivity {
                               Object o, Exception exception) {
         // todo: callback from login fragment after login close
 
+    }
+
+    private User getLoginUser() {
+        return SettingsActivity.getLoginUser(getApplicationContext());
     }
 }

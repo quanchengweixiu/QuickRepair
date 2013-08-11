@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 public class User {
     public static final String KEY_UID = "uid";
-    public static final String KEY_NAME = "nick_name";
+    public static final String KEY_NAME = "nickname";
     public static final String KEY_AVATAR = "header";
 
     private long mUid;

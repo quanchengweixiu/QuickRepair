@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.funyoung.quickrepair.model.User;
+
 import baidumapsdk.demo.R;
 
 /**
@@ -55,8 +57,13 @@ public class FragmentFactory {
 
         if (mCurrentFragment != defaultFragment) {
             mCurrentFragment = defaultFragment;
-            gotoFragmentView(mCurrentFragment,FRAGMENT_DEFAULT, null);
+            gotoFragmentView(mCurrentFragment, FRAGMENT_DEFAULT, null);
         }
+    }
+
+    // todo: goto user profile
+    public void gotoProfileFragment(User user) {
+
     }
 
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {

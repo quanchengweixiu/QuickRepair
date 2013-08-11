@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funyoung.quickrepair.MainActivity;
-import com.funyoung.quickrepair.SettingsActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
@@ -153,6 +152,8 @@ public class SignUpFragment extends UserFragment {
                 if (mResult) {
                     mLoginButton.setEnabled(true);
                     mPasswordView.setEnabled(true);
+                    mPasswordView.selectAll();
+                    mPasswordView.requestFocus();
                 } else {
                     count = 0;
                     postCheckCountingTask();
@@ -163,9 +164,10 @@ public class SignUpFragment extends UserFragment {
     }
 
     private static final long A_SECOND = 1000;
+    private static final int TOTAL_COUNT = 60;
     private final Handler handler = new Handler();
     private boolean run = false;
-    private int count = 60;
+    private int count;
 
     private final Runnable task = new Runnable() {
         @Override
@@ -189,6 +191,7 @@ public class SignUpFragment extends UserFragment {
 
     private void performCountingTask() {
         run = true;
+        count = TOTAL_COUNT;
         mSendCodeView.setEnabled(false);
         handler.removeCallbacks(task);
         handler.post(task);
@@ -216,6 +219,7 @@ public class SignUpFragment extends UserFragment {
                     if (null == user) {
                         mResult = false;
                     } else {
+                        mResult = true;
                         DemoApplication application = (DemoApplication)getActivity().getApplication();
                         application.setLoginUser(user);
                     }
