@@ -25,7 +25,7 @@ import android.preference.PreferenceActivity;
 
 import com.funyoung.quickrepair.model.User;
 
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 public class SettingsActivity extends PreferenceActivity {
     @Override

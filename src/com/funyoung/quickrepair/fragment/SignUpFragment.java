@@ -31,7 +31,7 @@ import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.TelephonyUtils;
 
 import baidumapsdk.demo.DemoApplication;
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 public class SignUpFragment extends UserFragment {
     private static final String TAG = "SignUpFragment";

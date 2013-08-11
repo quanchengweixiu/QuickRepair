@@ -4,6 +4,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.RouteOverlay;
 import com.baidu.mapapi.search.MKRoute;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 import android.app.Activity;
 import android.os.Bundle;

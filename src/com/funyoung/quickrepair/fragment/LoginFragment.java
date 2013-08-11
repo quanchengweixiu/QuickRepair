@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.funyoung.quickrepair.utils.MockServer;
 import com.funyoung.quickrepair.utils.TelephonyUtils;
 
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 public class LoginFragment extends UserFragment {
     private static final String TAG = "LoginFragment";

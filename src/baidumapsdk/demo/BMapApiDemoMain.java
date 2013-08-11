@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.baidu.mapapi.VersionInfo;
+import com.funyoung.qcwx.R;
 
 public class BMapApiDemoMain extends Activity {
 	

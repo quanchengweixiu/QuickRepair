@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import java.util.Locale;
 
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 /**
  * Created by yangfeng on 13-8-10.

@@ -22,6 +22,8 @@ import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
+
 /**
  * 此demo用来展示如何进行地理编码搜索（用地址检索坐标）、反地理编码搜索（用坐标检索地址）
  * 同时展示了如何使用ItemizedOverlay在地图上标注结果点

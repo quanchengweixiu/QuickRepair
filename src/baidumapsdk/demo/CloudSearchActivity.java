@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.ItemizedOverlay;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 public class CloudSearchActivity extends Activity implements GeoSearchListener {
     

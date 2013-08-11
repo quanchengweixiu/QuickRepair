@@ -14,6 +14,7 @@ import com.baidu.mapapi.map.Symbol;
 import com.baidu.mapapi.map.TextItem;
 import com.baidu.mapapi.map.TextOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 /**
  * 此demo用来展示如何在地图上用GraphicsOverlay添加点、线、多边形、圆

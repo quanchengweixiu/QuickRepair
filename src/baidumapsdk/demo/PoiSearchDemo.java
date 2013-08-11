@@ -23,6 +23,7 @@ import com.baidu.mapapi.search.MKSuggestionInfo;
 import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
+import com.funyoung.qcwx.R;
 
 /**
  * 演示poi搜索功能 

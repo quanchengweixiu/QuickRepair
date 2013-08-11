@@ -12,6 +12,7 @@ import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 public class NaviDemo extends Activity {
 	

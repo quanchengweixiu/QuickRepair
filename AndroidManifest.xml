@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="baidumapsdk.demo"
+    package="com.funyoung.qcwx"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.1" >
 
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="17" />
 
     <application
-        android:name=".DemoApplication"
+        android:name="baidumapsdk.demo.DemoApplication"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/Theme.Sherlock.Light"

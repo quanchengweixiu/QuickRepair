@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.funyoung.quickrepair.model.User;
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 public class ProfileFragment extends BaseFragment {
     private static final String TAG = "ProfileFragment";

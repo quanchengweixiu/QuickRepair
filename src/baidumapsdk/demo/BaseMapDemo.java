@@ -12,6 +12,7 @@ import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 /**
  * 演示MapView的基本用法

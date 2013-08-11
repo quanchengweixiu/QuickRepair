@@ -25,6 +25,7 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 import baidumapsdk.demo.common.MyLocationMapView;
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.funyoung.quickrepair.MainActivity;
 
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 /**
  * Created by yangfeng on 13-7-2.

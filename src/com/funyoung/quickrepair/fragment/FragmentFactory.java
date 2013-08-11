@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import com.funyoung.quickrepair.model.User;
 
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 /**
  * Created by yangfeng on 13-8-10.

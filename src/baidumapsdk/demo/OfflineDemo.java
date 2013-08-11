@@ -26,6 +26,7 @@ import com.baidu.mapapi.map.MKOfflineMap;
 import com.baidu.mapapi.map.MKOfflineMapListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
+import com.funyoung.qcwx.R;
 
 public class OfflineDemo extends Activity implements MKOfflineMapListener {
 	

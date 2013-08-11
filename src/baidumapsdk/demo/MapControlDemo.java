@@ -23,6 +23,7 @@ import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.funyoung.qcwx.R;
 
 /**
  * 演示地图缩放，旋转，视角控制

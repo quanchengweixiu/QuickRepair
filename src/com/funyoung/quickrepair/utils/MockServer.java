@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;

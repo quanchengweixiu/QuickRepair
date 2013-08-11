@@ -53,7 +53,7 @@ import com.funyoung.quickrepair.model.User;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 
 import java.util.Locale;
 

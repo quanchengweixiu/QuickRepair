@@ -27,6 +27,7 @@ import com.baidu.mapapi.search.MKSearchListener;
 import com.baidu.mapapi.search.MKSuggestionResult;
 import com.baidu.mapapi.search.MKTransitRouteResult;
 import com.baidu.mapapi.search.MKWalkingRouteResult;
+import com.funyoung.qcwx.R;
 
 /**
  * 此demo用来展示如何进行公交线路详情检索，并使用RouteOverlay在地图上绘制

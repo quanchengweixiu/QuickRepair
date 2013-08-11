@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import baidumapsdk.demo.BMapUtil;
 import baidumapsdk.demo.DemoApplication;
-import baidumapsdk.demo.R;
+import com.funyoung.qcwx.R;
 import baidumapsdk.demo.common.MyLocationMapView;
 
 import com.baidu.location.BDLocation;
