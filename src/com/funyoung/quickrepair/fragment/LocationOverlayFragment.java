@@ -328,7 +328,7 @@ public class LocationOverlayFragment extends Fragment {
         /**
          * 创建自定义overlay
          */
-        mOverlay = new MyOverlay(getResources().getDrawable(R.drawable.icon_marka),mMapView);
+        mOverlay = new MyOverlay(getResources().getDrawable(R.drawable.ic_map_location_nomal),mMapView);
 
         /**
          * 将item 添加到overlay中

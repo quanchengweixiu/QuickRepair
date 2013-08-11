@@ -33,10 +33,10 @@ public class MockServer {
         }
     }
     private static final int[] resIcons = {
-            R.drawable.qp_map_overlay_blue,
-            R.drawable.qp_map_overlay_red,
-            R.drawable.qp_map_overlay_gray,
-            R.drawable.qp_map_overlay_green,
+            R.drawable.ic_map_location_company,
+            R.drawable.ic_map_location_personal,
+            R.drawable.ic_map_location_nomal,
+            R.drawable.ic_map_location_nomal,
     };
     private static final String[] labelPref = {
             "认证公司",
