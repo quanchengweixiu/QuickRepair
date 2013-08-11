@@ -50,7 +50,6 @@
 
     <!-- signup/login ui -->
     <string name="signup_hint_login_name">用户名或者手机号码</string>
-    <string name="signup_hint_mobile">手机号码</string>
     <string name="signup_hint_password">登录密码</string>
     <string name="signup_hint_verifycode">验证码</string>
     <string name="signup_hint_email">电子邮箱地址</string>
@@ -72,5 +71,7 @@
     <string name="qp_login_get_verify_code">获取验证码</string>
     <string name="qp_login_get_verify_code_again">重新获取</string>
     <string name="signup_button_get_start">开始</string>
+    <string name="signup_hint_code">请输入验证码</string>
+    <string name="signup_hint_mobile">请输入手机号码，用于接收验证码短信。</string>
 
 </resources>

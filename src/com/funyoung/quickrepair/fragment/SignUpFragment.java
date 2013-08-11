@@ -40,7 +40,7 @@ public class SignUpFragment extends UserFragment {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.login;
+        return R.layout.signup;
     }
 
     private View.OnClickListener mListener = new View.OnClickListener() {
