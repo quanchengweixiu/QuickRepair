@@ -25,10 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funyoung.quickrepair.MainActivity;
+import com.funyoung.quickrepair.SettingsActivity;
+import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.TelephonyUtils;
 
+import baidumapsdk.demo.DemoApplication;
 import baidumapsdk.demo.R;
 
 public class SignUpFragment extends UserFragment {
@@ -209,7 +212,13 @@ public class SignUpFragment extends UserFragment {
                 try {
                     final String mobile = validateUserName();
                     final String code = validatePassword();
-                    mResult = UsersClient.login(getActivity(), mobile, code);
+                    User user = UsersClient.login(getActivity(), mobile, code);
+                    if (null == user) {
+                        mResult = false;
+                    } else {
+                        DemoApplication application = (DemoApplication)getActivity().getApplication();
+                        application.setLoginUser(user);
+                    }
                     return "Login with phone " + mobile + ", code " + code;
                 } catch (Exception e) {
                     return "Login exception " + e.getMessage();

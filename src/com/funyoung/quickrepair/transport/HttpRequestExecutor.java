@@ -7,11 +7,13 @@ package com.funyoung.quickrepair.transport;
 import android.content.Context;
 import android.net.TrafficStats;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.funyoung.quickrepair.api.ApiException;
 import com.funyoung.quickrepair.api.CommonUtils;
 
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -20,6 +22,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +39,8 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 public abstract class HttpRequestExecutor {
+    private static final boolean API_DEBUG = true;
+
     // IMPORTANT: Replace this API key with your own later
     private static final String API_KEY = "";
     private static final String API_REST_HOST = "http://quancheng.duapp.com/api/interface/index.php";
@@ -48,6 +54,15 @@ public abstract class HttpRequestExecutor {
 
     protected final String API_VALUE_USER_TYPE_B = "0";
     protected final String API_VALUE_USER_TYPE_A = "1";
+
+//    private static final String API_KEY_RES_CODE = "error_code";
+//    private static final String API_KEY_RES_MESSAGE = "error_msg";
+
+    private static final String API_KEY_RES_CODE = "ResponceCode";
+    private static final String API_KEY_RES_MESSAGE = "ResponceCodeMsg";
+
+    private static final int API_ERROR_UNKNOWN_CODE = 0;
+    private static final String API_ERROR_UNKNOWN_MESSAGE = "Unknown response without code.";
 
     private HttpClient mHttpClient;
     private HttpRequestRunner mWorkThread;
@@ -72,12 +87,31 @@ public abstract class HttpRequestExecutor {
         return API_REST_HOST;
     }
     
-    protected HttpResponse doRequest(HttpRequestBase request) throws ClientProtocolException, IOException{
+    protected String doRequest(HttpRequestBase request) throws
+            ClientProtocolException, IOException{
         if(mWorkThread != null && mWorkThread.isAlive()){
             throw new IllegalStateException("Running task: " + mWorkThread.getName());
         }
-        
-        return executeRequest(request);
+
+        HttpResponse httpResponse = executeRequest(request);
+        if (isResponseStatusOk(httpResponse)) {
+            HttpEntity entity = httpResponse.getEntity();
+            Header ceheader = entity.getContentEncoding();
+            if (ceheader != null) {
+                HeaderElement[] codecs = ceheader.getElements();
+                for (int i = 0; i < codecs.length; i++) {
+                    if (codecs[i].getName().equalsIgnoreCase("gzip")) {
+                        entity = new GzipDecompressingEntity(entity);
+                        break;
+                    }
+                }
+            }
+            return EntityUtils.toString(entity);
+        } else {
+            final String str = asString(httpResponse);
+            throwError(str);
+        }
+        return null;
     }
     
     protected void doRequestAsync(HttpRequestBase request, OnResultCallback<HttpResponse> callback){
@@ -228,7 +262,7 @@ public abstract class HttpRequestExecutor {
         HttpLog.d("AccountClient, server response " + result);
         try {
             JSONObject error = new JSONObject(result);
-            return error.getString("error_msg");
+            return error.optString(API_KEY_RES_MESSAGE);
         } catch (JSONException e) {
             e.printStackTrace();
             throw throwError(result);
@@ -236,12 +270,12 @@ public abstract class HttpRequestExecutor {
     }
     
     protected ApiException throwError(String jError) {
-        int errorCode = 0;
-        String errorMsg = "";
+        int errorCode = API_ERROR_UNKNOWN_CODE;
+        String errorMsg = API_ERROR_UNKNOWN_MESSAGE;
         try {
             JSONObject err = new JSONObject(jError);            
-            errorCode = err.getInt("error_code");
-            errorMsg = err.getString("error_msg");
+            errorCode = err.getInt(API_KEY_RES_CODE);
+            errorMsg = err.getString(API_KEY_RES_MESSAGE);
         } catch (JSONException ie) {
             return new ApiException(ie);
         }
@@ -399,5 +433,40 @@ public abstract class HttpRequestExecutor {
 
     private String md5Sign(String module, String method) {
         return CommonUtils.md5Sign(module, method, API_KEY);
+    }
+
+    static class GzipDecompressingEntity extends HttpEntityWrapper {
+        public GzipDecompressingEntity(final HttpEntity entity) {
+            super(entity);
+        }
+
+        @Override
+        public InputStream getContent() throws IOException,
+                IllegalStateException {
+            InputStream wrappedin = wrappedEntity.getContent();
+
+            return new GZIPInputStream(wrappedin);
+        }
+
+        @Override
+        public long getContentLength() {
+            // length of ungzipped content is not known
+            return -1;
+        }
+    }
+
+    private static boolean isResponseStatusOk(HttpResponse response) {
+        if (null != response) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected static void postCheckApiException(Context context, Exception exception) {
+        if (null != exception && API_DEBUG) {
+            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

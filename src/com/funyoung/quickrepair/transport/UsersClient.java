@@ -1,9 +1,11 @@
 package com.funyoung.quickrepair.transport;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.funyoung.quickrepair.api.ApiException;
 import com.funyoung.quickrepair.api.CommonUtils;
+import com.funyoung.quickrepair.model.User;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -140,7 +142,7 @@ public final class UsersClient extends HttpRequestExecutor {
 //                .parameter(paramMap)
                 .parameter(API_PARAM_PHONE, mobile)
                 .create();
-        return asString(doRequest(request));
+        return doRequest(request);
     }
 
     public  String login(String mobile, String code) throws IOException, ApiException {
@@ -154,36 +156,48 @@ public final class UsersClient extends HttpRequestExecutor {
                 .parameter(API_PARAM_PHONE, mobile)
                 .parameter(API_PARAM_CODE, code)
                 .create();
-        return asString(doRequest(request));
+        return doRequest(request);
     }
 
     public static boolean sendVerifyCode(Context context, String mobile) {
         UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        Exception exception = null;
         try {
             String result = ac.sendCode(mobile);
             return CommonUtils.parseBooleanResult(result);
         } catch (ClientProtocolException e) {
+            exception = e;
             e.printStackTrace();
         } catch (IOException e) {
+            exception = e;
             e.printStackTrace();
         } catch (Exception e) {
+            exception = e;
             e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
         }
         return false;
     }
 
-    public static boolean login(Context context, String mobile, String code) {
+    public static User login(Context context, String mobile, String code) {
         UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        Exception exception = null;
         try {
             String result = ac.login(mobile, code);
-            return CommonUtils.parseBooleanResult(result);
+            return User.parseFromJson(result);
         } catch (ClientProtocolException e) {
+            exception = e;
             e.printStackTrace();
         } catch (IOException e) {
+            exception = e;
             e.printStackTrace();
         } catch (Exception e) {
+            exception = e;
             e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
         }
-        return false;
+        return null;
     }
 }

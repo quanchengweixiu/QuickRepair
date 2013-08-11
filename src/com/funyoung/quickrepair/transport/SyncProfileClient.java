@@ -38,7 +38,7 @@ public final class SyncProfileClient extends HttpRequestExecutor {
             .parameter(PARAM_USER_ID, uid)
             .parameter(PARAM_TICKET, sessionTicket)
             .create();        
-        return asString(doRequest(request));
+        return doRequest(request);
     }
     
 	public String syncProfile(String uid, String sessionTicket, String localInfo) throws ApiException, IOException{
@@ -49,7 +49,7 @@ public final class SyncProfileClient extends HttpRequestExecutor {
         reqBuilder.entity(new StringEntity(localInfo, "UTF-8"));
         
         HttpRequestBase request = reqBuilder.create();
-        String result = asString(doRequest(request));
+        String result = doRequest(request);
 	    return result;
 	}
     
