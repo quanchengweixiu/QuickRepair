@@ -195,50 +195,52 @@ public class SignUpFragment extends UserFragment {
     }
 
     private void performLoginTask() {
-        mLoginTask = new AsyncTask<Void, Void, String>() {
-            boolean mResult = false;
-            long startTime;
-            @Override
-            protected void onPreExecute() {
-                mResult = false;
-                startTime = System.currentTimeMillis();
+        if (null == mLoginTask) {
+            mLoginTask = new AsyncTask<Void, Void, String>() {
+                boolean mResult = false;
+                long startTime;
+                @Override
+                protected void onPreExecute() {
+                    mResult = false;
+                    startTime = System.currentTimeMillis();
 
-                mLoginButton.setEnabled(false);
-                mSendCodeView.setEnabled(false);
-            }
+                    mLoginButton.setEnabled(false);
+                    mSendCodeView.setEnabled(false);
+                }
 
-            @Override
-            protected String doInBackground(Void... voids) {
-                try {
-                    final String mobile = validateUserName();
-                    final String code = validatePassword();
-                    User user = UsersClient.login(getActivity(), mobile, code);
-                    if (null == user) {
-                        mResult = false;
-                    } else {
-                        mResult = true;
-                        DemoApplication application = (DemoApplication)getActivity().getApplication();
-                        application.setLoginUser(user);
+                @Override
+                protected String doInBackground(Void... voids) {
+                    try {
+                        final String mobile = validateUserName();
+                        final String code = validatePassword();
+                        User user = UsersClient.login(getActivity(), mobile, code);
+                        if (null == user) {
+                            mResult = false;
+                        } else {
+                            mResult = true;
+                            DemoApplication application = (DemoApplication)getActivity().getApplication();
+                            application.setLoginUser(user);
+                        }
+                        return "Login with " + mobile + ", code " + code;
+                    } catch (Exception e) {
+                        return "Login exception " + e.getMessage();
                     }
-                    return "Login with " + mobile + ", code " + code;
-                } catch (Exception e) {
-                    return "Login exception " + e.getMessage();
                 }
-            }
 
-            @Override
-            protected void onPostExecute(String result) {
-                final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
-                PerformanceUtils.showToast(getActivity(), result, diff);
+                @Override
+                protected void onPostExecute(String result) {
+                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                    PerformanceUtils.showToast(getActivity(), result, diff);
 
-                if (mResult) {
-                    ((MainActivity)getActivity()).finishLogin();
-                } else {
-                    mLoginButton.setEnabled(true);
-                    mSendCodeView.setEnabled(true);
+                    if (mResult) {
+                        ((MainActivity)getActivity()).finishLogin();
+                    } else {
+                        mLoginButton.setEnabled(true);
+                        mSendCodeView.setEnabled(true);
+                    }
                 }
-            }
-        };
+            };
+        }
         mLoginTask.execute();
     }
 

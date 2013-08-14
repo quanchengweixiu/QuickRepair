@@ -65,7 +65,9 @@ public class FragmentFactory {
     // todo: goto user profile
     public void gotoProfileFragment(User user) {
         if (null == profileFragment) {
-            profileFragment = new ProfileFragment();
+            ProfileFragment fragment = new ProfileFragment();
+            fragment.updateProfile(user);
+            profileFragment = fragment;
         }
 
         if (mCurrentFragment != profileFragment) {

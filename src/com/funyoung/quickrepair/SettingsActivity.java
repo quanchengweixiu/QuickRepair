@@ -66,4 +66,7 @@ public class SettingsActivity extends PreferenceActivity {
             editor.commit();
         }
     }
+    public static boolean hasLoginUser(Context context) {
+        return null != getLoginUser(context);
+    }
 }

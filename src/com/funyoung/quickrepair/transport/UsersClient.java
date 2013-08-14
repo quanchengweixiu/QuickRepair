@@ -123,13 +123,7 @@ public final class UsersClient extends HttpRequestExecutor {
     private final static class Method {
         private static final String SEND_CODE = "sendCode";
         private static final String LOGIN = "login";
-        private static final String ACCOUNT_SHOW = "user/show";
-        private static final String ACCOUNT_UPDATE = "account/update";
-        private static final String REQUEST_EXCHANGE_CARD = "request/profile_access_approve";
-        private static final String COMMAND_SYNC_PROFILE = "profile/syncdata";
-        private static final String COMMAND_GET_PROFILE = "profile/getdata";
-        private static final String COMMAND_APP_INFO = "qiupu/app/get";
-        private static final String INTERNAL_GET_USERS = "internal/getUsers";
+        private static final String GET_PROFILE = "getUserInfo";
     }
 
     public  String sendCode(String mobile) throws IOException, ApiException {
@@ -155,6 +149,14 @@ public final class UsersClient extends HttpRequestExecutor {
 //                .parameter(paramMap)
                 .parameter(API_PARAM_PHONE, mobile)
                 .parameter(API_PARAM_CODE, code)
+                .create();
+        return doRequest(request);
+    }
+
+    public  String getProfile(long uid) throws IOException, ApiException {
+        HttpRequestBase request = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.GET_PROFILE)
+                .parameter(API_PARAM_USER_ID, String.valueOf(uid))
                 .create();
         return doRequest(request);
     }
@@ -186,6 +188,27 @@ public final class UsersClient extends HttpRequestExecutor {
         try {
             String result = ac.login(mobile, code);
             return User.parseFromJson(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return null;
+    }
+
+    public static User getProfile(Context context, final long uid) {
+        UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.getProfile(uid);
+            return User.parseProfileFromJson(result);
         } catch (ClientProtocolException e) {
             exception = e;
             e.printStackTrace();

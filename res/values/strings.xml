@@ -82,5 +82,6 @@
     <string name="preferences_debug_option">调试选项</string>
     <string name="preferences_local_mms_code">从客户端发送验证码</string>
     <string name="preferences_local_mms_code_summary">从客户端生成，发送验证码，并发送短信到给定手机号。</string>
+    <string name="app_title_profile">个人信息</string>
 
 </resources>

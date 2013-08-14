@@ -17,8 +17,6 @@
 package com.funyoung.quickrepair;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -27,16 +25,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -46,16 +38,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.funyoung.quickrepair.fragment.BaseFragment;
 import com.funyoung.quickrepair.fragment.FragmentFactory;
-import com.funyoung.quickrepair.fragment.LocationOverlayFragment;
-import com.funyoung.quickrepair.fragment.PlanetFragment;
-import com.funyoung.quickrepair.fragment.SignUpFragment;
 import com.funyoung.quickrepair.model.User;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
 import com.funyoung.qcwx.R;
-
-import java.util.Locale;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -318,7 +305,7 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void selectNavigateItem(int position) {
-        mActionBar.setTitle(mPlanetTitles[position]);
+        mActionBar.setTitle(getNavigationTitle(position));
         mDrawerLayout.closeDrawer(mDrawerList);
 
         switch (position) {
@@ -413,4 +400,10 @@ public class MainActivity extends SherlockFragmentActivity {
         gotoDefaultView();
     }
 
+    private CharSequence getNavigationTitle(int position) {
+        if (position == 0 && SettingsActivity.hasLoginUser(this)) {
+            return getString(R.string.app_title_profile);
+        }
+        return mPlanetTitles[position];
+    }
 }
