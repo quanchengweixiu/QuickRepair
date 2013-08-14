@@ -110,4 +110,12 @@ public class FragmentFactory {
     public boolean isDefaultFragment() {
         return mCurrentFragment == defaultFragment;
     }
+
+    public void onDestroy() {
+        defaultFragment = null;
+        locationFragment = null;
+        loginFragment = null;
+        profileFragment = null;
+        _instance = null;
+    }
 }

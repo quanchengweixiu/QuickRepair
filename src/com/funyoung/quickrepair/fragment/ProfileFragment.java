@@ -12,13 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
-
-import baidumapsdk.demo.DemoApplication;
 
 public class ProfileFragment extends BaseFragment {
     private static final String TAG = "ProfileFragment";

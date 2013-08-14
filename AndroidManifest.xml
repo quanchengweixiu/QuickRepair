@@ -140,6 +140,10 @@
             android:process=":remote" >
         </service>
 
+        <meta-data android:value="51f1ccf956240b3091033175" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="ANDROID_DEBUG" android:name="UMENG_CHANNEL"/>
+        <activity android:name="com.umeng.fb.ConversationActivity"/>
+        <activity android:name="com.umeng.fb.ContactActivity"/>
        
     </application>
 
@@ -213,5 +217,4 @@
         android:normalScreens="true"
         android:resizeable="true"
         android:smallScreens="false" />
-
 </manifest>

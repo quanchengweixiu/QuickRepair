@@ -43,6 +43,8 @@ import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
 import com.funyoung.qcwx.R;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.fb.FeedbackAgent;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -176,6 +178,9 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobclickAgent.onError(this);
+        MobclickAgent.updateOnlineConfig(this);
+
         setContentView(R.layout.activity_main_home);
 
         mTitle = mDrawerTitle = getTitle();
@@ -253,8 +258,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -263,17 +268,17 @@ public class MainActivity extends SherlockFragmentActivity {
             case R.id.action_toggle:
                 toggleView();
                 return true;
-        case R.id.action_websearch:
-            // create intent to perform web search for this planet
-            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-            intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-            // catch event that there's no activity to handle intent
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-            }
-            return true;
+            case R.id.action_websearch:
+                // create intent to perform web search for this planet
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
+                // catch event that there's no activity to handle intent
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+                }
+                return true;
             case R.id.menu_demos:
                 Intent i = new Intent(getApplicationContext(),
                         BMapApiDemoMain.class);
@@ -283,8 +288,12 @@ public class MainActivity extends SherlockFragmentActivity {
                     Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
                 }
                 return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.menu_feedback:
+                FeedbackAgent agent = new FeedbackAgent(this);
+                agent.startFeedbackActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -405,5 +414,23 @@ public class MainActivity extends SherlockFragmentActivity {
             return getString(R.string.app_title_profile);
         }
         return mPlanetTitles[position];
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FragmentFactory.getInstance(this).onDestroy();
     }
 }
