@@ -30,6 +30,7 @@ public class User {
         public long longitude;
         public CategoryList mMasterList;
         public Rank mRank;
+        public String mMobile;
     }
 
     private long mUid;
@@ -60,6 +61,19 @@ public class User {
             return "";
         }
         return mAvatarUrl;
+    }
+
+    public int getGender() {
+        return null == mProfileExtra ? 0 : mProfileExtra.sex;
+    }
+
+    public String getAddress() {
+        return null == mProfileExtra ? "" : mProfileExtra.address;
+    }
+
+
+    public String getMobile() {
+        return null == mProfileExtra ? "" : mProfileExtra.mMobile;
     }
 
     public static User parseFromJson(String jstr) throws Exception {

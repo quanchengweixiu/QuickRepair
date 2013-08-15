@@ -1,6 +1,7 @@
 
 package com.funyoung.quickrepair.fragment;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +23,11 @@ public class ProfileFragment extends BaseFragment {
 
     private View mRootView;
     private User mUser;
+
+    private View mNameView;
+    private View mSexView;
+    private View mAddressView;
+    private View mPhoneView;
 
     private AsyncTask<Void, Void, String> mLoginTask;
 
@@ -67,23 +73,39 @@ public class ProfileFragment extends BaseFragment {
                 }
             }
 
-            final String name = mUser.getNickName();
-            if (!TextUtils.isEmpty(name)) {
-                addItemBane(inflater, profileContainer, "名字", name,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // todo: edit name
-                            }
-                        });
-            }
+            mNameView = addItemBane(inflater, profileContainer, "名字", mUser.getNickName());
+            mSexView = addItemBane(inflater, profileContainer, "性别", "" + mUser.getGender());
+            mAddressView = addItemBane(inflater, profileContainer, "常住地址", mUser.getAddress());
+            mPhoneView = addItemBane(inflater, profileContainer, "手机号码", mUser.getMobile());
+
+            mNameView.setOnClickListener(mChangeNameListener);
+            mNameView.setOnClickListener(mChangeGenderListener);
+            mNameView.setOnClickListener(mChangeAddressListener);
+//            mNameView.setOnClickListener(mChangeMobileListener);
         }
     }
 
-    private void addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
-                             String nameLabel, String nameValue,
-                             View.OnClickListener onClickListener) {
-        View itemView = inflater.inflate(R.layout.simple_profile_item, profileContainer);
+    private static class ChangeTextListener implements View.OnClickListener {
+        private View mTextView;
+        private String mKey;
+        public ChangeTextListener (View view, String key) {
+            mTextView = view;
+            mKey = key;
+        }
+
+        @Override
+        public void onClick(View view) {
+            // todo, show modify ui to change view with key.
+        }
+    }
+
+    ChangeTextListener mChangeNameListener = new ChangeTextListener(mNameView, "名字");
+    ChangeTextListener mChangeGenderListener = new ChangeTextListener(mNameView, "性别");
+    ChangeTextListener mChangeAddressListener = new ChangeTextListener(mNameView, "常住地址");
+
+    private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
+                             String nameLabel, String nameValue) {
+        View itemView = inflater.inflate(R.layout.simple_profile_item, null);
         if (null != itemView) {
             TextView textView = (TextView)itemView.findViewById(R.id.tv_label);
             if (null != textView) {
@@ -94,6 +116,8 @@ public class ProfileFragment extends BaseFragment {
                 textView.setText(nameValue);
             }
         }
+        profileContainer.addView(itemView);
+        return itemView;
     }
 
     @Override
