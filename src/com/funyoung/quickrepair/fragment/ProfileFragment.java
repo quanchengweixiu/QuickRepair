@@ -80,7 +80,10 @@ public class ProfileFragment extends BaseFragment {
                     final String url = mUser.getAvatarUrl();
                     // todo: set on background thread
                     if (!TextUtils.isEmpty(url)) {
-                        photoView.setImageURI(Uri.parse(url));
+//                        photoView.setImageURI(Uri.parse(url));
+                    }
+                    if (mUser.getGender() == User.GENDER_FEMALE) {
+                        photoView.setImageResource(R.drawable.avatar_girl);
                     }
                 }
             }
@@ -132,20 +135,21 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private static class ChangeTextListener implements View.OnClickListener {
-        private View mTextView;
+        private View mView;
         private int mKeyResId;
         public ChangeTextListener (View view, int keyResId) {
-            mTextView = view;
+            mView = view;
             mKeyResId = keyResId;
         }
 
         @Override
         public void onClick(View view) {
-            final Context context = mTextView.getContext();
+            final Context context = mView.getContext();
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setIcon(android.R.drawable.ic_dialog_info).setTitle(mKeyResId);
             EditText editText = new EditText(context);
-            editText.setText(((TextView)mTextView).getText());
+            TextView textView = (TextView)mView.findViewById(R.id.tv_content);
+            editText.setText(textView.getText());
             editText.selectAll();
             builder.setView(editText);
             builder.setNegativeButton(android.R.string.cancel, null);

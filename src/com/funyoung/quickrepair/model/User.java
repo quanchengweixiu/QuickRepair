@@ -28,6 +28,10 @@ public class User {
     public static final int USER_TYPE_DEFAULT = 0;
     public static final int USER_TYPE_PROVIDER = 1;
 
+    public static final int GENDER_MALE = 0;
+    public static final int GENDER_FEMALE = 1;
+    public static final int GENDER_UNKNOWN = 2;
+
     public boolean isProviderType() {
         return mProfileExtra != null && mProfileExtra.type == USER_TYPE_PROVIDER;
     }
