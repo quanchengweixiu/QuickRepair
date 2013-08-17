@@ -42,6 +42,8 @@ import com.funyoung.quickrepair.model.User;
 import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
+import baidumapsdk.demo.DemoApplication;
+
 import com.funyoung.qcwx.R;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
@@ -345,12 +347,13 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void gotoLoinFragment() {
-        User user = SettingsActivity.getLoginUser(getApplicationContext());
+        User user = ((DemoApplication)getApplication()).getLoginUser();
         if (null == user) {
             getFragmentFactory().gotoLoinFragment();
         } else {
             getFragmentFactory().gotoProfileFragment(user);
         }
+        updateToggleMenuItem();
     }
 
     private void gotoDefaultView() {
@@ -396,7 +399,7 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private User getLoginUser() {
-        return SettingsActivity.getLoginUser(getApplicationContext());
+        return ((DemoApplication)getApplication()).getLoginUser();
     }
 
     public void finishLogin() {
@@ -407,6 +410,17 @@ public class MainActivity extends SherlockFragmentActivity {
             mDrawerAdapter.notifyDataSetChanged();
         }
         gotoDefaultView();
+    }
+
+    public void startPost(int i, String label) {
+        User user = ((DemoApplication)getApplication()).getLoginUser();
+        if (null == user) {
+            getFragmentFactory().gotoLoinFragment();
+        } else {
+            setTitle(label);
+            getFragmentFactory().gotoPostFragment(user);
+        }
+        updateToggleMenuItem();
     }
 
     private CharSequence getNavigationTitle(int position) {

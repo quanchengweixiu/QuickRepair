@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.MainActivity;
 
 /**
  * Created by yangfeng on 13-8-10.
@@ -24,7 +26,7 @@ import com.funyoung.qcwx.R;
 /**
  * Fragment that appears in the "content_frame", shows a planet
  */
-public  class CategoryGridFragment extends Fragment {
+public  class CategoryGridFragment extends BaseFragment {
     private View rootView;
 
     public CategoryGridFragment() {
@@ -68,6 +70,12 @@ public  class CategoryGridFragment extends Fragment {
                 new int[] { R.id.img, R.id.label });
 
         gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((MainActivity)getActivity()).startPost(i, labels[i]);
+            }
+        });
 
         return rootView;
     }

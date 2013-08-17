@@ -93,10 +93,10 @@ public class DemoApplication extends Application {
         SettingsActivity.setLoginUser(this, user);
         mUser = user;
     }
-    public boolean hasLoginUser() {
+    public User getLoginUser() {
         if (null == mUser) {
             mUser = SettingsActivity.getLoginUser(this);
         }
-        return null != mUser;
+        return mUser;
     }
 }

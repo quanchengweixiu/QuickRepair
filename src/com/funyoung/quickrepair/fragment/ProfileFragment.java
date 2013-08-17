@@ -22,6 +22,8 @@ import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
+import baidumapsdk.demo.DemoApplication;
+
 public class ProfileFragment extends BaseFragment {
     private static final String TAG = "ProfileFragment";
 
@@ -209,8 +211,8 @@ public class ProfileFragment extends BaseFragment {
 
     public void updateProfile(User user) {
         mUser = user;
+        refreshUI();
     }
-
 
     private void performLoginTask() {
         if (null == mUser || mUser.getUid() <= 0) {
@@ -260,7 +262,7 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void refreshUI() {
-        SettingsActivity.setLoginUser(getActivity(), mUser);
+        ((DemoApplication)getActivity().getApplication()).setLoginUser(mUser);
 
         TextView textView;
         textView = (TextView)mNameView.findViewById(R.id.tv_content);

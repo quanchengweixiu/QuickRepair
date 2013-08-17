@@ -26,6 +26,7 @@ public class FragmentFactory {
     private Fragment locationFragment;
     private Fragment defaultFragment;
     private Fragment profileFragment;
+    private Fragment postFragment;
     public void gotoLoinFragment() {
         if (null == loginFragment) {
             loginFragment = new SignUpFragment();
@@ -62,7 +63,6 @@ public class FragmentFactory {
         }
     }
 
-    // todo: goto user profile
     public void gotoProfileFragment(User user) {
         if (null == profileFragment) {
             ProfileFragment fragment = new ProfileFragment();
@@ -80,6 +80,18 @@ public class FragmentFactory {
         }
     }
 
+    public void gotoPostFragment(User user) {
+        if (null == postFragment) {
+            PostFragment fragment = new PostFragment();
+            postFragment = fragment;
+        }
+
+        if (mCurrentFragment != postFragment) {
+            mCurrentFragment = postFragment;
+            gotoFragmentView(mCurrentFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
+        }
+        ((PostFragment)mCurrentFragment).updateProfile(user);
+    }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();
         if (true && TextUtils.isEmpty(name)) {
@@ -116,6 +128,7 @@ public class FragmentFactory {
         locationFragment = null;
         loginFragment = null;
         profileFragment = null;
+        postFragment = null;
         _instance = null;
     }
 }
