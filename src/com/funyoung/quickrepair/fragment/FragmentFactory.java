@@ -82,7 +82,7 @@ public class FragmentFactory {
 
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();
-        if (TextUtils.isEmpty(name)) {
+        if (true && TextUtils.isEmpty(name)) {
             ft.replace(R.id.content_frame, fragment);
         } else {
             ft.replace(R.id.content_frame, fragment, name);

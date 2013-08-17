@@ -1,6 +1,8 @@
 
 package com.funyoung.quickrepair.fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +31,7 @@ public class ProfileFragment extends BaseFragment {
     private View mSexView;
     private View mAddressView;
     private View mPhoneView;
+    private View mRankView;
 
     private AsyncTask<Void, Void, String> mLoginTask;
 
@@ -62,54 +66,106 @@ public class ProfileFragment extends BaseFragment {
         }
 
         if (profileContainer instanceof ViewGroup) {
-            View header = profileContainer.findViewById(R.id.profile_header);
-            if (null != header) {
-                ImageView photoView = (ImageView)header.findViewById(R.id.img_profile);
+            View itemView = inflater.inflate(R.layout.simple_profile_item_photo, null);
+            if (null != itemView) {
+                ImageView photoView = (ImageView)itemView.findViewById(R.id.img_profile);
                 if (null != photoView) {
                     final String url = mUser.getAvatarUrl();
+                    // todo: set on background thread
                     if (!TextUtils.isEmpty(url)) {
                         photoView.setImageURI(Uri.parse(url));
                     }
                 }
             }
+            profileContainer.addView(itemView);
 
-            mNameView = addItemBane(inflater, profileContainer, "名字", mUser.getNickName());
-            mSexView = addItemBane(inflater, profileContainer, "性别", "" + mUser.getGender());
-            mAddressView = addItemBane(inflater, profileContainer, "常住地址", mUser.getAddress());
-            mPhoneView = addItemBane(inflater, profileContainer, "手机号码", mUser.getMobile());
+//            View header = profileContainer.findViewById(R.id.profile_header);
+//            if (null != header) {
+//                ImageView photoView = (ImageView)header.findViewById(R.id.img_profile);
+//                if (null != photoView) {
+//                    final String url = mUser.getAvatarUrl();
+//                    if (!TextUtils.isEmpty(url)) {
+//                        photoView.setImageURI(Uri.parse(url));
+//                    }
+//                }
+//            }
+
+            mNameView = addItemBane(inflater, profileContainer, R.string.profile_user_name, mUser.getNickName());
+            mSexView = addItemBane(inflater, profileContainer, R.string.profile_user_gender, "" + mUser.getGender());
+            mAddressView = addItemBane(inflater, profileContainer, R.string.profile_user_address, mUser.getAddress());
+            mPhoneView = addItemBane(inflater, profileContainer, R.string.profile_user_mobile, mUser.getMobile());
+
+            if (mUser.isProviderType()) {
+                mRankView = addItemBane(inflater, profileContainer, R.string.profile_user_rank, "");
+                mPhoneView.setOnClickListener(mChangeMobileListener);
+            } else {
+                TextView tvContent = (TextView)mPhoneView.findViewById(R.id.tv_content);
+                tvContent.setCompoundDrawables(null, null, null, null);
+            }
 
             mNameView.setOnClickListener(mChangeNameListener);
-            mNameView.setOnClickListener(mChangeGenderListener);
-            mNameView.setOnClickListener(mChangeAddressListener);
-//            mNameView.setOnClickListener(mChangeMobileListener);
+            mSexView.setOnClickListener(mChangeGenderListener);
+            mAddressView.setOnClickListener(mChangeAddressListener);
+            if (null != mRankView) {
+                mRankView.setOnClickListener(mViewRankListener);
+            }
         }
     }
 
     private static class ChangeTextListener implements View.OnClickListener {
         private View mTextView;
-        private String mKey;
-        public ChangeTextListener (View view, String key) {
+        private int mKeyResId;
+        public ChangeTextListener (View view, int keyResId) {
             mTextView = view;
-            mKey = key;
+            mKeyResId = keyResId;
         }
 
         @Override
         public void onClick(View view) {
-            // todo, show modify ui to change view with key.
+            final Context context = mTextView.getContext();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(android.R.drawable.ic_dialog_info).setTitle(mKeyResId);
+            EditText editText = new EditText(context);
+            editText.setText(((TextView)mTextView).getText());
+            editText.selectAll();
+            builder.setView(editText);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    switch (mKeyResId) {
+                        case R.string.profile_user_name:
+                            break;
+                        case R.string.profile_user_gender:
+                            break;
+                        case R.string.profile_user_address:
+                            break;
+                        case R.string.profile_user_mobile:
+                            break;
+                        case R.string.profile_user_rank:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+            builder.show();
         }
     }
 
-    ChangeTextListener mChangeNameListener = new ChangeTextListener(mNameView, "名字");
-    ChangeTextListener mChangeGenderListener = new ChangeTextListener(mNameView, "性别");
-    ChangeTextListener mChangeAddressListener = new ChangeTextListener(mNameView, "常住地址");
+    ChangeTextListener mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name);
+    ChangeTextListener mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender);
+    ChangeTextListener mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address);
+    ChangeTextListener mChangeMobileListener = new ChangeTextListener(mPhoneView, R.string.profile_user_mobile);
+    ChangeTextListener mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank);
 
     private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
-                             String nameLabel, String nameValue) {
+                             int labelResId, String nameValue) {
         View itemView = inflater.inflate(R.layout.simple_profile_item, null);
         if (null != itemView) {
             TextView textView = (TextView)itemView.findViewById(R.id.tv_label);
             if (null != textView) {
-                textView.setText(nameLabel);
+                textView.setText(labelResId);
             }
             textView = (TextView)itemView.findViewById(R.id.tv_content);
             if (null != textView) {

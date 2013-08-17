@@ -84,4 +84,9 @@
     <string name="preferences_local_mms_code_summary">从客户端生成，发送验证码，并发送短信到给定手机号。</string>
     <string name="app_title_profile">个人信息</string>
 
+    <string name="profile_user_name">"名字"</string>
+    <string name="profile_user_gender">"性别"</string>
+    <string name="profile_user_address">"常住地址"</string>
+    <string name="profile_user_mobile">"手机号码"</string>
+    <string name="profile_user_rank">"用户好评"</string>
 </resources>

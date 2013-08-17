@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class User {
     public static final String KEY_UID = "uid";
-    public static final String KEY_NAME = "nickname";
+    public static final String KEY_NAME = "name";
     public static final String KEY_AVATAR = "header";
 
     public static final String KEY_GENDER = "sex";
@@ -22,8 +22,18 @@ public class User {
     public static final String KEY_LONGITUDE = "longitude";
     public static final String KEY_CATEGORY = "master_category";
     public static final String KEY_RANK = "rank";
+    public static final String KEY_USER_TYPE = "user_type";
+    public static final String KEY_USER_MOBILE = "mobile";
+
+    public static final int USER_TYPE_DEFAULT = 0;
+    public static final int USER_TYPE_PROVIDER = 1;
+
+    public boolean isProviderType() {
+        return mProfileExtra != null && mProfileExtra.type == USER_TYPE_PROVIDER;
+    }
 
     public static class ProfileDetail {
+        public int type;
         public int sex;
         public String address;
         public long latitude;
@@ -104,7 +114,11 @@ public class User {
             if (null == jsonObject) {
                 throw new Exception("Invalid json to convert as User " + jstr);
             }
-            long uid = jsonObject.optLong(KEY_UID);
+            jsonObject = jsonObject.getJSONObject("member");
+            if (null == jsonObject) {
+                throw new Exception("Invalid json to without member key  " + jstr);
+            }
+            long uid = Long.parseLong(jsonObject.optString(KEY_UID));
             if (uid > 0) {
                 String nickName= jsonObject.optString(KEY_NAME);
                 String avatarUrl = jsonObject.optString(KEY_AVATAR);
@@ -118,7 +132,8 @@ public class User {
                 detail.sex = jsonObject.optInt(KEY_GENDER);
                 detail.mMasterList = CategoryList.parseListFromJson(jsonObject.optString(KEY_CATEGORY));
                 detail.mRank = Rank.parseFromJson(jsonObject.optString(KEY_RANK));
-
+                detail.mMobile = jsonObject.optString(KEY_USER_MOBILE);
+                detail.type = jsonObject.optInt(KEY_USER_TYPE);
                 return user;
             } else {
                 throw new Exception("Invalid uid in " + jstr);
