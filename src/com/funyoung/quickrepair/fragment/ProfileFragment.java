@@ -211,7 +211,6 @@ public class ProfileFragment extends BaseFragment {
 
     public void updateProfile(User user) {
         mUser = user;
-        refreshUI();
     }
 
     private void performLoginTask() {

@@ -25,6 +25,8 @@ final class Preferences {
     static final String KEY_USER_ID = User.KEY_UID;
     static final String KEY_USER_NICKNAME = User.KEY_NAME;
     static final String KEY_USER_AVATAR = User.KEY_AVATAR;
+    static final String KEY_USER_MOBILE = User.KEY_USER_MOBILE;
+    static final String KEY_USER_ADDRESS = User.KEY_ADDRESS;
 
     Preferences() {
     }

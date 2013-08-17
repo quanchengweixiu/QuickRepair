@@ -90,7 +90,7 @@ public class FragmentFactory {
             mCurrentFragment = postFragment;
             gotoFragmentView(mCurrentFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
         }
-        ((PostFragment)mCurrentFragment).updateProfile(user);
+//        ((PostFragment)mCurrentFragment).updateProfile(user);
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();
@@ -123,12 +123,15 @@ public class FragmentFactory {
         return mCurrentFragment == defaultFragment;
     }
 
-    public void onDestroy() {
+    public void releaseCache() {
         defaultFragment = null;
         locationFragment = null;
         loginFragment = null;
         profileFragment = null;
         postFragment = null;
+    }
+    public void onDestroy() {
+        releaseCache();
         _instance = null;
     }
 }

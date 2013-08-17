@@ -439,6 +439,7 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     public void onPause() {
         super.onPause();
+        FragmentFactory.getInstance(this).releaseCache();
         MobclickAgent.onPause(this);
     }
 

@@ -118,7 +118,7 @@ public class PostFragment extends BaseFragment {
 
             Button publishButton = new Button(getActivity());
             publishButton.setText(R.string.publish);
-            publishButton.setBackgroundResource(R.drawable.button_border);
+//            publishButton.setBackgroundResource(R.drawable.button_border);
             profileContainer.addView(publishButton);
         }
     }
@@ -261,27 +261,19 @@ public class PostFragment extends BaseFragment {
 //        mLoginTask.execute();
 //    }
 
-    public void updateProfile(User user) {
-        if (mUser != user) {
-            mUser = user;
-            refreshUI();
-        }
-    }
+//    public void updateProfile(User user) {
+//        if (mUser != user) {
+//            mUser = user;
+//            refreshUI();
+//        }
+//    }
 
-    private void refreshUI() {
-//        SettingsActivity.setLoginUser(getActivity(), mUser);
-//
+//    private void refreshUI() {
 //        TextView textView;
-//        textView = (TextView)mNameView.findViewById(R.id.tv_content);
-//        textView.setText(mUser.getNickName());
-//
-//        textView = (TextView)mSexView.findViewById(R.id.tv_content);
-//        textView.setText(getGenderLabel());
-//
 //        textView = (TextView)mAddressView.findViewById(R.id.tv_content);
 //        textView.setText(mUser.getAddress());
 //
 //        textView = (TextView)mPhoneView.findViewById(R.id.tv_content);
 //        textView.setText(mUser.getMobile());
-    }
+//    }
 }

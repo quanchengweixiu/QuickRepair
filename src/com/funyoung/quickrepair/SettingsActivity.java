@@ -51,7 +51,10 @@ public class SettingsActivity extends PreferenceActivity {
         if (uid > 0) {
             final String nickName = prefs.getString(Preferences.KEY_USER_NICKNAME, String.valueOf(uid));
             final String avatarUrl = prefs.getString(Preferences.KEY_USER_AVATAR, "");
-            return new User(uid, nickName, avatarUrl);
+            final String address = prefs.getString(Preferences.KEY_USER_ADDRESS, "");
+            final String mobile = prefs.getString(Preferences.KEY_USER_MOBILE, "");
+            User user = new User(uid, nickName, avatarUrl, address, mobile);
+            return user;
         } else {
             return null;
         }
@@ -63,6 +66,8 @@ public class SettingsActivity extends PreferenceActivity {
             editor.putLong(Preferences.KEY_USER_ID, user.getUid());
             editor.putString(Preferences.KEY_USER_NICKNAME, user.getNickName());
             editor.putString(Preferences.KEY_USER_AVATAR, user.getAvatarUrl());
+            editor.putString(Preferences.KEY_USER_ADDRESS, user.getAddress());
+            editor.putString(Preferences.KEY_USER_MOBILE, user.getMobile());
             editor.commit();
         }
     }

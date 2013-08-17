@@ -53,10 +53,13 @@ public class User {
 
     private ProfileDetail mProfileExtra;
 
-    public User(long uid, String nickName, String avatarUrl) {
+    public User(long uid, String nickName, String avatarUrl, String address, String mobile) {
         mUid = uid;
         mNickName = nickName;
         mAvatarUrl = avatarUrl;
+        mProfileExtra = new ProfileDetail();
+        mProfileExtra.address = address;
+        mProfileExtra.mMobile = mobile;
     }
 
     public long getUid() {
@@ -100,7 +103,9 @@ public class User {
             if (uid > 0) {
                 String nickName= jsonObject.optString(KEY_NAME);
                 String avatarUrl = jsonObject.optString(KEY_AVATAR);
-                return new User(uid, nickName, avatarUrl);
+                String address = jsonObject.optString(KEY_ADDRESS);
+                String mobile = jsonObject.optString(KEY_USER_MOBILE);
+                return new User(uid, nickName, avatarUrl, address, mobile);
             } else {
                 throw new Exception("Invalid uid in " + jstr);
             }
@@ -126,17 +131,21 @@ public class User {
             if (uid > 0) {
                 String nickName= jsonObject.optString(KEY_NAME);
                 String avatarUrl = jsonObject.optString(KEY_AVATAR);
-                User user = new User(uid, nickName, avatarUrl);
-                user.mProfileExtra =new ProfileDetail();
+                String address = jsonObject.optString(KEY_ADDRESS);
+                String mobile = jsonObject.optString(KEY_USER_MOBILE);
+                User user = new User(uid, nickName, avatarUrl, address, mobile);
+
+                if (null == user.mProfileExtra) {
+                    user.mProfileExtra =new ProfileDetail();
+                }
+
                 ProfileDetail detail = user.mProfileExtra;
 
-                detail.address = jsonObject.optString(KEY_ADDRESS);
                 detail.latitude = jsonObject.optLong(KEY_LATITUDE);
                 detail.longitude = jsonObject.optLong(KEY_LONGITUDE);
                 detail.sex = jsonObject.optInt(KEY_GENDER);
                 detail.mMasterList = CategoryList.parseListFromJson(jsonObject.optString(KEY_CATEGORY));
                 detail.mRank = Rank.parseFromJson(jsonObject.optString(KEY_RANK));
-                detail.mMobile = jsonObject.optString(KEY_USER_MOBILE);
                 detail.type = jsonObject.optInt(KEY_USER_TYPE);
                 return user;
             } else {
