@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.funyoung.quickrepair.SettingsActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
@@ -32,6 +33,12 @@ public class ProfileFragment extends BaseFragment {
     private View mAddressView;
     private View mPhoneView;
     private View mRankView;
+
+    ChangeTextListener mChangeNameListener;
+    ChangeTextListener mChangeGenderListener;
+    ChangeTextListener mChangeAddressListener;
+    ChangeTextListener mChangeMobileListener;
+    ChangeTextListener mViewRankListener;
 
     private AsyncTask<Void, Void, String> mLoginTask;
 
@@ -91,16 +98,22 @@ public class ProfileFragment extends BaseFragment {
 //            }
 
             mNameView = addItemBane(inflater, profileContainer, R.string.profile_user_name, mUser.getNickName());
-            mSexView = addItemBane(inflater, profileContainer, R.string.profile_user_gender, "" + mUser.getGender());
+            mSexView = addItemBane(inflater, profileContainer, R.string.profile_user_gender, getGenderLabel());
             mAddressView = addItemBane(inflater, profileContainer, R.string.profile_user_address, mUser.getAddress());
             mPhoneView = addItemBane(inflater, profileContainer, R.string.profile_user_mobile, mUser.getMobile());
 
             if (mUser.isProviderType()) {
                 mRankView = addItemBane(inflater, profileContainer, R.string.profile_user_rank, "");
-                mPhoneView.setOnClickListener(mChangeMobileListener);
             } else {
                 TextView tvContent = (TextView)mPhoneView.findViewById(R.id.tv_content);
                 tvContent.setCompoundDrawables(null, null, null, null);
+            }
+
+            if (null == mChangeNameListener) {
+                mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name);
+                mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender);
+                mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address);
+                mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank);
             }
 
             mNameView.setOnClickListener(mChangeNameListener);
@@ -108,6 +121,12 @@ public class ProfileFragment extends BaseFragment {
             mAddressView.setOnClickListener(mChangeAddressListener);
             if (null != mRankView) {
                 mRankView.setOnClickListener(mViewRankListener);
+            }
+            if (mUser.isProviderType()) {
+                if (null == mChangeMobileListener) {
+                    mChangeMobileListener = new ChangeTextListener(mPhoneView, R.string.profile_user_mobile);
+                }
+                mPhoneView.setOnClickListener(mChangeMobileListener);
             }
         }
     }
@@ -152,12 +171,6 @@ public class ProfileFragment extends BaseFragment {
             builder.show();
         }
     }
-
-    ChangeTextListener mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name);
-    ChangeTextListener mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender);
-    ChangeTextListener mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address);
-    ChangeTextListener mChangeMobileListener = new ChangeTextListener(mPhoneView, R.string.profile_user_mobile);
-    ChangeTextListener mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank);
 
     private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
                              int labelResId, String nameValue) {
@@ -243,5 +256,28 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void refreshUI() {
+        SettingsActivity.setLoginUser(getActivity(), mUser);
+
+        TextView textView;
+        textView = (TextView)mNameView.findViewById(R.id.tv_content);
+        textView.setText(mUser.getNickName());
+
+        textView = (TextView)mSexView.findViewById(R.id.tv_content);
+        textView.setText(getGenderLabel());
+
+        textView = (TextView)mAddressView.findViewById(R.id.tv_content);
+        textView.setText(mUser.getAddress());
+
+        textView = (TextView)mPhoneView.findViewById(R.id.tv_content);
+        textView.setText(mUser.getMobile());
+    }
+
+    private String getGenderLabel() {
+        String[] labels = getResources().getStringArray(R.array.gender_labels);
+        final int i = mUser.getGender();
+        if (i < 0 || i >= labels.length) {
+            return labels[0];
+        }
+        return labels[i];
     }
 }

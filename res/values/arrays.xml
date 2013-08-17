@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string-array name="qp_navigation_title_array">
+        <item>注册或登录</item>
+        <item>分类</item>
+        <item>搜索</item>
+    </string-array>
+    <string-array name="qp_navigation_title_login_array">
+        <item>注册或登录</item>
+        <item>分类</item>
+        <item>搜索</item>
+        <item>预订</item>
+        <item>收件箱</item>
+    </string-array>
+
+    <string-array name="qp_category_label_array">
+        <item>空调</item>
+        <item>热水器</item>
+        <item>马桶</item>
+        <item>电路</item>
+        <item>水管阀门</item>
+        <item>家电</item>
+        <item>房屋</item>
+        <item>家具</item>
+        <item>更多</item>
+    </string-array>
+
+    <string-array name="gender_labels">
+        <item>男</item>
+        <item>女</item>
+        <item>保密</item>
+    </string-array>
+</resources>
