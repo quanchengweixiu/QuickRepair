@@ -4,7 +4,9 @@ package com.funyoung.quickrepair.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +15,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.model.User;
+import com.funyoung.quickrepair.transport.BillingClient;
+import com.funyoung.quickrepair.utils.PerformanceUtils;
 
 import baidumapsdk.demo.DemoApplication;
 
 public class PostFragment extends BaseFragment {
     private static final String TAG = "ProfileFragment";
+    private static final int MIN_CHAR_NUM = 2;
 
     private View mRootView;
 
@@ -37,8 +43,25 @@ public class PostFragment extends BaseFragment {
 
     private View mDescriptionView;
 
-    private View mAttachView;
-    private View mPublishButton;
+    private AsyncTask<Void, Void, String> mLoginTask;
+
+    private View.OnFocusChangeListener mFocusChangeValidator = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean b) {
+            if (view instanceof EditText) {
+                EditText editText = (EditText)view;
+                final String typedText = editText.getText().toString();
+                if (!TextUtils.isEmpty(typedText) && typedText.length() < MIN_CHAR_NUM) {
+                    Toast.makeText(getActivity(), R.string.error_message_limit_two_char,
+                            Toast.LENGTH_SHORT).show();
+                    editText.requestFocus();
+                }
+            }
+        }
+    };
+
+//    private View mAttachView;
+//    private View mPublishButton;
 
 //    ChangeTextListener mChangeNameListener;
 //    ChangeTextListener mChangeGenderListener;
@@ -56,7 +79,7 @@ public class PostFragment extends BaseFragment {
             initViews(inflater);
         }
 
-//        performLoginTask();
+//        performPostTask();
 
         return mRootView;
     }
@@ -119,6 +142,12 @@ public class PostFragment extends BaseFragment {
             Button publishButton = new Button(getActivity());
             publishButton.setText(R.string.publish);
 //            publishButton.setBackgroundResource(R.drawable.button_border);
+            publishButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkAndSendPost();
+                }
+            });
             profileContainer.addView(publishButton);
         }
     }
@@ -175,8 +204,9 @@ public class PostFragment extends BaseFragment {
             }
 
             EditText editText = (EditText)itemView.findViewById(R.id.tv_content);
-            if (null != textView) {
+            if (null != editText) {
                 editText.setHint(hintResId);
+                editText.setOnFocusChangeListener(mFocusChangeValidator);
             }
         }
         profileContainer.addView(itemView);
@@ -208,58 +238,53 @@ public class PostFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        if (null != mLoginTask) {
-//            mLoginTask.cancel(true);
-//            mLoginTask = null;
-//        }
+        if (null != mLoginTask) {
+            mLoginTask.cancel(true);
+            mLoginTask = null;
+        }
     }
 
-//    private void performLoginTask() {
-//        if (null == mUser || mUser.getUid() <= 0) {
-//            Log.e(TAG, "performLoginTask, skip without valid user.");
-//            return;
-//        }
-//
-//        if (null == mLoginTask) {
-//            mLoginTask = new AsyncTask<Void, Void, String>() {
-//                boolean mResult = false;
-//                long startTime;
-//                @Override
-//                protected void onPreExecute() {
-//                    mResult = false;
-//                    startTime = System.currentTimeMillis();
-//                }
-//
-//                @Override
-//                protected String doInBackground(Void... voids) {
-//                    try {
-//                        User user = UsersClient.getProfile(getActivity(), mUser.getUid());
-//                        if (null == user) {
-//                            mResult = false;
-//                        } else {
-//                            mResult = true;
-//                            mUser = user;
-//                        }
-//                        return "getProfile for " + mUser.getNickName();
-//                    } catch (Exception e) {
-//                        return "Login exception " + e.getMessage();
-//                    }
-//                }
-//
-//                @Override
-//                protected void onPostExecute(String result) {
-//                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
-//                    PerformanceUtils.showToast(getActivity(), result, diff);
-//
-//                    if (mResult) {
-//                        refreshUI();
-//                    } else {
-//                    }
-//                }
-//            };
-//        }
-//        mLoginTask.execute();
-//    }
+    private void performPostTask() {
+        if (null == mUser || mUser.getUid() <= 0) {
+            Log.e(TAG, "performPostTask, skip without valid user.");
+            return;
+        }
+
+        if (null == mLoginTask) {
+            mLoginTask = new AsyncTask<Void, Void, String>() {
+                boolean mResult = false;
+                long startTime;
+                @Override
+                protected void onPreExecute() {
+                    mResult = false;
+                    startTime = System.currentTimeMillis();
+                }
+
+                @Override
+                protected String doInBackground(Void... voids) {
+                    try {
+                        mResult = BillingClient.createBill(getActivity(), mUser.getUid());
+                        return "createBill succeed by " + mUser.getNickName();
+                    } catch (Exception e) {
+                        return "createBill exception " + e.getMessage();
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                    PerformanceUtils.showToast(getActivity(), result, diff);
+
+                    if (mResult) {
+                        Toast.makeText(getActivity(), R.string.post_result_succeed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.post_result_fail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+        }
+        mLoginTask.execute();
+    }
 
 //    public void updateProfile(User user) {
 //        if (mUser != user) {
@@ -276,4 +301,36 @@ public class PostFragment extends BaseFragment {
 //        textView = (TextView)mPhoneView.findViewById(R.id.tv_content);
 //        textView.setText(mUser.getMobile());
 //    }
+    private void checkAndSendPost() {
+        if (!checkNonEmptyField()) {
+            Toast.makeText(getActivity(), R.string.error_post_empty_field, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        performPostTask();
+    }
+
+    private boolean checkNonEmptyField() {
+        TextView textView = (TextView)mAddressView.findViewById(R.id.tv_content);
+        if (null != textView) {
+            if (TextUtils.isEmpty(textView.getText())) {
+                return false;
+            }
+        }
+        textView = (TextView)mLocationView.findViewById(R.id.tv_content);
+        if (null != textView) {
+            if (TextUtils.isEmpty(textView.getText())) {
+                return false;
+            }
+        }
+
+        textView = (TextView)mDescriptionView.findViewById(R.id.tv_content);
+        if (null != textView) {
+            if (TextUtils.isEmpty(textView.getText())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
