@@ -4,6 +4,8 @@
               style="@style/GenericMarginItem"
               android:background="@drawable/button_border"
               android:layout_height="@dimen/item_block_height_small"
+              android:layout_marginLeft="@dimen/item_block_height_small"
+              android:layout_marginRight="@dimen/item_block_height_small"
         >
     <TextView android:id="@+id/tv_label"
               android:gravity="left"

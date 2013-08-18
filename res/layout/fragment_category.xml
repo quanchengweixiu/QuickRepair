@@ -7,7 +7,7 @@
 
     <GridView
             android:id="@+id/ptr_gridview"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:numColumns="3"
             android:verticalSpacing="1dp"

@@ -4,6 +4,8 @@
               style="@style/GenericMarginItem"
               android:layout_marginTop="0dp"
               android:layout_marginBottom="0dp"
+              android:layout_marginLeft="@dimen/item_block_height_small"
+              android:layout_marginRight="@dimen/item_block_height_small"
               android:background="@drawable/button_border"
               android:layout_height="@dimen/item_block_height_small"
         >

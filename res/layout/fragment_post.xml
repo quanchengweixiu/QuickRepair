@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:fadeScrollbars="@null"
+            android:scrollbars="none"
         >
 
     <LinearLayout
@@ -11,19 +11,16 @@
             android:baselineAligned="false">
         <FrameLayout android:layout_width="wrap_content"
                      android:layout_height="match_parent"
-                     android:layout_weight="1"
                      android:background="@drawable/bg_post_left_repeat"
                 />
         <LinearLayout
                 android:id="@+id/container"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_repair_middle"
-                android:layout_weight="4"
                 android:orientation="vertical" />
         <FrameLayout android:layout_width="wrap_content"
                      android:layout_height="match_parent"
-                     android:layout_weight="1"
                      android:background="@drawable/bg_post_left_repeat"/>
     </LinearLayout>
 
