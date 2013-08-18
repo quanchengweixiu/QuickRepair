@@ -1,9 +1,6 @@
 
 package com.funyoung.quickrepair.fragment;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -61,17 +58,6 @@ public class PostFragment extends BaseFragment {
         }
     };
 
-//    private View mAttachView;
-//    private View mPublishButton;
-
-//    ChangeTextListener mChangeNameListener;
-//    ChangeTextListener mChangeGenderListener;
-//    ChangeTextListener mChangeAddressListener;
-//    ChangeTextListener mChangeMobileListener;
-//    ChangeTextListener mViewRankListener;
-//
-//    private AsyncTask<Void, Void, String> mLoginTask;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -79,8 +65,6 @@ public class PostFragment extends BaseFragment {
         if (null != mRootView) {
             initViews(inflater);
         }
-
-//        performPostTask();
 
         return mRootView;
     }
@@ -118,21 +102,6 @@ public class PostFragment extends BaseFragment {
 
             mDescriptionView = addItemBane(inflater, profileContainer, R.string.post_description, R.string.post_hint_description);
 
-//            mAttachView;
-//            mPublishButton;
-//            if (null == mChangeNameListener) {
-//                mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name);
-//                mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender);
-//                mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address);
-//                mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank);
-//            }
-//
-//            mNameView.setOnClickListener(mChangeNameListener);
-//            mSexView.setOnClickListener(mChangeGenderListener);
-//            mAddressView.setOnClickListener(mChangeAddressListener);
-//            mRankView.setOnClickListener(mViewRankListener);
-//            mPhoneView.setOnClickListener(mChangeMobileListener);
-
             View itemView = inflater.inflate(R.layout.simple_post_attach_poto, null);
             if (null != itemView) {
                 ImageView photoView = (ImageView)itemView.findViewById(R.id.img_profile);
@@ -143,7 +112,7 @@ public class PostFragment extends BaseFragment {
 
             Button publishButton = new Button(getActivity());
             publishButton.setText(R.string.publish);
-//            publishButton.setBackgroundResource(R.drawable.button_border);
+            publishButton.setBackgroundResource(R.drawable.button_blue_bg);
             publishButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
