@@ -54,6 +54,18 @@ public abstract class HttpRequestExecutor {
     protected static final String API_PARAM_CODE = "password";
     protected static final String API_PARAM_USER_ID = "uid";
 
+    protected static final String API_PARAM_CATEGORY = "category";
+    protected static final String API_PARAM_SUB_CATEGORY = "sub_category";
+    protected static final String API_PARAM_LATITUDE = "latitude";
+    protected static final String API_PARAM_LONGITUDE = "longitude";
+    protected static final String API_PARAM_DESCRIPTION = "description";
+    protected static final String API_PARAM_ADDRESS = "address";
+    protected static final String API_PARAM_AREA = "area";
+    protected static final String API_PARAM_BRAND = "brand";
+    protected static final String API_PARAM_CONTACT = "contact";
+    protected static final String API_PARAM_MODEL = "version";
+    protected static final String API_PARAM_MODEL_AGE = "createyear";
+
     protected final String API_VALUE_USER_TYPE_B = "0";
     protected final String API_VALUE_USER_TYPE_A = "1";
 
@@ -302,10 +314,10 @@ public abstract class HttpRequestExecutor {
         public HttpRequestBuilder(String method, String module, String command, String appType){
             mParams = new HashMap<String,String>();
             mMethod = method;
-//            mModule = module;
+//            mModule = model;
 //            mCommand = command;
 //            mAppType = appType;
-//            mSign = md5Sign(module, command);
+//            mSign = md5Sign(model, command);
             mParams.put(API_PARAM_MODULE, module);
             mParams.put(API_PARAM_COMMAND, command);
             mParams.put(API_PARAM_USER_TYPE, appType);

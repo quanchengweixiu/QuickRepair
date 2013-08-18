@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.BillingClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
@@ -106,6 +107,7 @@ public class PostFragment extends BaseFragment {
 
         if (profileContainer instanceof ViewGroup) {
             mAddressView = addItemBane(inflater, profileContainer, R.string.post_address, mUser.getAddress());
+
             mLocationView = addItemBane(inflater, profileContainer, R.string.post_location, R.string.post_hint_location);
             mContactView = addItemBane(inflater, profileContainer, R.string.post_contact, R.string.post_hint_limit_two_char);
             mPhoneView = addItemBane(inflater, profileContainer, R.string.profile_user_mobile, mUser.getMobile());
@@ -152,48 +154,6 @@ public class PostFragment extends BaseFragment {
         }
     }
 
-    private static class ChangeTextListener implements View.OnClickListener {
-        private View mView;
-        private int mKeyResId;
-        public ChangeTextListener (View view, int keyResId) {
-            mView = view;
-            mKeyResId = keyResId;
-        }
-
-        @Override
-        public void onClick(View view) {
-            final Context context = mView.getContext();
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setIcon(android.R.drawable.ic_dialog_info).setTitle(mKeyResId);
-            EditText editText = new EditText(context);
-            TextView textView = (TextView)mView.findViewById(R.id.tv_content);
-            editText.setText(textView.getText());
-            editText.selectAll();
-            builder.setView(editText);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    switch (mKeyResId) {
-                        case R.string.profile_user_name:
-                            break;
-                        case R.string.profile_user_gender:
-                            break;
-                        case R.string.profile_user_address:
-                            break;
-                        case R.string.profile_user_mobile:
-                            break;
-                        case R.string.profile_user_rank:
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-            builder.show();
-        }
-    }
-
     private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
                              int labelResId, int hintResId) {
         View itemView = inflater.inflate(R.layout.simple_post_edit_item, null);
@@ -225,8 +185,10 @@ public class PostFragment extends BaseFragment {
             if (null != textView) {
                 textView.setText(nameValue);
             }
+
+            itemView.setOnClickListener(new ChangeTextListener(itemView, labelResId, null));
+            profileContainer.addView(itemView);
         }
-        profileContainer.addView(itemView);
         return itemView;
     }
 
@@ -250,6 +212,12 @@ public class PostFragment extends BaseFragment {
             return;
         }
 
+        final Post post = encodePost();
+        if (null == post) {
+            Log.e(TAG, "performPostTask, skip with invalid post.");
+            return;
+        }
+
         if (null == mLoginTask) {
             mLoginTask = new AsyncTask<Void, Void, String>() {
                 boolean mResult = false;
@@ -263,7 +231,7 @@ public class PostFragment extends BaseFragment {
                 @Override
                 protected String doInBackground(Void... voids) {
                     try {
-                        mResult = BillingClient.createBill(getActivity(), mUser.getUid());
+                        mResult = BillingClient.createBill(getActivity(), post);
                         return "createBill succeed by " + mUser.getNickName();
                     } catch (Exception e) {
                         return "createBill exception " + e.getMessage();
@@ -284,6 +252,30 @@ public class PostFragment extends BaseFragment {
             };
         }
         mLoginTask.execute();
+    }
+
+    private Post encodePost() {
+        Post post = new Post();
+        post.uid = mUser.getUid();
+        post.address = getContent(mAddressView);
+        post.area = getContent(mLocationView);
+        post.contact = getContent(mContactView);
+        post.mobile = getContent(mPhoneView);
+        post.brand = getContent(mBrandView);
+        post.model = getContent(mModelView);
+        post.createYear = getContent(mDateView);
+        post.description = getContent(mContactView);
+        return post;
+    }
+
+    private String getContent(View hostView) {
+        if (null != hostView) {
+            TextView textView = (TextView)hostView.findViewById(R.id.tv_content);
+            if (null != textView) {
+                return textView.getText().toString();
+            }
+        }
+        return "";
     }
 
 //    public void updateProfile(User user) {

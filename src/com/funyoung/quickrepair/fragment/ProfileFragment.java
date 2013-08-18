@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.funyoung.quickrepair.SettingsActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
@@ -115,10 +114,10 @@ public class ProfileFragment extends BaseFragment {
             }
 
             if (null == mChangeNameListener) {
-                mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name);
-                mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender);
-                mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address);
-                mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank);
+                mChangeNameListener = new ChangeTextListener(mNameView, R.string.profile_user_name, mChangeListener);
+                mChangeGenderListener = new ChangeTextListener(mSexView, R.string.profile_user_gender, mChangeListener);
+                mChangeAddressListener = new ChangeTextListener(mAddressView, R.string.profile_user_address, mChangeListener);
+                mViewRankListener = new ChangeTextListener(mRankView, R.string.profile_user_rank, mChangeListener);
             }
 
             mNameView.setOnClickListener(mChangeNameListener);
@@ -129,54 +128,32 @@ public class ProfileFragment extends BaseFragment {
             }
             if (mUser.isProviderType()) {
                 if (null == mChangeMobileListener) {
-                    mChangeMobileListener = new ChangeTextListener(mPhoneView, R.string.profile_user_mobile);
+                    mChangeMobileListener = new ChangeTextListener(mPhoneView, R.string.profile_user_mobile, mChangeListener);
                 }
                 mPhoneView.setOnClickListener(mChangeMobileListener);
             }
         }
     }
 
-    private static class ChangeTextListener implements View.OnClickListener {
-        private View mView;
-        private int mKeyResId;
-        public ChangeTextListener (View view, int keyResId) {
-            mView = view;
-            mKeyResId = keyResId;
-        }
-
+    private ChangeTextListener.OnChangeListener mChangeListener = new ChangeTextListener.OnChangeListener() {
         @Override
-        public void onClick(View view) {
-            final Context context = mView.getContext();
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setIcon(android.R.drawable.ic_dialog_info).setTitle(mKeyResId);
-            EditText editText = new EditText(context);
-            TextView textView = (TextView)mView.findViewById(R.id.tv_content);
-            editText.setText(textView.getText());
-            editText.selectAll();
-            builder.setView(editText);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    switch (mKeyResId) {
-                        case R.string.profile_user_name:
-                            break;
-                        case R.string.profile_user_gender:
-                            break;
-                        case R.string.profile_user_address:
-                            break;
-                        case R.string.profile_user_mobile:
-                            break;
-                        case R.string.profile_user_rank:
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-            builder.show();
+        public void onChangedFinish(View view, int keyResId, boolean cancel) {
+            switch (keyResId) {
+                case R.string.profile_user_name:
+                    break;
+                case R.string.profile_user_gender:
+                    break;
+                case R.string.profile_user_address:
+                    break;
+                case R.string.profile_user_mobile:
+                    break;
+                case R.string.profile_user_rank:
+                    break;
+                default:
+                    break;
+            }
         }
-    }
+    };
 
     private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
                              int labelResId, String nameValue) {
@@ -286,3 +263,4 @@ public class ProfileFragment extends BaseFragment {
         return labels[i];
     }
 }
+

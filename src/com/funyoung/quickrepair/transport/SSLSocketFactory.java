@@ -5,7 +5,7 @@
 package com.funyoung.quickrepair.transport;
 
 /*
- * $HeadURL: http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/module-client/src/main/java/org/apache/http/conn/ssl/SSLSocketFactory.java $
+ * $HeadURL: http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/model-client/src/main/java/org/apache/http/conn/ssl/SSLSocketFactory.java $
  * $Revision: 659194 $
  * $Date: 2008-05-22 11:33:47 -0700 (Thu, 22 May 2008) $
  *

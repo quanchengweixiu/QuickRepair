@@ -115,7 +115,7 @@ public final class SyncProfileClient extends HttpRequestExecutor {
         return result;
     }*/
 
-    private static final String MODULE = "TODO"; // todo: name the module.
+    private static final String MODULE = "TODO"; // todo: name the model.
 	private final static class Servlet{
         private static final String COMMAND_SYNC_PROFILE = "profile/syncdata";
         private static final String COMMAND_GET_PROFILE = "profile/getdata";
