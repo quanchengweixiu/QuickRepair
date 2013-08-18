@@ -15,7 +15,6 @@ import com.funyoung.qcwx.R;
  * Created by yangfeng on 13-8-10.
  */
 public class FragmentFactory {
-
     private static final String FRAGMENT_DEFAULT = "FRAGMENT_DEFAULT";
     private static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     private static final String FRAGMENT_MAP = "FRAGMENT_MAP";
@@ -130,6 +129,7 @@ public class FragmentFactory {
         profileFragment = null;
         postFragment = null;
     }
+
     public void onDestroy() {
         releaseCache();
         _instance = null;

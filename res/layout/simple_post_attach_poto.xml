@@ -14,7 +14,7 @@
               android:layout_width="wrap_content"/>
 
     <ImageView android:id="@+id/img_profile"
-               android:src="@drawable/post_attach_photo"
+               android:src="@drawable/btn_add_photos"
                android:layout_gravity="center_vertical"
                android:layout_height="wrap_content"
                android:layout_width="wrap_content"/>
