@@ -98,7 +98,7 @@ public class FragmentFactory {
         } else {
             ft.replace(R.id.content_frame, fragment, name);
         }
-        if (false && !TextUtils.isEmpty(stackName)) {
+        if (false || !TextUtils.isEmpty(stackName)) {
             ft.addToBackStack(stackName);
         }
         ft.commit();
