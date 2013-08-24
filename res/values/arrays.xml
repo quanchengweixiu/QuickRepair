@@ -11,6 +11,7 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+
     <string-array name="qp_navigation_title_array">
         <item>注册或登录</item>
         <item>分类</item>
@@ -35,6 +36,126 @@
         <item>家具</item>
         <item>更多</item>
     </string-array>
+    <integer-array name="qp_category_id_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub1">
+        <item>分体空调</item>
+        <item>中央空调</item>
+        <item>其它</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub1">
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub2">
+        <item>电热水器</item>
+        <item>燃气热水器</item>
+        <item>家用锅炉</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub2">
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub3">
+        <item>疏通</item>
+        <item>漏水</item>
+        <item>其他</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub3">
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub4">
+        <item>灯具维修</item>
+        <item>布线改造</item>
+        <item>其它</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub4">
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub5">
+        <item>疏通</item>
+        <item>更换</item>
+        <item>其它</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub5">
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub6">
+        <item>洗衣机</item>
+        <item>电冰箱</item>
+        <item>电视机</item>
+        <item>影音设备</item>
+        <item>抽烟机</item>
+        <item>其它</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub6">
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub7">
+        <item>吊顶隔墙</item>
+        <item>门窗</item>
+        <item>防水补漏</item>
+        <item>地板</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub7">
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub8">
+        <item>维修</item>
+        <item>定制</item>
+        <item>保养</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub8">
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+    </integer-array>
+
+    <string-array name="qp_category_label_array_sub9">
+        <item>家用锅炉</item>
+        <item>暖气</item>
+        <item>打孔</item>
+        <item>疏通</item>
+    </string-array>
+    <integer-array name="qp_category_id_array_sub9">
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+    </integer-array>
 
     <string-array name="gender_labels">
         <item>男</item>

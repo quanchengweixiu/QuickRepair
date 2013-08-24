@@ -412,13 +412,13 @@ public class MainActivity extends SherlockFragmentActivity {
         gotoDefaultView();
     }
 
-    public void startPost(int i, String label) {
+    public void startPost(int mainId, int subId, String mainLabel, String subLabel) {
         User user = ((DemoApplication)getApplication()).getLoginUser();
         if (null == user) {
             getFragmentFactory().gotoLoinFragment();
         } else {
-            setTitle(label);
-            getFragmentFactory().gotoPostFragment(user);
+            setTitle(mainLabel + ">" + subLabel);
+            getFragmentFactory().gotoPostFragment(user, mainId, subId);
         }
         updateToggleMenuItem();
     }

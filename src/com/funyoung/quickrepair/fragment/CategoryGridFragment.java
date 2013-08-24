@@ -13,6 +13,7 @@ import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -29,9 +30,38 @@ import com.funyoung.quickrepair.MainActivity;
 public  class CategoryGridFragment extends BaseFragment {
     private View rootView;
 
+    String[] labels;
+    private ArrayList<String> mSubCategory = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
+    private int mMainId = 1;
+
     public CategoryGridFragment() {
         // Empty constructor required for fragment subclasses
     }
+
+    private static int[] subIdArray = {
+            R.array.qp_category_id_array_sub1,
+            R.array.qp_category_id_array_sub2,
+            R.array.qp_category_id_array_sub3,
+            R.array.qp_category_id_array_sub4,
+            R.array.qp_category_id_array_sub5,
+            R.array.qp_category_id_array_sub6,
+            R.array.qp_category_id_array_sub7,
+            R.array.qp_category_id_array_sub8,
+            R.array.qp_category_id_array_sub9,
+    };
+
+    private static int[] subLabelArray = {
+            R.array.qp_category_label_array_sub1,
+            R.array.qp_category_label_array_sub2,
+            R.array.qp_category_label_array_sub3,
+            R.array.qp_category_label_array_sub4,
+            R.array.qp_category_label_array_sub5,
+            R.array.qp_category_label_array_sub6,
+            R.array.qp_category_label_array_sub7,
+            R.array.qp_category_label_array_sub8,
+            R.array.qp_category_label_array_sub9,
+    };
 
     private static Integer[] images = {
             R.drawable.ic_classify_airconditioning,
@@ -50,8 +80,41 @@ public  class CategoryGridFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_category, container, false);
 
+        initMainCategory();
+        initSubCategory();
+
+        return rootView;
+    }
+
+    private void initSubCategory() {
+        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId - 1]);
+        mSubCategory.clear();
+        mSubCategory.addAll(Arrays.asList(subLabels));
+
+        GridView gridView = (GridView) rootView.findViewById(R.id.ptr_gridview_sub);
+        adapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.gridview_item_category_sub,
+                mSubCategory);
+
+//        SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+//                itemData,
+//                R.layout.gridview_item_category,
+//                new String[] { "img", "label" },
+//                new int[] { R.id.img, R.id.label });
+
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int[] subIds = getResources().getIntArray(subIdArray[mMainId]);
+                ((MainActivity)getActivity()).startPost(mMainId, subIds[i], labels[mMainId], mSubCategory.get(i));
+            }
+        });
+    }
+
+    private void initMainCategory() {
         ArrayList<HashMap<String, Object>> itemData = new ArrayList<HashMap<String, Object>>();
-        final String[] labels = getResources().getStringArray(R.array.qp_category_label_array);
+        labels = getResources().getStringArray(R.array.qp_category_label_array);
         for (int i = 0; i < 9; i++) {
             HashMap<String, Object> itemUnit = new HashMap<String, Object>();
             itemUnit.put("img", images[i]);
@@ -73,11 +136,19 @@ public  class CategoryGridFragment extends BaseFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ((MainActivity)getActivity()).startPost(i, labels[i]);
+                showSubCategory(i);
+//                ((MainActivity)getActivity()).startPost(i, labels[i]);
             }
         });
+    }
 
-        return rootView;
+    private void showSubCategory(int i) {
+        mMainId = i + 1;
+        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId - 1]);
+        mSubCategory.clear();
+        mSubCategory.addAll(Arrays.asList(subLabels));
+        adapter.notifyDataSetChanged();
+//        ((MainActivity)getActivity()).startPost(i, labels[mMainId]);
     }
 }
 

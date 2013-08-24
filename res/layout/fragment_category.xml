@@ -14,5 +14,14 @@
             android:horizontalSpacing="1dp"
             android:stretchMode="columnWidth"
             android:gravity="top" />
+    <GridView
+            android:id="@+id/ptr_gridview_sub"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:numColumns="3"
+            android:verticalSpacing="1dp"
+            android:horizontalSpacing="1dp"
+            android:stretchMode="columnWidth"
+            android:gravity="top" />
 
 </LinearLayout>

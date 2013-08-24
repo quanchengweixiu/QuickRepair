@@ -79,7 +79,7 @@ public class FragmentFactory {
         }
     }
 
-    public void gotoPostFragment(User user) {
+    public void gotoPostFragment(User user, int mainId, int subId) {
         if (null == postFragment) {
             PostFragment fragment = new PostFragment();
             postFragment = fragment;
