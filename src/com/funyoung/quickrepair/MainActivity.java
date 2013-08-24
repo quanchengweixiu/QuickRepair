@@ -291,12 +291,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 }
                 return true;
             case R.id.menu_feedback:
-                FeedbackAgent agent = new FeedbackAgent(this);
-                agent.startFeedbackActivity();
+                gotoFeedbackView();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void gotoFeedbackView() {
+        FeedbackAgent agent = new FeedbackAgent(this);
+        agent.startFeedbackActivity();
     }
 
     private void toggleView() {
@@ -326,11 +330,14 @@ public class MainActivity extends SherlockFragmentActivity {
             case 1: // category
                 gotoDefaultView();
                 break;
-            case 2: // search
+            case 2: // Post
+                gotoPostListView();
                 break;
-            case 3: // book
+            case 3: // Settings
+                gotoSettingView();
                 break;
-            case 4: // inbox
+            case 4: // Feedback
+                gotoFeedbackView();
                 break;
         }
     }
@@ -359,6 +366,14 @@ public class MainActivity extends SherlockFragmentActivity {
     private void gotoDefaultView() {
         getFragmentFactory().gotoDefaultView();
         updateToggleMenuItem();
+    }
+
+    private void gotoPostListView() {
+        // todo : setting activity
+    }
+
+    private void gotoSettingView() {
+        // todo : setting activity
     }
 
     private void gotoLocationFragment() {

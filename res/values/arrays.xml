@@ -14,15 +14,17 @@
 
     <string-array name="qp_navigation_title_array">
         <item>注册或登录</item>
-        <item>分类</item>
-        <item>搜索</item>
+        <item>开始报修</item>
+        <item>我的定单</item>
+        <item>设置</item>
+        <item>意见反馈</item>
     </string-array>
     <string-array name="qp_navigation_title_login_array">
-        <item>注册或登录</item>
-        <item>分类</item>
-        <item>搜索</item>
-        <item>预订</item>
-        <item>收件箱</item>
+        <item>个人信息</item>
+        <item>开始报修</item>
+        <item>我的定单</item>
+        <item>设置</item>
+        <item>意见反馈</item>
     </string-array>
 
     <string-array name="qp_category_label_array">
