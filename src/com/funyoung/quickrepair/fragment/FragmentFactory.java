@@ -19,6 +19,8 @@ public class FragmentFactory {
     private static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     private static final String FRAGMENT_MAP = "FRAGMENT_MAP";
     private static final String FRAGMENT_PROFILE = "FRAGMENT_PROFILE";
+    private static final String FRAGMENT_POST = "FRAGMENT_POST";
+    private static final String FRAGMENT_POST_LIST = "FRAGMENT_POST_LIST";
 
     private Fragment mCurrentFragment;
     private Fragment loginFragment;
@@ -26,6 +28,7 @@ public class FragmentFactory {
     private Fragment defaultFragment;
     private Fragment profileFragment;
     private Fragment postFragment;
+    private Fragment postListFragment;
     public void gotoLoinFragment() {
         if (null == loginFragment) {
             loginFragment = new SignUpFragment();
@@ -87,7 +90,7 @@ public class FragmentFactory {
 
         if (mCurrentFragment != postFragment) {
             mCurrentFragment = postFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
+            gotoFragmentView(mCurrentFragment, FRAGMENT_POST,  FRAGMENT_DEFAULT);
         }
         ((PostFragment)mCurrentFragment).updateCategory(mainId, subId);
     }
@@ -128,10 +131,23 @@ public class FragmentFactory {
         loginFragment = null;
         profileFragment = null;
         postFragment = null;
+        postListFragment = null;
     }
 
     public void onDestroy() {
         releaseCache();
         _instance = null;
+    }
+
+    public void gotoPostListView() {
+        if (null == postListFragment) {
+            PostListFragment fragment = new PostListFragment();
+            postListFragment = fragment;
+        }
+
+        if (mCurrentFragment != postListFragment) {
+            mCurrentFragment = postListFragment;
+            gotoFragmentView(mCurrentFragment, FRAGMENT_POST_LIST,  FRAGMENT_DEFAULT);
+        }
     }
 }

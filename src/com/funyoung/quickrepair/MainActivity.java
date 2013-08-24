@@ -339,7 +339,10 @@ public class MainActivity extends SherlockFragmentActivity {
             case 4: // Feedback
                 gotoFeedbackView();
                 break;
+            default:
+                return;
         }
+        updateToggleMenuItem();
     }
 
     private FragmentFactory mFactory;
@@ -360,16 +363,14 @@ public class MainActivity extends SherlockFragmentActivity {
         } else {
             getFragmentFactory().gotoProfileFragment(user);
         }
-        updateToggleMenuItem();
     }
 
     private void gotoDefaultView() {
         getFragmentFactory().gotoDefaultView();
-        updateToggleMenuItem();
     }
 
     private void gotoPostListView() {
-        // todo : setting activity
+        getFragmentFactory().gotoPostListView();
     }
 
     private void gotoSettingView() {
