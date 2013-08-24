@@ -33,7 +33,7 @@ public  class CategoryGridFragment extends BaseFragment {
     String[] labels;
     private ArrayList<String> mSubCategory = new ArrayList<String>();
     ArrayAdapter<String> adapter;
-    private int mMainId = 1;
+    private int mMainId = 0;
 
     public CategoryGridFragment() {
         // Empty constructor required for fragment subclasses
@@ -87,7 +87,7 @@ public  class CategoryGridFragment extends BaseFragment {
     }
 
     private void initSubCategory() {
-        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId - 1]);
+        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId]);
         mSubCategory.clear();
         mSubCategory.addAll(Arrays.asList(subLabels));
 
@@ -107,7 +107,7 @@ public  class CategoryGridFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int[] subIds = getResources().getIntArray(subIdArray[mMainId]);
-                ((MainActivity)getActivity()).startPost(mMainId, subIds[i], labels[mMainId], mSubCategory.get(i));
+                ((MainActivity)getActivity()).startPost(mMainId + 1, subIds[i], labels[mMainId], mSubCategory.get(i));
             }
         });
     }
@@ -143,8 +143,8 @@ public  class CategoryGridFragment extends BaseFragment {
     }
 
     private void showSubCategory(int i) {
-        mMainId = i + 1;
-        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId - 1]);
+        mMainId = i;
+        String[] subLabels = getResources().getStringArray(subLabelArray[mMainId]);
         mSubCategory.clear();
         mSubCategory.addAll(Arrays.asList(subLabels));
         adapter.notifyDataSetChanged();

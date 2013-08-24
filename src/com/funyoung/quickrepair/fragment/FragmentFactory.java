@@ -87,9 +87,9 @@ public class FragmentFactory {
 
         if (mCurrentFragment != postFragment) {
             mCurrentFragment = postFragment;
-            gotoFragmentView(mCurrentFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
+            gotoFragmentView(mCurrentFragment, FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
         }
-//        ((PostFragment)mCurrentFragment).updateProfile(user);
+        ((PostFragment)mCurrentFragment).updateCategory(mainId, subId);
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();

@@ -41,6 +41,9 @@ public class PostFragment extends BaseFragment {
 
     private View mDescriptionView;
 
+    private int mMainId;
+    private int mSubId;
+
     private AsyncTask<Void, Void, String> mLoginTask;
 
     private View.OnFocusChangeListener mFocusChangeValidator = new View.OnFocusChangeListener() {
@@ -57,7 +60,6 @@ public class PostFragment extends BaseFragment {
             }
         }
     };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -226,6 +228,8 @@ public class PostFragment extends BaseFragment {
     private Post encodePost() {
         Post post = new Post();
         post.uid = mUser.getUid();
+        post.category = mMainId;
+        post.subCategory = mSubId;
         post.address = getContent(mAddressView);
         post.area = getContent(mLocationView);
         post.contact = getContent(mContactView);
@@ -293,5 +297,10 @@ public class PostFragment extends BaseFragment {
         }
 
         return true;
+    }
+
+    public void updateCategory(int mainId, int subId) {
+        mMainId = mainId;
+        mSubId = subId;
     }
 }
