@@ -93,12 +93,12 @@ public class FragmentFactory {
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();
-        if (true && TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name)) {
             ft.replace(R.id.content_frame, fragment);
         } else {
             ft.replace(R.id.content_frame, fragment, name);
         }
-        if (!TextUtils.isEmpty(stackName)) {
+        if (false && !TextUtils.isEmpty(stackName)) {
             ft.addToBackStack(stackName);
         }
         ft.commit();
