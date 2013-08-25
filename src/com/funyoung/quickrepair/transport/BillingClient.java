@@ -13,6 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -94,12 +95,12 @@ public final class BillingClient extends HttpRequestExecutor {
         return false;
     }
 
-    public static boolean listBill(Context context, User user, HashMap<String, String> filter) {
+    public static ArrayList<Post> listBill(Context context, User user, HashMap<String, String> filter) {
         BillingClient ac = new BillingClient(context, SimpleHttpClient.get());
         Exception exception = null;
         try {
             String result = ac.listBill(user, filter);
-            return CommonUtils.parseBooleanResult(result);
+            return Post.parseListResult(result);
         } catch (ClientProtocolException e) {
             exception = e;
             e.printStackTrace();
@@ -112,7 +113,7 @@ public final class BillingClient extends HttpRequestExecutor {
         } finally {
             postCheckApiException(context, exception);
         }
-        return false;
+        return null;
     }
 
 }

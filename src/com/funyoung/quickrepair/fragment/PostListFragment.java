@@ -15,12 +15,15 @@ import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.MainActivity;
+import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.BillingClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import baidumapsdk.demo.DemoApplication;
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 
 public class PostListFragment extends ListFragment implements
@@ -36,6 +39,7 @@ public class PostListFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
         /**
          * Get ListView and give it an adapter to display the sample items
          */
@@ -85,11 +89,11 @@ public class PostListFragment extends ListFragment implements
     private void performPreTask() {
         if (null == mPreTask) {
             mPreTask = new AsyncTask<Void, Void, String>() {
-                boolean mResult = false;
+                ArrayList<Post> mResult;
                 long startTime;
                 @Override
                 protected void onPreExecute() {
-                    mResult = false;
+                    mResult = null;
                     startTime = System.currentTimeMillis();
                 }
 
@@ -109,10 +113,10 @@ public class PostListFragment extends ListFragment implements
                     final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
                     PerformanceUtils.showToast(getActivity(), result, diff);
 
-                    if (mResult) {
-                        Toast.makeText(getActivity(), R.string.post_result_succeed, Toast.LENGTH_SHORT).show();
+                    if (mResult != null && !mResult.isEmpty()) {
+                        Toast.makeText(getActivity(), R.string.list_posts_succeed, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getActivity(), R.string.post_result_fail, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.list_posts_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
             };

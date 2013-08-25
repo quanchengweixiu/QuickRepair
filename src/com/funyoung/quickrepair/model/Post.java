@@ -1,5 +1,9 @@
 package com.funyoung.quickrepair.model;
 
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+
 /**
  * Created by yangfeng on 13-8-18.
  * "uid":"XXX" //当前登录用户的uid
@@ -36,4 +40,13 @@ public class Post {
     // remote attribute
     public long createTime;
     public long updateTime;
+
+    public static ArrayList<Post> parseListResult(String result) {
+        ArrayList<Post> postList = new ArrayList<Post>();
+        if (TextUtils.isEmpty(result)) {
+            return postList;
+        }
+
+        return postList;
+    }
 }

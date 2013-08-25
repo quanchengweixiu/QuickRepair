@@ -8,14 +8,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.MainActivity;
