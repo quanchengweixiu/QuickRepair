@@ -192,6 +192,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
         setContentView(R.layout.activity_main_home);
 
+        schedule();
+
         // The attacher should always be created in the Activity's onCreate
         mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
@@ -384,7 +386,7 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void gotoSettingView() {
-        // todo : setting activity
+        SettingsActivity.show(this);
     }
 
     private void gotoLocationFragment() {
@@ -473,5 +475,13 @@ public class MainActivity extends SherlockFragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         FragmentFactory.getInstance(this).onDestroy();
+    }
+
+    private void schedule() {
+        //SharedPreferences preferences = getSharedPreferences(Preferences.NAME, MODE_PRIVATE);
+        //if (!preferences.getBoolean(Preferences.KEY_ALARM_SCHEDULED, false)) {
+        CheckUpdateService.schedule(this);
+        //    preferences.edit().putBoolean(Preferences.KEY_ALARM_SCHEDULED, true).commit();
+        //}
     }
 }

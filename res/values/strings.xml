@@ -12,8 +12,7 @@
     <string name="menu_user_signup">Sign</string>
     <string name="menu_user_login">Login</string>
     <string name="menu_user_logout">Logout</string>
-    <string name="feedback">Feed back</string>
-    <string name="action_login_user">Sign Up or Login</string>
+    <string name="feedback">意见反馈</string>
 
     <string name="popup_text_my_location">"我的位置"</string>
     <string name="title_main_mapview">查看地图</string>
@@ -73,4 +72,11 @@
     <string name="post_result_fail">报修失败</string>
     <string name="edit_profile_img_camera">使用相机拍照</string>
     <string name="edit_profile_img_location">从图库选择照片</string>
+
+    <string name="preferences_notifications">通知消息设置</string>
+    <string name="preferences_notifications_enable">接收云推送消息</string>
+    <string name="preferences_notifications_summary">接收云推送通知，消息，及时同步信息状态。</string>
+    <string name="preferences_ringtone">选择通知铃声</string>
+    <string name="preferences_vibrate_enable">震动</string>
+    <string name="preferences_vibrate_summary">新通知，信息响铃同时震动提醒</string>
 </resources>

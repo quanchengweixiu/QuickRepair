@@ -17,12 +17,35 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/preferences_notifications">
+        <CheckBoxPreference
+                android:key="photostream.enable-notifications"
+                android:title="@string/preferences_notifications_enable"
+                android:defaultValue="true"
+                android:summary="@string/preferences_notifications_summary" />
+
+        <RingtonePreference
+                android:layout="?android:attr/preferenceLayoutChild"
+                android:dependency="photostream.enable-notifications"
+                android:key="photostream.ringtone"
+                android:title="@string/preferences_ringtone"
+                android:ringtoneType="notification"
+                android:defaultValue="content://settings/system/notification_sound" />
+
+        <CheckBoxPreference
+                android:layout="?android:attr/preferenceLayoutChild"
+                android:dependency="photostream.enable-notifications"
+                android:key="photostream.vibrate"
+                android:defaultValue="false"
+                android:title="@string/preferences_vibrate_enable"
+                android:summary="@string/preferences_vibrate_summary" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/preferences_debug_option">
         <CheckBoxPreference
                 android:key="local-mms-code"
                 android:title="@string/preferences_local_mms_code"
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:summary="@string/preferences_local_mms_code_summary" />
     </PreferenceCategory>
 

@@ -22,6 +22,10 @@ import com.funyoung.quickrepair.model.User;
 final class Preferences {
     static final String NAME = "QuickRepair";
 
+    static final String KEY_ENABLE_NOTIFICATIONS = "photostream.enable-notifications";
+    static final String KEY_VIBRATE = "photostream.vibrate";
+    static final String KEY_RINGTONE = "photostream.ringtone";
+
     static final String KEY_USER_ID = User.KEY_UID;
     static final String KEY_USER_NICKNAME = User.KEY_NAME;
     static final String KEY_USER_AVATAR = User.KEY_AVATAR;

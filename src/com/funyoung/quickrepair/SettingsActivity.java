@@ -45,6 +45,7 @@ public class SettingsActivity extends PreferenceActivity {
         final Intent intent = new Intent(context, SettingsActivity.class);
         context.startActivity(intent);
     }
+
     public static User getLoginUser(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(Preferences.NAME, 0);
         long uid = prefs.getLong(Preferences.KEY_USER_ID, -1);

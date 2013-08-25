@@ -13,18 +13,18 @@
     </string-array>
 
     <string-array name="qp_navigation_title_array">
-        <item>注册或登录</item>
-        <item>开始报修</item>
-        <item>我的定单</item>
-        <item>设置</item>
-        <item>意见反馈</item>
+        <item>@string/signup</item>
+        <item>@string/submit</item>
+        <item>@string/posts</item>
+        <item>@string/settings</item>
+        <item>@string/feedback</item>
     </string-array>
     <string-array name="qp_navigation_title_login_array">
-        <item>个人信息</item>
-        <item>开始报修</item>
-        <item>我的定单</item>
-        <item>设置</item>
-        <item>意见反馈</item>
+        <item>@string/personal_info</item>
+        <item>@string/submit</item>
+        <item>@string/posts</item>
+        <item>@string/settings</item>
+        <item>@string/feedback</item>
     </string-array>
 
     <string-array name="qp_category_label_array">
@@ -222,4 +222,9 @@
         <item>皇明</item>
         <item>四季沐歌</item>
     </string-array>
+    <string name="settings">设置</string>
+    <string name="posts">我的定单</string>
+    <string name="personal_info">个人信息</string>
+    <string name="signup">注册或登录</string>
+    <string name="submit">开始报修</string>
 </resources>
