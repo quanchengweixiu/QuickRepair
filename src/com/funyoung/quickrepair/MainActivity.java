@@ -598,7 +598,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private void showChannelIds() {
         final String content = SettingsActivity.getChannelIdsContent(this);
         Log.d(TAG, "showChannelIds, show channel ids content = " + content);
-        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
 //        Resources resource = this.getResources();
 //        String pkgName = this.getPackageName();
 //        infoText = (TextView) findViewById(resource.getIdentifier("text", "id", pkgName));
