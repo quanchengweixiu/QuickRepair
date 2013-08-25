@@ -71,4 +71,6 @@
     <string name="error_message_limit_two_char">输入的字数太少，请检查，补充。</string>
     <string name="post_result_succeed">报修完成</string>
     <string name="post_result_fail">报修失败</string>
+    <string name="edit_profile_img_camera">使用相机拍照</string>
+    <string name="edit_profile_img_location">从图库选择照片</string>
 </resources>

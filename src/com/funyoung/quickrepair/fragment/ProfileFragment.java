@@ -1,27 +1,32 @@
 
 package com.funyoung.quickrepair.fragment;
 
-import android.app.AlertDialog;
-import android.content.Context;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
+import com.funyoung.quickrepair.utils.DialogUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.QiupuHelper;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import baidumapsdk.demo.DemoApplication;
 
@@ -141,18 +146,6 @@ public class ProfileFragment extends BaseFragment {
                 mPhoneView.setOnClickListener(mChangeMobileListener);
             }
         }
-    }
-
-    private static final int REQUEST_CODE_SELECT_WALLPAPER_IMAGE = 9001;
-    private void performAvatarUpdateTask() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 256);
-        intent.putExtra("aspectY", 256);
-        intent.putExtra("output", Uri.fromFile(QiupuHelper.getTempAvatarFile(getActivity())));
-        intent.putExtra("outputFormat", "JPEG");
-        startActivityForResult(intent, REQUEST_CODE_SELECT_WALLPAPER_IMAGE);
     }
 
     private ChangeTextListener.OnChangeListener mChangeListener = new ChangeTextListener.OnChangeListener() {
@@ -281,6 +274,107 @@ public class ProfileFragment extends BaseFragment {
             return labels[0];
         }
         return labels[i];
+    }
+
+    private static final int REQUEST_CODE_CAMERA_WITH_DATA = 9001;
+    private static final int REQUEST_CODE_PHOTO_PICKED_WITH_DATA = 9002;
+    private File mCurrentPhotoFile;
+    private Bitmap photo ;
+    private void performAvatarUpdateTask() {
+        String[] items = new String[] {
+                getString(R.string.edit_profile_img_camera),
+                getString(R.string.edit_profile_img_location) };
+        DialogUtils.showItemsDialog(getActivity(), "", 0, items,
+                chooseEditImageItemClickListener);
+    }
+
+    DialogInterface.OnClickListener chooseEditImageItemClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (which == 0) {
+                doTakePhoto();// from camera
+            } else {
+                doPickPhotoFromGallery();// from  gallery
+            }
+        }
+    };
+
+    private void doTakePhoto() {
+        try {
+            // Launch camera to take photo for selected contact
+            mCurrentPhotoFile = QiupuHelper.getTempAvatarFile(getActivity());
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCurrentPhotoFile));
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA_WITH_DATA);
+        }
+        catch (ActivityNotFoundException e) {}
+    }
+
+    private void doPickPhotoFromGallery() {
+        try {
+            // Launch picker to choose photo for selected contact
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            intent.putExtra("crop", "true");
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            intent.putExtra("outputX", 256);
+            intent.putExtra("outputY", 256);
+            intent.putExtra("return-data", true);
+            intent.putExtra("output", Uri.fromFile(QiupuHelper.getTempAvatarFile(getActivity())));
+            intent.putExtra("outputFormat", "JPEG");
+            startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
+        }
+        catch (ActivityNotFoundException e) {}
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODE_PHOTO_PICKED_WITH_DATA == requestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (mCurrentPhotoFile != null && mCurrentPhotoFile.exists()) {
+                    mCurrentPhotoFile.delete();
+                }
+                photo = data.getParcelableExtra("data");
+                mCurrentPhotoFile = QiupuHelper.getTempAvatarFile(getActivity());
+                FileOutputStream fOut = null;
+                try {
+                    if (mCurrentPhotoFile.exists()) {
+                        mCurrentPhotoFile.delete();
+                    }
+                    mCurrentPhotoFile.createNewFile();
+                    fOut = new FileOutputStream(mCurrentPhotoFile);
+                    photo.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+
+                    editProfileImage(mCurrentPhotoFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        } else if (REQUEST_CODE_CAMERA_WITH_DATA == requestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = Uri.fromFile(QiupuHelper.getTempAvatarFile(getActivity()));
+                Intent intent = new Intent("com.android.camera.action.CROP");
+                intent.setDataAndType(uri, "image/*");
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("outputX", 256);
+                intent.putExtra("outputY", 256);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void editProfileImage(File avatarFile) {
+
     }
 }
 
