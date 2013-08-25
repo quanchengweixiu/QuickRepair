@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +21,6 @@ import com.funyoung.quickrepair.utils.PerformanceUtils;
 
 import java.util.HashMap;
 
-import baidumapsdk.demo.DemoApplication;
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 
 public class PostListFragment extends ListFragment implements
@@ -35,34 +33,45 @@ public class PostListFragment extends ListFragment implements
     private AsyncTask<Void, Void, String> mPreTask;
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        if (null == mUser) {
-            mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
-            if (mUser == null) {
-                Log.e(TAG, "initViews, error with null user found");
-            }
-        }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         /**
          * Get ListView and give it an adapter to display the sample items
          */
-        ListView listView = getListView();
         ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
                 ITEMS);
-        listView.setAdapter(adapter);
+        setListAdapter(adapter);
 
         /**
          * Here we create a PullToRefreshAttacher manually without an Options instance.
          * PullToRefreshAttacher will manually create one using default values.
          */
 //            mPullToRefreshAttacher = PullToRefreshAttacher.get(getActivity());
-        mPullToRefreshAttacher = ((MainActivity) getActivity())
-                .getPullToRefreshAttacher();
+//        mPullToRefreshAttacher = ((MainActivity) getActivity())
+//                .getPullToRefreshAttacher();
         // Set the Refreshable View to be the ListView and the refresh listener to be this.
-        mPullToRefreshAttacher.addRefreshableView(listView, this);
+//        mPullToRefreshAttacher.addRefreshableView(getListView(), this);
     }
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+//        mPullToRefreshAttacher.addRefreshableView(getListView(), this);
+        performPreTask();
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (null == mPullToRefreshAttacher) {
+            mPullToRefreshAttacher = ((MainActivity) getActivity())
+                    .getPullToRefreshAttacher();
+            mPullToRefreshAttacher.addRefreshableView(getListView(), this);
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -134,37 +143,6 @@ public class PostListFragment extends ListFragment implements
             "Allgauer Emmentaler"};
 
     private PullToRefreshAttacher mPullToRefreshAttacher;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-//
-//        if (null == mUser) {
-//            mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
-//            if (mUser == null) {
-//                Log.e(TAG, "initViews, error with null user found");
-//            }
-//        }
-//
-//        /**
-//         * Get ListView and give it an adapter to display the sample items
-//         */
-//        ListView listView = getListView();
-//        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-//                ITEMS);
-//        listView.setAdapter(adapter);
-//
-//        /**
-//         * Here we create a PullToRefreshAttacher manually without an Options instance.
-//         * PullToRefreshAttacher will manually create one using default values.
-//         */
-////            mPullToRefreshAttacher = PullToRefreshAttacher.get(getActivity());
-//        mPullToRefreshAttacher = ((MainActivity) getActivity())
-//                .getPullToRefreshAttacher();
-//        // Set the Refreshable View to be the ListView and the refresh listener to be this.
-//        mPullToRefreshAttacher.addRefreshableView(listView, this);
-        return view;
-    }
 
     @Override
     public void onRefreshStarted(View view) {
