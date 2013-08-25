@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.funyoung.quickrepair.api.ApiException;
 import com.funyoung.quickrepair.api.CommonUtils;
-import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 
 import org.apache.http.client.ClientProtocolException;
@@ -13,7 +12,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 public final class PhotoClient extends HttpRequestExecutor {
     public PhotoClient(Context context, HttpClient httpClient){
