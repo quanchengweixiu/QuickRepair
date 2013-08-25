@@ -48,7 +48,7 @@ public final class BillingClient extends HttpRequestExecutor {
 
     public  String listBill(User user, HashMap<String, String> filter) throws IOException, ApiException {
         HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
-                MODULE, Method.CREATE_BILL);
+                MODULE, Method.LIST_BILL);
         if (null != user) {
             builder.parameter(API_PARAM_USER_ID, String.valueOf(user.getUid()));
         }

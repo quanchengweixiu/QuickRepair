@@ -4,6 +4,7 @@ package com.funyoung.quickrepair.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.funyoung.quickrepair.model.User;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
+import com.funyoung.quickrepair.utils.QiupuHelper;
 
 import baidumapsdk.demo.DemoApplication;
 
@@ -87,6 +89,12 @@ public class ProfileFragment extends BaseFragment {
                         photoView.setImageResource(R.drawable.avatar_girl);
                     }
                 }
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        performAvatarUpdateTask();
+                    }
+                });
             }
             profileContainer.addView(itemView);
 
@@ -133,6 +141,18 @@ public class ProfileFragment extends BaseFragment {
                 mPhoneView.setOnClickListener(mChangeMobileListener);
             }
         }
+    }
+
+    private static final int REQUEST_CODE_SELECT_WALLPAPER_IMAGE = 9001;
+    private void performAvatarUpdateTask() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 256);
+        intent.putExtra("aspectY", 256);
+        intent.putExtra("output", Uri.fromFile(QiupuHelper.getTempAvatarFile(getActivity())));
+        intent.putExtra("outputFormat", "JPEG");
+        startActivityForResult(intent, REQUEST_CODE_SELECT_WALLPAPER_IMAGE);
     }
 
     private ChangeTextListener.OnChangeListener mChangeListener = new ChangeTextListener.OnChangeListener() {

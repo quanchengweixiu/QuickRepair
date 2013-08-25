@@ -459,16 +459,20 @@ public class QiupuHelper {
     }
 
     private static String getCachedPath(Context context) {
-        if(cacheDirctory == null) {
-            cacheDirctory = getIndividualCacheDirectory(context, null);
+        if(cacheDirectory == null) {
+            cacheDirectory = getIndividualCacheDirectory(context, null);
         }else {
-            if(!cacheDirctory.exists()) {
-                cacheDirctory.mkdirs();
+            if(!cacheDirectory.exists()) {
+                cacheDirectory.mkdirs();
             }
         }
-        return cacheDirctory.getPath();
+        return cacheDirectory.getPath();
 //        return MarketConfiguration.getCacheDirctory().getPath();
     }
 
-    private static File cacheDirctory;
+    private static File cacheDirectory;
+
+    public static File getTempAvatarFile(Context context) {
+        return new File(getCachedPath(context) + File.separator + ".avatar_tmp");
+    }
 }
