@@ -43,6 +43,7 @@ import com.sherlock.navigationdrawer.compat.SherlockActionBarDrawerToggle;
 
 import baidumapsdk.demo.BMapApiDemoMain;
 import baidumapsdk.demo.DemoApplication;
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 
 import com.funyoung.qcwx.R;
 import com.umeng.analytics.MobclickAgent;
@@ -84,6 +85,12 @@ public class MainActivity extends SherlockFragmentActivity {
     private ActionBarHelper mActionBar;
 
     private SherlockActionBarDrawerToggle mDrawerToggle;
+
+    private PullToRefreshAttacher mPullToRefreshAttacher;
+
+    public PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }
 
     /**
      * Create a compatible helper that will manipulate the action bar if
@@ -184,6 +191,9 @@ public class MainActivity extends SherlockFragmentActivity {
         MobclickAgent.updateOnlineConfig(this);
 
         setContentView(R.layout.activity_main_home);
+
+        // The attacher should always be created in the Activity's onCreate
+        mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
         mTitle = mDrawerTitle = getTitle();
 //        mPlanetTitles = getResources().getStringArray(R.array.planets_array);

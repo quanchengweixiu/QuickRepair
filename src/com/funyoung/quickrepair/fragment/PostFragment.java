@@ -44,7 +44,7 @@ public class PostFragment extends BaseFragment {
     private int mMainId;
     private int mSubId;
 
-    private AsyncTask<Void, Void, String> mLoginTask;
+    private AsyncTask<Void, Void, String> mPublishTask;
 
     private View.OnFocusChangeListener mFocusChangeValidator = new View.OnFocusChangeListener() {
         @Override
@@ -171,9 +171,9 @@ public class PostFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mLoginTask) {
-            mLoginTask.cancel(true);
-            mLoginTask = null;
+        if (null != mPublishTask) {
+            mPublishTask.cancel(true);
+            mPublishTask = null;
         }
     }
 
@@ -189,8 +189,8 @@ public class PostFragment extends BaseFragment {
             return;
         }
 
-        if (null == mLoginTask) {
-            mLoginTask = new AsyncTask<Void, Void, String>() {
+        if (null == mPublishTask) {
+            mPublishTask = new AsyncTask<Void, Void, String>() {
                 boolean mResult = false;
                 long startTime;
                 @Override
@@ -222,7 +222,7 @@ public class PostFragment extends BaseFragment {
                 }
             };
         }
-        mLoginTask.execute();
+        mPublishTask.execute();
     }
 
     private Post encodePost() {

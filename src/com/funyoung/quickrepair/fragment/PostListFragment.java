@@ -1,196 +1,81 @@
 
 package com.funyoung.quickrepair.fragment;
 
+import android.app.ListFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
-import com.funyoung.quickrepair.model.Post;
+import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.BillingClient;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
+import java.util.HashMap;
+
 import baidumapsdk.demo.DemoApplication;
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 
-public class PostListFragment extends BaseFragment {
+public class PostListFragment extends ListFragment implements
+        PullToRefreshAttacher.OnRefreshListener {
     private static final String TAG = "PostListFragment";
-    private static final int MIN_CHAR_NUM = 2;
-
-    private View mRootView;
+    private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
     private User mUser;
 
-    private View mAddressView;
-    private View mLocationView;
-    private View mContactView;
-    private View mPhoneView;
+    private AsyncTask<Void, Void, String> mPreTask;
 
-    private View mBrandView;
-    private View mModelView;
-    private View mDateView;
-
-    private View mDescriptionView;
-
-    private int mMainId;
-    private int mSubId;
-
-    private AsyncTask<Void, Void, String> mLoginTask;
-
-    private View.OnFocusChangeListener mFocusChangeValidator = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View view, boolean b) {
-            if (view instanceof EditText) {
-                EditText editText = (EditText)view;
-                final String typedText = editText.getText().toString();
-                if (!TextUtils.isEmpty(typedText) && typedText.length() < MIN_CHAR_NUM) {
-                    Toast.makeText(getActivity(), R.string.error_message_limit_two_char,
-                            Toast.LENGTH_SHORT).show();
-                    editText.requestFocus();
-                }
-            }
-        }
-    };
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        if (null != mRootView) {
-            initViews(inflater);
-        }
-
-        return mRootView;
-    }
-
-    private void initViews(LayoutInflater inflater) {
-        if (null == mRootView) {
-            Log.e(TAG, "initViews, error with null view root");
-            return;
-        }
-
-        ViewGroup profileContainer = (ViewGroup)mRootView.findViewById(R.id.container);
-        if (null == profileContainer) {
-            Log.e(TAG, "initViews, error with null view container");
-            return;
-        }
+    public void onStart() {
+        super.onStart();
 
         if (null == mUser) {
             mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
             if (mUser == null) {
                 Log.e(TAG, "initViews, error with null user found");
-                return;
             }
         }
 
-        if (profileContainer instanceof ViewGroup) {
-            mAddressView = addItemBane(inflater, profileContainer, R.string.post_address, mUser.getAddress());
+        /**
+         * Get ListView and give it an adapter to display the sample items
+         */
+        ListView listView = getListView();
+        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
+                ITEMS);
+        listView.setAdapter(adapter);
 
-            mLocationView = addItemBane(inflater, profileContainer, R.string.post_location, R.string.post_hint_location);
-            mContactView = addItemBane(inflater, profileContainer, R.string.post_contact, R.string.post_hint_limit_two_char);
-            mPhoneView = addItemBane(inflater, profileContainer, R.string.profile_user_mobile, mUser.getMobile());
-
-            mBrandView= addItemBane(inflater, profileContainer, R.string.post_brand, R.string.post_hint_limit_two_char);
-            mModelView= addItemBane(inflater, profileContainer, R.string.post_model, R.string.post_hint_limit_two_char);
-            mDateView = addItemBane(inflater, profileContainer, R.string.post_date, R.string.post_hint_date);
-
-            mDescriptionView = addItemBane(inflater, profileContainer, R.string.post_description, R.string.post_hint_description);
-
-            View itemView = inflater.inflate(R.layout.simple_post_attach_poto, null);
-            if (null != itemView) {
-                ImageView photoView = (ImageView)itemView.findViewById(R.id.img_profile);
-                if (null != photoView) {
-                }
-            }
-            profileContainer.addView(itemView);
-
-            Button publishButton = new Button(getActivity());
-            publishButton.setText(R.string.publish);
-            publishButton.setBackgroundResource(R.drawable.button_blue_bg);
-            publishButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    checkAndSendPost();
-                }
-            });
-            profileContainer.addView(publishButton);
-        }
-    }
-
-    private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
-                             int labelResId, int hintResId) {
-        View itemView = inflater.inflate(R.layout.simple_post_edit_item, null);
-        if (null != itemView) {
-            TextView textView = (TextView)itemView.findViewById(R.id.tv_label);
-            if (null != textView) {
-                textView.setText(labelResId);
-            }
-
-            EditText editText = (EditText)itemView.findViewById(R.id.tv_content);
-            if (null != editText) {
-                editText.setHint(hintResId);
-                editText.setOnFocusChangeListener(mFocusChangeValidator);
-            }
-        }
-        profileContainer.addView(itemView);
-        return itemView;
-    }
-
-    private View addItemBane(LayoutInflater inflater, ViewGroup profileContainer,
-                             int labelResId, String nameValue) {
-        View itemView = inflater.inflate(R.layout.simple_profile_item, null);
-        if (null != itemView) {
-            TextView textView = (TextView)itemView.findViewById(R.id.tv_label);
-            if (null != textView) {
-                textView.setText(labelResId);
-            }
-            textView = (TextView)itemView.findViewById(R.id.tv_content);
-            if (null != textView) {
-                textView.setText(nameValue);
-            }
-
-            itemView.setOnClickListener(new ChangeTextListener(itemView, labelResId, null));
-            profileContainer.addView(itemView);
-        }
-        return itemView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        /**
+         * Here we create a PullToRefreshAttacher manually without an Options instance.
+         * PullToRefreshAttacher will manually create one using default values.
+         */
+//            mPullToRefreshAttacher = PullToRefreshAttacher.get(getActivity());
+        mPullToRefreshAttacher = ((MainActivity) getActivity())
+                .getPullToRefreshAttacher();
+        // Set the Refreshable View to be the ListView and the refresh listener to be this.
+        mPullToRefreshAttacher.addRefreshableView(listView, this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mLoginTask) {
-            mLoginTask.cancel(true);
-            mLoginTask = null;
+        if (null != mPreTask) {
+            mPreTask.cancel(true);
+            mPreTask = null;
         }
     }
 
-    private void performPostTask() {
-        if (null == mUser || mUser.getUid() <= 0) {
-            Log.e(TAG, "performPostTask, skip without valid user.");
-            return;
-        }
-
-        final Post post = encodePost();
-        if (null == post) {
-            Log.e(TAG, "performPostTask, skip with invalid post.");
-            return;
-        }
-
-        if (null == mLoginTask) {
-            mLoginTask = new AsyncTask<Void, Void, String>() {
+    private void performPreTask() {
+        if (null == mPreTask) {
+            mPreTask = new AsyncTask<Void, Void, String>() {
                 boolean mResult = false;
                 long startTime;
                 @Override
@@ -202,10 +87,11 @@ public class PostListFragment extends BaseFragment {
                 @Override
                 protected String doInBackground(Void... voids) {
                     try {
-                        mResult = BillingClient.createBill(getActivity(), post);
-                        return "createBill succeed by " + mUser.getNickName();
+                        final HashMap<String, String> filter = null;
+                        mResult = BillingClient.listBill(getActivity(), mUser, filter);
+                        return "listBill succeed by " + getCurrentUserName();
                     } catch (Exception e) {
-                        return "createBill exception " + e.getMessage();
+                        return "listBill exception " + e.getMessage();
                     }
                 }
 
@@ -222,23 +108,12 @@ public class PostListFragment extends BaseFragment {
                 }
             };
         }
-        mLoginTask.execute();
+        mPreTask.execute();
     }
 
-    private Post encodePost() {
-        Post post = new Post();
-        post.uid = mUser.getUid();
-        post.category = mMainId;
-        post.subCategory = mSubId;
-        post.address = getContent(mAddressView);
-        post.area = getContent(mLocationView);
-        post.contact = getContent(mContactView);
-        post.mobile = getContent(mPhoneView);
-        post.brand = getContent(mBrandView);
-        post.model = getContent(mModelView);
-        post.createYear = getContent(mDateView);
-        post.description = getContent(mContactView);
-        return post;
+    private String getCurrentUserName() {
+        if (null == mUser) return "null";
+        return mUser.getNickName();
     }
 
     private String getContent(View hostView) {
@@ -251,56 +126,70 @@ public class PostListFragment extends BaseFragment {
         return "";
     }
 
-//    public void updateProfile(User user) {
-//        if (mUser != user) {
-//            mUser = user;
-//            refreshUI();
-//        }
-//    }
+    private static String[] ITEMS = {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam",
+            "Abondance", "Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu",
+            "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler", "Abbaye de Belloc",
+            "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi", "Acorn", "Adelost",
+            "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre",
+            "Allgauer Emmentaler"};
 
-//    private void refreshUI() {
-//        TextView textView;
-//        textView = (TextView)mAddressView.findViewById(R.id.tv_content);
-//        textView.setText(mUser.getAddress());
+    private PullToRefreshAttacher mPullToRefreshAttacher;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 //
-//        textView = (TextView)mPhoneView.findViewById(R.id.tv_content);
-//        textView.setText(mUser.getMobile());
-//    }
-    private void checkAndSendPost() {
-        if (!checkNonEmptyField()) {
-            Toast.makeText(getActivity(), R.string.error_post_empty_field, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        performPostTask();
+//        if (null == mUser) {
+//            mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
+//            if (mUser == null) {
+//                Log.e(TAG, "initViews, error with null user found");
+//            }
+//        }
+//
+//        /**
+//         * Get ListView and give it an adapter to display the sample items
+//         */
+//        ListView listView = getListView();
+//        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
+//                ITEMS);
+//        listView.setAdapter(adapter);
+//
+//        /**
+//         * Here we create a PullToRefreshAttacher manually without an Options instance.
+//         * PullToRefreshAttacher will manually create one using default values.
+//         */
+////            mPullToRefreshAttacher = PullToRefreshAttacher.get(getActivity());
+//        mPullToRefreshAttacher = ((MainActivity) getActivity())
+//                .getPullToRefreshAttacher();
+//        // Set the Refreshable View to be the ListView and the refresh listener to be this.
+//        mPullToRefreshAttacher.addRefreshableView(listView, this);
+        return view;
     }
 
-    private boolean checkNonEmptyField() {
-        TextView textView = (TextView)mAddressView.findViewById(R.id.tv_content);
-        if (null != textView) {
-            if (TextUtils.isEmpty(textView.getText())) {
-                return false;
-            }
-        }
-        textView = (TextView)mLocationView.findViewById(R.id.tv_content);
-        if (null != textView) {
-            if (TextUtils.isEmpty(textView.getText())) {
-                return false;
-            }
-        }
+    @Override
+    public void onRefreshStarted(View view) {
+        /**
+         * Simulate Refresh with 4 seconds sleep
+         */
+        new AsyncTask<Void, Void, Void>() {
 
-        textView = (TextView)mDescriptionView.findViewById(R.id.tv_content);
-        if (null != textView) {
-            if (TextUtils.isEmpty(textView.getText())) {
-                return false;
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Thread.sleep(SIMULATED_REFRESH_LENGTH);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
-        }
 
-        return true;
-    }
+            @Override
+            protected void onPostExecute(Void result) {
+                super.onPostExecute(result);
 
-    public void updateCategory(int mainId, int subId) {
-        mMainId = mainId;
-        mSubId = subId;
+                // Notify PullToRefreshAttacher that the refresh has finished
+                mPullToRefreshAttacher.setRefreshComplete();
+            }
+        }.execute();
     }
 }
