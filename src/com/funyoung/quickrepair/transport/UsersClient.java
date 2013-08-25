@@ -135,6 +135,7 @@ public final class UsersClient extends HttpRequestExecutor {
 //                .parameter("appid", AppConstant.BORQS_SYNC_APP_ID)
 //                .parameter(paramMap)
                 .parameter(API_PARAM_PHONE, mobile)
+                .parameter(API_PARAM_USER_TYPE, API_VALUE_USER_TYPE_A)
                 .create();
         return doRequest(request);
     }
