@@ -20,20 +20,36 @@ package com.funyoung.quickrepair;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.widget.TextView;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
+import com.baidu.push.Utils;
 import com.funyoung.quickrepair.model.User;
 
 import com.funyoung.qcwx.R;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
+    private SharedPreferences mPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getPreferenceManager().setSharedPreferencesName(Preferences.NAME);
         addPreferencesFromResource(R.xml.preferences);
+
+        mPreferences = getSharedPreferences(Preferences.NAME, MODE_PRIVATE);
+
+        Preference prefNotification = findPreference(Preferences.KEY_ENABLE_NOTIFICATIONS);
+        if (prefNotification != null) {
+            prefNotification.setOnPreferenceChangeListener(this);
+        }
     }
 
     /**
@@ -74,5 +90,42 @@ public class SettingsActivity extends PreferenceActivity {
     }
     public static boolean hasLoginUser(Context context) {
         return null != getLoginUser(context);
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        final String key = preference.getKey();
+        if (key.equals(Preferences.KEY_ENABLE_NOTIFICATIONS)) {
+            boolean checked = (Boolean)o;
+            if (checked != mPreferences.getBoolean(Preferences.KEY_ENABLE_NOTIFICATIONS, true)) {
+                ((CheckBoxPreference) (preference)).setChecked(checked);
+                if (checked) {
+                    // 以apikey的方式登录
+                    PushManager.startWork(getApplicationContext(),
+                            PushConstants.LOGIN_TYPE_API_KEY,
+                            Utils.getMetaValue(SettingsActivity.this, "api_key"));
+                } else {
+                    PushManager.stopWork(getApplicationContext());
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String getChannelIdsContent(Context context) {
+        String appId = null;
+        String channelId = null;
+        String clientId = null;
+
+        SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        appId = sp.getString("appid", "");
+        channelId = sp.getString("channel_id", "");
+        clientId = sp.getString("user_id", "");
+
+        String content = "\tApp ID: " + appId + "\n\tChannel ID: " + channelId
+                + "\n\tUser ID: " + clientId + "\n\t";
+
+        return content;
     }
 }

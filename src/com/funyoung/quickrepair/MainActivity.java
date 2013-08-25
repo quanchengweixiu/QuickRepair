@@ -17,18 +17,24 @@
 package com.funyoung.quickrepair;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -36,6 +42,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.android.common.logging.Log;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
+import com.baidu.push.Utils;
 import com.funyoung.quickrepair.fragment.BaseFragment;
 import com.funyoung.quickrepair.fragment.FragmentFactory;
 import com.funyoung.quickrepair.model.User;
@@ -48,6 +58,9 @@ import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefresh
 import com.funyoung.qcwx.R;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -77,6 +90,8 @@ import com.umeng.fb.FeedbackAgent;
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
 public class MainActivity extends SherlockFragmentActivity {
+
+    private static final String TAG = "MainActivity";
 
     private DrawerLayout mDrawerLayout;
 //    private ListView listView;
@@ -462,6 +477,8 @@ public class MainActivity extends SherlockFragmentActivity {
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+
+        showChannelIds();
     }
 
     @Override
@@ -483,5 +500,111 @@ public class MainActivity extends SherlockFragmentActivity {
         CheckUpdateService.schedule(this);
         //    preferences.edit().putBoolean(Preferences.KEY_ALARM_SCHEDULED, true).commit();
         //}
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // 如果要统计Push引起的用户使用应用情况，请实现本方法，且加上这一个语句
+        setIntent(intent);
+
+        handleIntent(intent);
+    }
+
+    /**
+     * 处理Intent
+     *
+     * @param intent
+     *            intent
+     */
+    private void handleIntent(Intent intent) {
+        String action = intent.getAction();
+
+        if (Utils.ACTION_RESPONSE.equals(action)) {
+
+            String method = intent.getStringExtra(Utils.RESPONSE_METHOD);
+
+            if (PushConstants.METHOD_BIND.equals(method)) {
+                String toastStr = "";
+                int errorCode = intent.getIntExtra(Utils.RESPONSE_ERRCODE, 0);
+                if (errorCode == 0) {
+                    String content = intent
+                            .getStringExtra(Utils.RESPONSE_CONTENT);
+                    String appid = "";
+                    String channelid = "";
+                    String userid = "";
+
+                    try {
+                        JSONObject jsonContent = new JSONObject(content);
+                        JSONObject params = jsonContent
+                                .getJSONObject("response_params");
+                        appid = params.getString("appid");
+                        channelid = params.getString("channel_id");
+                        userid = params.getString("user_id");
+                    } catch (JSONException e) {
+                        Log.e(Utils.TAG, "Parse bind json infos error: " + e);
+                    }
+
+                    SharedPreferences sp = PreferenceManager
+                            .getDefaultSharedPreferences(this);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("appid", appid);
+                    editor.putString("channel_id", channelid);
+                    editor.putString("user_id", userid);
+                    editor.commit();
+
+                    showChannelIds();
+
+                    toastStr = "Bind Success";
+                } else {
+                    toastStr = "Bind Fail, Error Code: " + errorCode;
+                    if (errorCode == 30607) {
+                        Log.d("Bind Fail", "update channel token-----!");
+                    }
+                }
+
+                Toast.makeText(this, toastStr, Toast.LENGTH_LONG).show();
+            }
+//        } else if (Utils.ACTION_LOGIN.equals(action)) {
+//            String accessToken = intent
+//                    .getStringExtra(Utils.EXTRA_ACCESS_TOKEN);
+//            PushManager.startWork(getApplicationContext(),
+//                    PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
+//            isLogin = true;
+//            initButton.setText("更换百度账号初始化Channel");
+        } else if (Utils.ACTION_MESSAGE.equals(action)) {
+            String message = intent.getStringExtra(Utils.EXTRA_MESSAGE);
+            String summary = "Receive message from server:\n\t";
+            Log.e(Utils.TAG, summary + message);
+            JSONObject contentJson = null;
+            String contentStr = message;
+            try {
+                contentJson = new JSONObject(message);
+                contentStr = contentJson.toString(4);
+            } catch (JSONException e) {
+                Log.d(Utils.TAG, "Parse message json exception.");
+            }
+            summary += contentStr;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(summary);
+            builder.setCancelable(true);
+            Dialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        } else {
+            Log.i(Utils.TAG, "Activity normally start!");
+        }
+    }
+
+    private void showChannelIds() {
+        final String content = SettingsActivity.getChannelIdsContent(this);
+        Log.d(TAG, "showChannelIds, show channel ids content = " + content);
+        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+//        Resources resource = this.getResources();
+//        String pkgName = this.getPackageName();
+//        infoText = (TextView) findViewById(resource.getIdentifier("text", "id", pkgName));
+//        if (infoText != null) {
+//            infoText.setText(content);
+//            infoText.invalidate();
+//        }
     }
 }
