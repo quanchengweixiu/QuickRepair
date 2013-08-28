@@ -84,7 +84,7 @@ public class FragmentFactory {
 
     public void gotoPostFragment(User user, int mainId, int subId) {
         if (null == postFragment) {
-            PostFragment fragment = new PostFragment();
+            PostCreateFragment fragment = new PostCreateFragment();
             postFragment = fragment;
         }
 
@@ -92,7 +92,7 @@ public class FragmentFactory {
             mCurrentFragment = postFragment;
             gotoFragmentView(mCurrentFragment, FRAGMENT_POST,  FRAGMENT_DEFAULT);
         }
-        ((PostFragment)mCurrentFragment).updateCategory(mainId, subId);
+        ((PostCreateFragment)mCurrentFragment).updateCategory(mainId, subId);
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();

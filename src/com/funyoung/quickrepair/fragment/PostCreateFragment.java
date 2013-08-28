@@ -22,7 +22,7 @@ import com.funyoung.quickrepair.utils.PerformanceUtils;
 
 import baidumapsdk.demo.DemoApplication;
 
-public class PostFragment extends BaseFragment {
+public class PostCreateFragment extends BaseFragment {
     private static final String TAG = "ProfileFragment";
     private static final int MIN_CHAR_NUM = 2;
 
