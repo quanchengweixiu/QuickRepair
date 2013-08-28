@@ -60,7 +60,7 @@ public  class CategoryGridFragment extends BaseFragment {
             R.array.qp_category_label_array_sub9,
     };
 
-    private static Integer[] images = {
+    public static Integer[] images = {
             R.drawable.ic_classify_airconditioning,
             R.drawable.ic_classify_heater,
             R.drawable.ic_classify_closestool,

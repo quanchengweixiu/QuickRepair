@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +33,10 @@ public class PostListFragment extends ListFragment implements
     private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
     private User mUser;
+    SimpleAdapter adapter;
 
     private AsyncTask<Void, Void, String> mPreTask;
+    ArrayList<HashMap<String, Object>> itemData = new ArrayList<HashMap<String, Object>>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,14 @@ public class PostListFragment extends ListFragment implements
         /**
          * Get ListView and give it an adapter to display the sample items
          */
-        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-                ITEMS);
+//        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
+//                ITEMS);
+
+        adapter = new SimpleAdapter(getActivity(),
+                itemData,
+                R.layout.gridview_item_post,
+                new String[] { "img", "label", "time", "description", "price" },
+                new int[] { R.id.img, R.id.label, R.id.time, R.id.description, R.id.price });
         setListAdapter(adapter);
 
         /**
@@ -115,6 +124,8 @@ public class PostListFragment extends ListFragment implements
 
                     if (mResult != null && !mResult.isEmpty()) {
                         Toast.makeText(getActivity(), R.string.list_posts_succeed, Toast.LENGTH_SHORT).show();
+
+                        refreshUi(mResult);
                     } else {
                         Toast.makeText(getActivity(), R.string.list_posts_fail, Toast.LENGTH_SHORT).show();
                     }
@@ -137,6 +148,26 @@ public class PostListFragment extends ListFragment implements
             }
         }
         return "";
+    }
+
+    // new String[] { "img", "label", "time", "description", "price" },
+    private void refreshUi(ArrayList<Post> postList) {
+        itemData.clear();
+        if (null == postList || postList.isEmpty()) {
+            // fill in with debug data
+        } else {
+            HashMap<String, Object> item;
+            for (Post post : postList) {
+                item = new HashMap<String, Object>();
+                item.put("img", CategoryGridFragment.images[post.category]);
+                item.put("label", post.area);
+                item.put("time", post.createTime);
+                item.put("description", post.description);
+                item.put("price", getString(R.string.post_item_price));
+                itemData.add(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private static String[] ITEMS = {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam",

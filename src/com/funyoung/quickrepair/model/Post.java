@@ -1,6 +1,11 @@
 package com.funyoung.quickrepair.model;
 
 import android.text.TextUtils;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -20,6 +25,7 @@ import java.util.ArrayList;
  photo[]: “XXX” // 图片URL列表， 图片文件需先调接口生成URL
  */
 public class Post {
+    private static final String TAG = "Post";
     public long uid;
     public int category;
     public int subCategory;
@@ -47,6 +53,34 @@ public class Post {
             return postList;
         }
 
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONArray posts = jsonObject.optJSONArray("posts");
+            if (null == posts || posts.length() == 0) {
+                Log.i(TAG, "parseListResult, got empty list");
+            } else {
+                final int len = posts.length();
+                JSONObject obj;
+                for (int i = 0; i < len; i++) {
+                    obj = posts.getJSONObject(i);
+                    postList.add(fromJson(obj));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return postList;
+    }
+
+    private static Post fromJson(JSONObject obj) {
+        Post post = new Post();
+        if (null != obj) {
+            post.uid = obj.optLong("uid");
+            post.category = obj.optInt("categoryid");
+            post.subCategory = obj.optInt("sub_categoryid");
+            post.description = obj.optString("description");
+        }
+        return post;
     }
 }
