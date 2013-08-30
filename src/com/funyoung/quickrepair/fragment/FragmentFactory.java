@@ -22,77 +22,49 @@ public class FragmentFactory {
     private static final String FRAGMENT_POST = "FRAGMENT_POST";
     private static final String FRAGMENT_POST_LIST = "FRAGMENT_POST_LIST";
 
-    private Fragment mCurrentFragment;
-    private Fragment loginFragment;
-    private Fragment locationFragment;
-    private Fragment defaultFragment;
-    private Fragment profileFragment;
-    private Fragment postFragment;
-    private Fragment postListFragment;
+    private String mCurrentFragment;
     public void gotoLoinFragment() {
-        if (null == loginFragment) {
-            loginFragment = new SignUpFragment();
-        }
-
-        if (mCurrentFragment != loginFragment) {
-            mCurrentFragment = loginFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_LOGIN, FRAGMENT_DEFAULT);
+        if (mCurrentFragment != FRAGMENT_LOGIN) {
+            mCurrentFragment = FRAGMENT_LOGIN;
+            gotoFragmentView(new SignUpFragment(), FRAGMENT_LOGIN, FRAGMENT_DEFAULT);
         }
 
     }
 
     public void gotoLocationFragment() {
-        if (null == locationFragment) {
-            locationFragment = new LocationOverlayFragment();
-        }
-
-        if (mCurrentFragment != locationFragment) {
-            mCurrentFragment = locationFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_MAP, FRAGMENT_DEFAULT);
+        if (mCurrentFragment != FRAGMENT_MAP) {
+            mCurrentFragment = FRAGMENT_MAP;
+            gotoFragmentView(new LocationOverlayFragment(), FRAGMENT_MAP, FRAGMENT_DEFAULT);
         }
     }
     public  void gotoDefaultView() {
-        if (null == defaultFragment) {
-            defaultFragment = new CategoryGridFragment();
-            Bundle args = new Bundle();
-//            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, mDefaultPosition);
-            defaultFragment.setArguments(args);
-        }
-
-        if (mCurrentFragment != defaultFragment) {
-            mCurrentFragment = defaultFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_DEFAULT, null);
+        if (mCurrentFragment != FRAGMENT_DEFAULT) {
+            mCurrentFragment = FRAGMENT_DEFAULT;
+            gotoFragmentView(new CategoryGridFragment(), FRAGMENT_DEFAULT, null);
         }
     }
 
     public void gotoProfileFragment(User user) {
-        if (null == profileFragment) {
-            ProfileFragment fragment = new ProfileFragment();
-            fragment.updateProfile(user);
-            profileFragment = fragment;
-        }
-
-        if (mCurrentFragment != profileFragment) {
+        if (mCurrentFragment != FRAGMENT_PROFILE) {
             Bundle args = user.toBundle();
+            ProfileFragment profileFragment = new ProfileFragment();
             profileFragment.setArguments(args);
-            mCurrentFragment = profileFragment;
-            gotoFragmentView(mCurrentFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
+            mCurrentFragment = FRAGMENT_PROFILE;
+            gotoFragmentView(profileFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
         } else {
-            ((ProfileFragment)mCurrentFragment).updateProfile(user);
+            ((ProfileFragment)getCurrentFragment()).updateProfile(user);
         }
     }
 
     public void gotoPostFragment(User user, int mainId, int subId) {
-        if (null == postFragment) {
-            PostCreateFragment fragment = new PostCreateFragment();
-            postFragment = fragment;
-        }
 
-        if (mCurrentFragment != postFragment) {
-            mCurrentFragment = postFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_POST,  FRAGMENT_DEFAULT);
+        if (mCurrentFragment != FRAGMENT_POST) {
+            mCurrentFragment = FRAGMENT_POST;
+            PostCreateFragment postFragment = new PostCreateFragment();
+            postFragment = new PostCreateFragment();
+            gotoFragmentView(postFragment, FRAGMENT_POST,  FRAGMENT_DEFAULT);
         }
-        ((PostCreateFragment)mCurrentFragment).updateCategory(mainId, subId);
+        ((PostCreateFragment)getCurrentFragment()).updateCategory(mainId, subId);
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
         FragmentTransaction ft = _fragmentManager.beginTransaction();
@@ -122,16 +94,16 @@ public class FragmentFactory {
     }
 
     public boolean isDefaultFragment() {
-        return mCurrentFragment == defaultFragment;
+        return mCurrentFragment == FRAGMENT_DEFAULT;
     }
 
     public void releaseCache() {
-        defaultFragment = null;
-        locationFragment = null;
-        loginFragment = null;
-        profileFragment = null;
-        postFragment = null;
-        postListFragment = null;
+        if (TextUtils.isEmpty(mCurrentFragment)) {
+            FragmentTransaction ft = _fragmentManager.beginTransaction();
+            ft.remove(getCurrentFragment());
+            mCurrentFragment = null;
+            ft.commit();
+        }
     }
 
     public void onDestroy() {
@@ -140,14 +112,12 @@ public class FragmentFactory {
     }
 
     public void gotoPostListView() {
-        if (null == postListFragment) {
-            PostListFragment fragment = new PostListFragment();
-            postListFragment = fragment;
+        if (mCurrentFragment != FRAGMENT_POST_LIST) {
+            mCurrentFragment = FRAGMENT_POST_LIST;
+            gotoFragmentView(new PostListFragment(), FRAGMENT_POST_LIST,  FRAGMENT_DEFAULT);
         }
-
-        if (mCurrentFragment != postListFragment) {
-            mCurrentFragment = postListFragment;
-            gotoFragmentView(mCurrentFragment, FRAGMENT_POST_LIST,  FRAGMENT_DEFAULT);
-        }
+    }
+    private Fragment getCurrentFragment() {
+        return _fragmentManager.findFragmentByTag(mCurrentFragment);
     }
 }
